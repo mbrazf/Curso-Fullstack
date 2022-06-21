@@ -1,0 +1,43 @@
+/* Aqui selecionamos os elementos com suas classes e definimos seus estilos */
+.img-content {
+    width: 765px;
+    height: 400px;
+}
+.text-content{
+    font-size: 22px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+@media  (min-width: 1440px) and (max-width:2560px) {
+    body{
+        background-color: red;
+        color: white;
+    }
+}
+
+@media (max-width:790px){
+    .img-content{
+        width: 90%;
+        height: auto;
+    }
+}
+
+@media (max-width: 425px){
+    .img-content{
+        width: 100%;
+        height: auto;
+    }
+    .text-content{
+        font-size: 18px;
+        text-align: center;
+    }
+    .title-content{
+        text-align: center;
+    }
+}
+
+@media (max-width: 320px){
+    .text-content{
+        font-size: 14px;
+    }
+}
