@@ -156,3 +156,246 @@
     }
 }
 ```
+<br>
+<hr>
+
+# Flexbox
+
+- O flexbox é um método de organização de layout. Com ele, você manipula itens dentro de um container de forma dinâmica, ou seja, independente do tamanho do container, os itens vão estar se adaptando a ele.
+- As aplicações que criamos, elas são acessadas de vários dispositivos. E como foi dito, o flexbox vai organizar o container de acordo com o tamanho do dispositivo. Com isso, nós podemos fazer diversas manipulações de forma automática para vários dispositivos.
+- Utilizado para alinhar elementos em linhas ou colunas.
+
+- Aqui o layout que será usado para estudo
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Flexbox</title>
+</head>
+<body>
+    <div class="container">
+        <div class="item">
+            <p>Item 1</p>
+        </div>
+        <div class="item">
+            <p>Item 2</p>
+        </div>
+        <div class="item">
+            <p>Item 3</p>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+- Aqui o css
+```
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    background-color: darkgray;
+    min-height: 100vh;
+}
+
+.item {
+    width: 200px;
+    height: 200px;
+    border: 2px solid black;
+    background-color: white;
+    font-size: 20px;
+}
+```
+- ## flex:
+        - display: flex - Define o flexbox no elemento.
+
+- ## flex-direction:
+        - Define o tipo do flex
+
+        - row(valor padrão): define o flex em linha/horizontal.
+        - column: define o flex em coluna/vertical .
+        - row-reverse: define o flex em linha só que ao contrário. 
+        - column-reverse: define o flex em coluna só que ao contrário.
+
+- ## gap:      
+        - row-gap: espaçamento entre os elementos em linha/vertical.
+        - column-gap: espaçamento entre os elementos em coluna/horizontal.
+        - gap: espaçamento entre os elementos geral linha e coluna/ vertical e horizontal.
+
+- ## justify-content: 
+        - Alinha os items na horizontal se o flex-direction for row.
+
+        - flex-start(valor padrão) : alinha os items no início do container.
+        - center: centraliza os elementos .
+        - flex-end: alinha os items no fim do container .
+        - space-around: espaço em volta dos items .
+        - space-between: espaço entre os items .
+        - space-evenly: espaçamento igual entre e nas laterais dos items.
+
+- ## align-items: 
+         - Alinha os items na vertical se o flex-direction for column.   
+
+        - flex-start(valor padrão) : alinha os items no início do container.
+        - center: centraliza os elementos .
+        - flex-end: alinha os items no fim do container .
+        - space-around: espaço em volta dos items .
+        - space-between: espaço entre os items .
+        - space-evenly: espaçamento igual entre e nas laterais dos items.
+        - stretch: se não houver largura ou altura definido ele irá ocupar todo o espaço da tela.
+
+- ## flex-wrap:
+        - Define se haverá quebra de linha nos items ou não.
+
+        - wrap: haverá quebra de linha.
+        - nowrap(valor padrão): não haverá quebra de linha.
+        - wrap-reverse: haverá quebra de linha ao contrário para cima.
+
+
+- ## Exemplo
+```
+- HTML do exemplo
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Flexbox Layout</title>
+</head>
+<body>
+    <div class="container">
+        <div class="item">
+            <p>Item 1</p>
+        </div>
+        <div class="item">
+            <p>Item 2</p>
+        </div>
+        <div class="item">
+            <p>Item 3</p>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+```
+- CSS do exemplo
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    background-color: darkgray;
+    min-height: 100vh;
+    display: flex;
+    gap:  0px 15px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.item {
+    width: 200px;
+    height: 200px;
+    border: 2px solid black;
+    background-color: white;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+```
+<hr>
+<br>
+
+- ## Exercício
+
+```
+-   HTML do exercício
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Exercício Flexbox</title>
+</head>
+
+<body>
+    <header class="header">
+        <img src="/Flexbox/exercício-flex/iconrock-red.svg" alt="logo-rock" class="logo-rock">
+        <img src="/Flexbox/exercício-flex/logo-onebitcode.svg" alt="logo-onebitcode" class="logo-onebitcode">
+        <div class="buttons">
+
+            <button class="buttonHeader">
+                Início
+            </button>
+
+            <button class="buttonHeader">
+                FAQ
+            </button>
+
+            <button class="buttonHeader">
+                Suporte
+            </button>
+        </div>
+    </header>
+</body>
+
+</html>
+```
+
+```
+-   CSS do exercício
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.header{
+    background-color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 25px;
+}
+.logo-rock {
+    width: 40px;
+}
+.logo-onebitcode {
+    width: 200px;
+}
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+.buttonHeader{
+    font-size: 20px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: transparent;
+    border-color: white;
+    color: white;
+    cursor: pointer;
+    transition: 0.4s;
+}
+.buttonHeader:hover {
+    border-color: #ff0044;
+}
+```
