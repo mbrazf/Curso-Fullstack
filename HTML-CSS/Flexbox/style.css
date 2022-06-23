@@ -11,16 +11,41 @@
     gap:  0px 15px;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
+    /* flex-direction: column; */
+    /*flex-wrap: wrap;*/
 }
 
 .item {
-    width: 200px;
-    height: 200px;
+    width: 100%;
+    height: 70px;
     border: 2px solid black;
     background-color: white;
     font-size: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
+    /* flex-basis basicamente define um tamanho para os itens se não houver um width/largura definido*/
+     /* flex-grow define o grau do crescimento do item (quanto maior o valor maior a área ocupada do item) ocupando o tamanho restante do container flex*/
+}
+
+.item1 {
+    /* flex-shrink especifica o quanto o item irá encolher em relação ao resto dos itens flexíveis dentro do mesmo container, quanto maior o valor mais irá encolher */
+    order: 2; /* order basicamente define a ordem que o item será exibido*/
+    align-self: flex-end; /* align-self alinha cada elemento individualmente flex-start | flex-end */
+}
+
+.item2{
+    /*flex: 1 0 200px; */  /* flex basicamente é a junção do flex-basis, flex-grow e flex-shrink , o primeiro valor é o flex-grow e o quanto ele irá crescer, o segundo o flex-shrink o quanto o item irá encolher e o último é o flex-basis com o tamanho dos itens flex*/
+    order: 3;
+    align-self: flex-start;
+}
+
+.item3{
+    order: 1;
+}
+
+@media (max-width: 390px) {
+    .item2 {
+        flex: 1 0 620px;
+    }
 }

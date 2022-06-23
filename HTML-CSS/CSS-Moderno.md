@@ -399,3 +399,213 @@
     border-color: #ff0044;
 }
 ```
+
+- ## flex-basis
+    -    flex-basis basicamente define um tamanho para os itens se não houver uma width/largura definida.
+
+- ## flex-grow
+    -    flex-grow define o grau do crescimento do item (quanto maior o valor maior a área ocupada do item) ocupando o tamanho restante do container flex.
+
+- ## flex-shrink
+    -   flex-shrink especifica o quanto o item irá encolher em relação ao resto dos itens flexíveis dentro do mesmo container, quanto maior o valor mais irá encolher.
+
+- ## flex
+    -    flex: 1 0 200px;    flex basicamente é a junção do flex-basis, flex-grow e flex-shrink , o primeiro valor é o flex-grow e o quanto ele irá crescer, o segundo o flex-shrink e o quanto o item irá encolher e o último é o flex-basis com o tamanho dos itens flex.
+
+- ## align-self
+    -    align-self alinha cada elemento individualmente | flex-start | flex-end | center (valor inicial)
+
+- ## order
+    -    order basicamente define a ordem que o item será exibido, 0, 1, 2, 3
+<hr>
+<br>
+
+- ## Exemplo
+
+-   HTML
+```
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Flexbox Layout</title>
+</head>
+<body>
+    <div class="container">
+        <div class="item item1">
+            <p>Item 1</p>
+        </div>
+        <div class="item item2">
+            <p>Item 2</p>
+        </div>
+        <div class="item item3">
+            <p>Item 3</p>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+- E aqui o CSS 
+
+```
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    background-color: darkgray;
+    min-height: 100vh;
+    display: flex;
+    gap:  0px 15px;
+    justify-content: center;
+    align-items: center;
+    /* flex-direction: column; */
+    /*flex-wrap: wrap;*/
+}
+
+.item {
+    width: 100%;
+    height: 70px;
+    border: 2px solid black;
+    background-color: white;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.item1 {
+    order: 2; 
+    align-self: flex-end; 
+}
+
+.item2{
+    /*flex: 1 0 200px; */  
+    order: 3;
+    align-self: flex-start;
+}
+
+.item3{
+    order: 1;
+}
+
+@media (max-width: 390px) {
+    .item2 {
+        flex: 1 0 620px;
+    }
+}
+```
+<br>
+
+- ## Exercício 2
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Flexbox Layout</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <p class="paragraph">HEADER</p>
+        </header>
+        <section class="mainContent">
+            <div class="item">
+                <p class="paragraph">Item 1</p>
+              </div>
+              <div class="item">
+                <p class="paragraph">Item 2</p>
+              </div>
+              <div class="item">
+                <p class="paragraph">Item 3</p>
+              </div class="item">
+              <div class="item">
+                <p class="paragraph">Item 4</p>
+              </div>
+              <div class="item">
+                <p class="paragraph">Item 5</p>
+              </div>
+              <div class="item">
+                <p class="paragraph">Item 6</p>
+              </div>
+        </section>
+        <footer class="footer">
+            <p class="paragraph">FOOTER</p>
+        </footer>
+    </div>
+</body>
+</html>
+```
+
+- CSS 
+
+```
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    background-color: darkgray;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+  flex-basis: 100%;
+  background-color: white;
+  border: 2px solid black;
+  display: flex;
+  justify-content: center;
+	padding: 10px;
+}
+
+.paragraph {
+    font-size: 30px;
+}
+
+.mainContent{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    gap: 10px;
+    flex: 1 0 auto;
+}
+
+.item{
+    flex-basis: 350px;
+    height: 230px;
+    border: 2px solid black;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer{
+    flex-basis: 100%;
+    border: 2px solid black;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+```
