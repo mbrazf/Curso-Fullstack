@@ -609,3 +609,326 @@
     padding: 10px;
 }
 ```
+<hr>
+<br>
+
+# Grid Layout
+
+- O que é: Assim como o flexbox, o grid é um organizador de layout. Com ele nós vamos ter uma divisão de linhas e colunas, diferente da divisão de linha e coluna do flexbox, a do grid é muito mais organizada se você quiser linhas e colunas definidas.
+
+- Para que serve: O grid ele serve para como foi dito, ter linhas e colunas. Ou seja, você poderia por exemplo, ter um layout de um blog, onde nós temos uma coluna para o conteúdo principal e uma lateral sendo o sidebar.
+
+- Quando é utilizado: Como foi explicado no tópido “para o que serve”, ele vai ser utilizado em momentos que a gente queira ter divisão de colunas, tipo conteúdo principal e barra lateral. Só que, nós também podemos ter uma linha que tem duas colunas de tamanhos iguais, cada uma com o seu conteúdo.
+<hr>
+
+- ## display: grid 
+    -   utilizado para definir o grid layout no container
+
+- ## grid-template-columns: repeat(3, 1fr) 
+    -   grid-template-columns é utilizado para definir as colunas do grid - podemos utilizar % e fr (frame: parte da tela que você quer que o elemento ocupe 1fr 1fr 1fr), também temos o repeat usado para repetir as colunas, o primeiro valor é o número de colunas e o segundo a medida que o elemento irá ocupar da tela.
+
+- ## row-gap: ; 
+    -   espaçamento entre as linhas
+
+- ## column-gap: ; 
+    -   espaçamento entre as colunas
+
+- ## gap: 10px 15px; 
+    -   espaçamento geral -  primeiro valor espaço entre as linhas e o segundo entre as colunas
+
+- ## grid-template-rows: repeat(3, 1fr);  
+    -   é utilizado para definir as linhas do grid
+    
+- ## grid-auto-rows: minmax(210px, 100%); 
+    -   aqui definimos o tamanho das linhas e com o minmax()  podemos definir o tamanho mínimo e o tamanho máximo do item
+
+<hr>
+<br>
+
+- ## EXEMPLO
+
+-   HTML
+```
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Grid Layout</title>
+</head>
+<body>
+    <div class="container">
+        <div class="item">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi iusto consequuntur, dolorem labore pariatur animi veniam!</p>
+        </div>
+        <div class="item">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur sequi temporibus doloribus quae reprehenderit sed, sit molestias soluta fuga nobis, corporis omnis?</p>
+        </div>
+        <div class="item">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae libero inventore facilis totam?</p>
+        </div>
+        <div class="item">
+            <p>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquam voluptates magni nesciunt excepturi
+              praesentium eligendi vitae illum.
+            </p>
+          </div>
+          <div class="item">
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa reiciendis odit, accusantium eligendi,
+              perspiciatis ad voluptatum similique quasi molestiae corrupti et at!
+            </p>
+          </div>
+          <div class="item">
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem, qui? Eligendi, saepe dicta.
+            </p>
+          </div>
+    </div>
+</body>
+</html>
+```
+<br>
+
+- CSS
+```
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    background-color: darkgray;
+    min-height: 100vh;
+    display: grid; /*display: grid é utilizado para definir o grid layout no container */
+    grid-template-columns: repeat(3, 1fr); /* grid-template-columns é utilizado para definir as colunas do grid - podemos utilizar % e fr (frame: parte da tela que você quer que o elemento ocupe 1fr 1fr 1fr), também temos o repeat usado para repetir as colunas, o primeiro valor é o número de colunas e o segundo a medida que o elemento irá ocupar da tela*/
+    /*row-gap: ;  espaçamento entre as linhas*/
+    /*column-gap: ; espaçamento entre as colunas*/
+    gap: 10px 15px; /* espaçamento geral -  primeiro valor espaço entre as linhas e o segundo entre as colunas*/
+    /*grid-template-rows: repeat(3, 1fr);  grid-template-rows é utilizado para definir as linhas do grid*/
+    grid-auto-rows: minmax(210px, 100%); /* aqui definimos o tamanho das linhas*/ 
+    /* com o minmax()  podemos definir o tamanho mínimo e o tamanho máximo do item*/
+}
+
+.item {
+    border: 2px solid black;
+    background-color: white;
+    font-size: 30px;
+    padding: 10px;
+}
+```
+
+## Exercício 1
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Grid Layout</title>
+</head>
+<body>
+    <div class="container">
+        <div class="item">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime excepturi iusto consequuntur, dolorem labore pariatur animi veniam!</p>
+        </div>
+        <div class="item">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur sequi temporibus doloribus quae reprehenderit sed, sit molestias soluta fuga nobis, corporis omnis?</p>
+        </div>
+        <div class="item">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae libero inventore facilis totam?</p>
+        </div>
+        <div class="item">
+            <p>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquam voluptates magni nesciunt excepturi
+              praesentium eligendi vitae illum.
+            </p>
+          </div>
+          <div class="item">
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa reiciendis odit, accusantium eligendi,
+              perspiciatis ad voluptatum similique quasi molestiae corrupti et at!
+            </p>
+          </div>
+          <div class="item">
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem, qui? Eligendi, saepe dicta.
+            </p>
+          </div>
+    </div>
+</body>
+</html>
+```
+<br>
+
+- CSS
+
+```
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    background-color: darkgray;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr; 
+    gap: 10px 15px; 
+    grid-auto-rows: minmax(310px, auto); 
+}
+
+.item {
+    border: 2px solid black;
+    background-color: white;
+    font-size: 30px;
+    padding: 10px;
+}
+```
+<br>
+
+## Manipulando linhas e colunas
+
+- ## EXEMPLO
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Grid Layout</title>
+</head>
+<body>
+    <div class="container">
+        <div class="item item1">
+            <p>ITEM 1</p>
+        </div>
+        <div class="item item2">
+            <p>ITEM 2</p>
+        </div>
+        <div class="item item3">
+            <p>ITEM 3</p>
+        </div>
+        <div class="item item4">
+            <p>
+              ITEM 4
+            </p>
+          </div>
+          <div class="item item5">
+            <p>
+              ITEM 5
+            </p>
+          </div>
+          <div class="item item6">
+            <p>
+              ITEM 6
+            </p>
+          </div>
+          <div class="item item7">
+            <p>
+              ITEM 7
+            </p>
+          </div>
+          <div class="item item8">
+            <p>
+              ITEM 8
+            </p>
+          </div>
+          <div class="item item9">
+            <p>
+              ITEM 9
+            </p>
+          </div>
+    </div>
+</body>
+</html>
+```
+<br>
+
+- CSS
+```
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    background-color: darkgray;
+    min-height: 100vh;
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(80px, auto); 
+    gap: 10px 15px; 
+
+    /*Aqui uma forma de desenhar o layout basta colocar aonde cada item irá ficar e quanto de espaço irá ocupar  */
+    grid-template-areas:  
+        "item1 item1 item1"
+        "item2 item2 item3"
+        "item2 item2 item4"
+        "item5 item5 item5"
+        "item5 item5 item5"
+        "item6 item7 item7"
+        "item8 item7 item7"
+        "item9 item9 item9";
+}
+
+.item {
+    border: 2px solid black;
+    background-color: white;
+    font-size: 30px;
+    padding: 10px;
+}
+
+.item1 {
+    /*  grid-column: 1/4;  utilizado para definir o tamanho da coluna, o número 1 representa a linha 1 e o 4 a linha 4 (verticais)  ou seja o item irá ocupar todo o espaço disponível*/
+     /* grid-row: 2/4;  grid-row é basicamente a mesma coisa que o grid-column mas agora as linhas estão na horizontal ou seja o item6 irá ocupar da linha 4 até a linha 6 na horizontal*/
+
+     grid-area: item1; /* e aqui em cada item que faz parte do grid associamos os itens a sua classe*/
+}
+
+.item2 {
+    grid-area: item2;
+}
+
+.item3{
+    grid-area: item3;
+}
+
+.item4{
+    grid-area: item4;
+}
+
+.item5{
+    grid-area: item5;
+}
+
+.item6{
+    grid-area: item6;
+}
+
+.item7 {
+    grid-area: item7;
+}
+
+.item8{
+    grid-area: item8;
+}
+
+.item9 {
+    grid-area: item9;
+}
+```
