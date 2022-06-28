@@ -932,3 +932,471 @@
     grid-area: item9;
 }
 ```
+<br>
+
+- ## Exercício 2
+
+
+-   HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Grid Layout</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <p>HEADER</p>
+        </header>
+        <section class="main-content">
+            <div class="item item1">
+                <p>ITEM1</p>
+              </div>
+              <div class="item item2">
+                <p>ITEM2</p>
+              </div>
+              <div class="item item3">
+                <p>ITEM3</p>
+              </div>
+              <div class="item item4">
+                <p>ITEM4</p>
+              </div>
+              <div class="item item5">
+                <p>ITEM5</p>
+              </div>
+              <div class="item item6">
+                <p>ITEM6</p>
+              </div>
+        </section>
+          <footer class="footer">
+              <p>FOOTER</p>
+          </footer>
+    </div>
+</body>
+</html>
+```
+<br>
+
+-   CSS
+```
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    background-color: darkgray;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    border: 2px solid black;
+    background-color: white;
+}
+
+.header , .footer{
+    background-color: white;
+    width: 100%;
+    height: 60px;
+    border: 2px solid black;
+}
+
+.main-content{
+    flex: 1 0 auto;
+    padding: 10px;
+    display: grid;
+    /*aqui definmos 3 colunas ocupando 1 fr */
+    grid-template-columns: repeat(3, 1fr); 
+
+    /*aqui definimos o tamanho minimo e máximo das linhas do grid */
+    grid-auto-rows: minmax(100px, auto); 
+
+    /* aqui posicionamos os itens como quisermos */
+    grid-template-areas: 
+        "item1 item2 item3"
+        "item4 item4 item4"
+        "item5 item5 item6";
+    gap: 5px;
+}
+
+/* aqui associamos as classes aos itens grid */
+.item1 {
+    grid-area: item1;
+    min-width: 250px;
+  }
+  .item2 {
+    grid-area: item2;
+    min-width: 250px;
+  }
+  .item3 {
+    grid-area: item3;
+    min-width: 250px;
+  }
+  .item4 {
+    grid-area: item4;
+  }
+  .item5 {
+    grid-area: item5;
+    min-width: 350px;
+  }
+  .item6 {
+    grid-area: item6;
+    min-width: 250px;
+  }
+
+  /* aqui adicionamos uma mudança na responsividade quando a largura máxima da tela for de 780px os itens irão ficar empilhados em coluna*/
+  @media (max-width: 780px) {
+      .main-content{
+          grid-template-areas: 
+                "item1 item1 item1"
+                "item2 item2 item2"
+                "item3 item3 item3"
+                "item4 item4 item4"
+                "item5 item5 item6"; 
+      }
+  }
+
+  /* aqui adicionamos uma mudança na responsividade quando a largura máxima da tela for de 630px*/
+  @media (max-width: 630px) {
+    .main-content{
+        grid-template-areas: 
+              "item1 item1 item1"
+              "item2 item2 item2"
+              "item3 item3 item3"
+              "item4 item4 item4"
+              "item5 item5 item5"
+              "item6 item6 item6"; 
+    }
+}
+
+/* aqui adicionamos uma mudança na responsividade quando a largura máxima da tela for de 360px alterar a largura minima do item5*/
+@media (max-width: 360px) {
+    .item5{
+        min-width: auto;
+    }
+}
+```
+<hr>
+<br>
+
+- ## EXERCÍCIO FINAL GRID + FLEX
+
+-   HTML
+```
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Exercício Final - GRID + FLEXBOX</title>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <img class="logoNavBar" src="img/logo-onebitcode.svg" alt="logoNavBar">
+            <nav class="headerBtnGroup">
+                <button class="navBtn">Login</button>
+                <button class="navBtn">Registro</button>
+                <button class="navBtn">FAQ</button>
+            </nav>
+        </header>
+        <p class="sectionTitle" id="backToTop">BEM VINDO A ONEBITSPORTS!</p>
+        <p class="sectionDescription">Aqui é onde você encontra todos os itens mais novos e modernos do seu esporte
+            preferido.</p>
+
+        <section class="gridContainer">
+            <div class="mainContent">
+                <div class="categoryCard">
+                    <img src="img/boxe.jpg" alt="mainCardImg" class="mainCardImg">
+                    <p class="mainCategoryCardTitle">BOXE</p>
+                    <p class="mainCategoryCardDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam
+                        vitae consequuntur magni doloremque omnis aut provident nobis ratione nihil dolores.</p>
+                </div>
+                <div class="categoryCard">
+                    <img src="img/crossfit.jpg" alt="mainCardImg" class="mainCardImg">
+                    <p class="mainCategoryCardTitle">CROSSFIT</p>
+                    <p class="mainCategoryCardDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit.Magni
+                        vel consectetur mollitia ratione possimus quasi fugiat adipisci nobis ea tempora!</p>
+                </div>
+                <div class="categoryCard">
+                    <img src="img/natacao.jpg" alt="mainCardImg" class="mainCardImg">
+                    <p class="mainCategoryCardTitle">NATAÇÃO</p>
+                    <p class="mainCategoryCardDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Molestiae voluptatem ipsa dicta, facere dolores reiciendis facilis beatae corporis atque itaque!
+                    </p>
+                </div>
+                <div class="categoryCard">
+                    <img src="img/roupas.jpg" alt="mainCardImg" class="mainCardImg">
+                    <p class="mainCategoryCardTitle">ROUPAS</p>
+                    <p class="mainCategoryCardDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Molestiae voluptatem ipsa dicta, facere dolores reiciendis facilis beatae corporis atque itaque!
+                    </p>
+                </div>
+                <div class="categoryCard">
+                    <img src="img/basquete.jpg" alt="mainCardImg" class="mainCardImg">
+                    <p class="mainCategoryCardTitle">BASQUETE</p>
+                    <p class="mainCategoryCardDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Molestiae voluptatem ipsa dicta, facere dolores reiciendis facilis beatae corporis atque itaque!
+                    </p>
+                </div>
+                <div class="categoryCard">
+                    <img src="img/corrida.jpg" alt="mainCardImg" class="mainCardImg">
+                    <p class="mainCategoryCardTitle">CORRIDA</p>
+                    <p class="mainCategoryCardDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Molestiae voluptatem ipsa dicta, facere dolores reiciendis facilis beatae corporis atque itaque!
+                    </p>
+                </div>
+                <div class="categoryCard">
+                    <img src="img/surf.jpg" alt="mainCardImg" class="mainCardImg">
+                    <p class="mainCategoryCardTitle">SURF</p>
+                    <p class="mainCategoryCardDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Molestiae voluptatem ipsa dicta, facere dolores reiciendis facilis beatae corporis atque itaque!
+                    </p>
+                </div>
+                <div class="categoryCard">
+                    <img src="img/trilha.jpg" alt="mainCardImg" class="mainCardImg">
+                    <p class="mainCategoryCardTitle">TRILHA</p>
+                    <p class="mainCategoryCardDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Molestiae voluptatem ipsa dicta, facere dolores reiciendis facilis beatae corporis atque itaque!
+                    </p>
+                </div>
+                <div class="categoryCard">
+                    <img src="img/tenis.jpg" alt="mainCardImg" class="mainCardImg">
+                    <p class="mainCategoryCardTitle">TÊNIS</p>
+                    <p class="mainCategoryCardDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Molestiae voluptatem ipsa dicta, facere dolores reiciendis facilis beatae corporis atque itaque!
+                    </p>
+                </div>
+            </div>
+            <div class="sidebarContent">
+                <p>CATEGORIAS EXTRAS</p>
+                <div class="sidebarCard">
+                    <img src="img/bicicletas.jpg" alt="sidebarCardImg" class="sidebarCardImg">
+                    <p class="sidebarCardTitle">BICICLETAS</p>
+                </div>
+                <div class="sidebarCard">
+                    <img src="img/esportesNaNeve.jpg" alt="sidebarCardImg" class="sidebarCardImg">
+                    <p class="sidebarCardTitle">ESPORTES DE FRIO</p>
+                </div>
+                <div class="sidebarCard">
+                    <img src="img/skate.jpg" alt="sidebarCardImg" class="sidebarCardImg">
+                    <p class="sidebarCardTitle">SKATE</p>
+                </div>
+                <div class="sidebarCard">
+                    <img src="img/futebolAmericano.jpg" alt="sidebarCardImg" class="sidebarCardImg">
+                    <p class="sidebarCardTitle">FUTEBOL AMERICANO</p>
+                </div>
+                <div class="sidebarCard">
+                    <img src="img/yoga.jpg" alt="sidebarCardImg" class="sidebarCardImg">
+                    <p class="sidebarCardTitle">YOGA</p>
+                </div>
+            </div>
+        </section>
+        <footer class="footer">
+            <img src="img/logo-onebitcode.svg" alt="logo-footer" class="logoFooter">
+            <a href="#backToTop" class="footerAnchor">VOLTAR PARA O TOPO</a>
+        </footer>
+    </div>
+</body>
+</html>
+```
+<br>
+
+-   CSS
+```
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-size: 20px;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: #292929;
+  min-height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 30px;
+  gap: 8px 15px;
+}
+
+.logoNavBar {
+  width: 180px;
+}
+
+.headerBtnGroup {
+  display: flex;
+  gap: 15px;
+}
+
+.navBtn {
+  border: 2px solid transparent;
+  color: white;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px;
+  transition: 0.4s;
+}
+
+.navBtn:hover {
+  border-bottom: 2px solid black;
+}
+
+.sectionTitle {
+  text-align: center;
+  font-size: 26px;
+  padding-top: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.sectionDescription {
+  text-align: center;
+  color: #383838;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-template-areas: "mainContent sideBarContent";
+  padding: 20px;
+  flex: 1 0 auto;
+}
+
+.mainContent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  grid-area: "mainContent";
+}
+
+.categoryCard {
+  width: 280px;
+  height: 380px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.categoryCard:hover {
+  border-color: black;
+}
+
+.mainCardImg {
+  width: 100%;
+  height: 180px;
+  border-radius: 10px;
+}
+
+.mainCategoryCardTitle {
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 6px;
+}
+
+.mainCategoryCardDescription {
+  padding: 6px;
+}
+
+.sidebarContent {
+  background-color: #383838;
+  color: white;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-area: "sidebarContent";
+  gap: 20px;
+}
+
+.sidebarCard {
+  width: 75%;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.sidebarCardImg {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.sidebarCardTitle {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  padding: 10px;
+}
+
+.sidebarCard:hover {
+  border-color: gainsboro;
+}
+
+.footer {
+  background-color: #292929;
+  min-height: 40px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px;
+  gap: 15px;
+}
+
+.logoFooter {
+  width: 180px;
+}
+
+.footerAnchor {
+  color: white;
+  text-decoration: none;
+}
+
+@media (max-width: 630px) {
+  .gridContainer {
+    grid-template-areas: "mainContent" "sidebarContent";
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sidebarContent {
+    min-width: 280px;
+  }
+
+  .footerAnchor {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 463px) {
+  .header,
+  .footer {
+    justify-content: center;
+  }
+}
+```

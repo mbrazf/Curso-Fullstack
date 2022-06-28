@@ -1,0 +1,102 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    background-color: darkgray;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    border: 2px solid black;
+    background-color: white;
+}
+
+.header , .footer{
+    background-color: white;
+    width: 100%;
+    height: 60px;
+    border: 2px solid black;
+}
+
+.main-content{
+    flex: 1 0 auto;
+    padding: 10px;
+    display: grid;
+    /*aqui definmos 3 colunas ocupando 1 fr */
+    grid-template-columns: repeat(3, 1fr); 
+
+    /*aqui definimos o tamanho minimo e máximo das linhas do grid */
+    grid-auto-rows: minmax(100px, auto); 
+
+    /* aqui posicionamos os itens como quisermos */
+    grid-template-areas: 
+        "item1 item2 item3"
+        "item4 item4 item4"
+        "item5 item5 item6";
+    gap: 5px;
+}
+
+
+
+/* aqui associamos as classes aos itens grid */
+.item1 {
+    grid-area: item1;
+    min-width: 250px;
+  }
+  .item2 {
+    grid-area: item2;
+    min-width: 250px;
+  }
+  .item3 {
+    grid-area: item3;
+    min-width: 250px;
+  }
+  .item4 {
+    grid-area: item4;
+  }
+  .item5 {
+    grid-area: item5;
+    min-width: 350px;
+  }
+  .item6 {
+    grid-area: item6;
+    min-width: 250px;
+  }
+
+  /* aqui adicionamos uma mudança na responsividade quando a largura máxima da tela for de 780px os itens irão ficar empilhados em coluna*/
+  @media (max-width: 780px) {
+      .main-content{
+          grid-template-areas: 
+                "item1 item1 item1"
+                "item2 item2 item2"
+                "item3 item3 item3"
+                "item4 item4 item4"
+                "item5 item5 item6"; 
+      }
+  }
+
+  /* aqui adicionamos uma mudança na responsividade quando a largura máxima da tela for de 630px*/
+  @media (max-width: 630px) {
+    .main-content{
+        grid-template-areas: 
+              "item1 item1 item1"
+              "item2 item2 item2"
+              "item3 item3 item3"
+              "item4 item4 item4"
+              "item5 item5 item5"
+              "item6 item6 item6"; 
+              
+    }
+}
+
+/* aqui adicionamos uma mudança na responsividade quando a largura máxima da tela for de 360px alterar a largura minima do item5*/
+@media (max-width: 360px) {
+    .item5{
+        min-width: auto;
+    }
+}
