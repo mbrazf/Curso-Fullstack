@@ -150,3 +150,170 @@ Módulo: retorna o resto de uma divisão   10 % 3
 -   prompt() :
     -   Exibe uma caixa no browser em que podemos digitar nela e confirmar.
 ```
+<hr>
+<br>
+
+## Declarando Variáveis
+
+-   Temos como declarar variáveis de 3 formas:
+
+<br>
+
+- let:
+- Para declarar a variável basta colocar let e o nome da variável e o valor que ela irá receber.
+```
+- Aqui declaramos a variável spaceship e abaixo exibimos o valor dela no console.log
+
+let spaceship = "FE Supernova"
+console.log(spaceship)
+
+
+- E para sobrescrever o valor da variável basta colocar o nome da variável e atribuir um novo valor.
+
+spaceship = "FE Helmet"
+console.log(spaceship)
+```
+
+- const :
+- Para declarar é a mesma coisa do let, mas o const tem uma diferença, não podemos alterar o valor da variável como no let ocorrendo um erro.
+```
+const squad = "Estelar"
+console.log(squad)
+
+- ao tentar alterar o valor da variável irá ocorrer um erro.
+
+squad = "Espacial"
+console.log(espacial)
+```
+
+- var :
+- O var é basicamente igual o let porém já não é tão usado.
+- Podemos alterar o valor dele igual o let.
+```
+var velocity = 80
+console.log(velocity)
+
+velocity = 100
+console.log(velocity)
+```
+
+- Também podemos declarar uma variável vazia
+- o retorno dela será undefined por não ter nenhum valor definido.
+```
+let noValue
+console.log(noValue) 
+```
+
+- Podemos utilizar os recursos nativos do browser para armazenar valores nas variáveis.
+-   No exemplo utilizamos o confirm, se confirmarmos a mensagem exibida o valor que será atribuido na variável será true , e se cancelarmos será false.
+```
+let departureConfirmation = confirm("Nave pronta para decolar. Aguardando confirmação!")
+
+console.log(departureConfirmation)
+```
+
+-   Neste exemplo utilizamos o prompt()
+-   O que for digitado no prompt será atribuído na variável.
+-   E se cancelarmos sem digitar nada o retorno será null.
+```
+let pilot = prompt("Qual seu nome, piloto?")
+console.log(pilot)
+```
+
+- ### Exercício
+```
+alert("Bem-Vindo! A seguir pediremos que informe alguns dados.")
+
+let name = prompt("Informe seu Nome")
+let age = prompt("Informe sua Idade")
+
+let ageConfirmation = confirm("Sua idade é " + age + " anos?")
+
+alert("Nome: " + name + "\nIdade: " + age + " anos" + "\nIdade confirmada: " + ageConfirmation)
+```
+<hr>
+<br>
+
+## Comentários
+
+- Basicamente é uma forma de escrever textos no código sem ele ser executado.
+
+```
+-   Comentário de uma linha
+
+// Meu comentário de uma linha
+console.log("Aprendendo Comentários")
+
+
+-   Comentário de várias linhas
+
+/* Meu
+comentário 
+de
+várias
+linhas*/
+console.log("Comentário de várias linhas")
+```
+<hr>
+<br>
+
+## Javascript fora do console
+
+- Aqui como utilizar o JS em um arquivo HTML utilizando a tag script
+```
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javascript fora do console</title>
+</head>
+<body>
+    <h1>Minha página</h1>
+    <script src="hello_world.js"></script>
+</body>
+</html>
+```
+-   JS
+```
+alert("Meu código JS externo.")
+```
+<hr>
+
+- ### Exercício
+
+```
+-HTML
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício</title>
+</head>
+<body>
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
+```
+-   Javascript
+
+let nameOlder = prompt("Nome da pessoa mais velha.")
+let ageOlder = prompt("Idade da pessoa mais velha.")
+
+let nameYounger = prompt("Nome da pessoa mais nova.")
+let ageYounger = prompt("Idade da pessoa mais nova.")
+
+let ageDiff =  ageOlder - ageYounger 
+
+
+alert(
+    "Pessoa mais velha: " + nameOlder + "\nIdade: " + ageOlder + " anos" + 
+"\n\nPessoa mais nova: " + nameYounger + "\nIdade: " + ageYounger + " anos" + 
+"\n\nA diferença de idade é de : " + ageDiff + " anos")
+```
