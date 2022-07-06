@@ -1059,3 +1059,272 @@ while(chosenOption == "1"){
  // Aqui exibimos um alert com os dados, nome da nave e quantidade de dobras realizadas
 alert("Nave: " + spaceshipName + "\nQuantidade de Dobras: " + warpCount)
 ```
+
+### For
+
+- O while recebe apenas uma expressão.
+- Com o for é possível adicionar a variável que utilizaremos para controlar as iterações/loops.
+- O for segue o seguinte formato
+
+- Sintaxe:
+```
+for(<variavel>; <expressão>; <ação de controle>){
+    
+    //Bloco de código a ser executado
+  }
+
+
+- Exemplo:
+
+  for (var i = 0; i < 9; i ++) {
+   console.log(i);
+  }
+
+1-   Variável/Valor inicial
+2-  Expressão Lógica/ Condição desejada
+3 - Ação de controle/ incremento ou decremento
+
+- Primeiro ele verifica se a expressão é verdadeira, 
+- Enquanto a expressão for verdadeira será executado o bloco de código declarado, no exemplo o console.log() 
+- Após cada execução do bloco, será executada a ação de controle, irá incrementar/somar ou decrementar/subtrair.
+- E o loop será executado novamente até que a expressão seja falsa.
+```
+
+- Exemplo 2
+```
+- Aqui uma contagem crescente de 1 até 100.
+- Enquanto o i for menor que 100 irá executar o console.log e irá somar mais 1 a cada execução até chegar a 100.
+
+for(i = 0; i < 100; i ++){
+    console.log(i)
+}
+
+
+- E aqui uma contagem decrescente de 100 até 1.
+- E aqui enquanto o i for maior que 0 ele irá executar o console.log e irá decrementar/ subtrair 1 até chegar a 0.
+
+for(i = 100; i > 0; i --){
+    console.log(i)
+}
+```
+
+- Exemplo 3
+```
+// Aqui pegamos o nome da nave
+let spaceship = prompt("Informe o nome da nave: ")
+
+// Aqui a variável vazia que irá receber a string invertida abaixo
+let invertida = ""
+
+// Aqui percorremos uma string e invertemos ela.
+// Aqui declaramos o valor inicial com o tamanho da string spaceship - 1,
+// Enquanto o i for maior ou igual a 0 o bloco de código será executado e a cada execução decrementamos/subtraimos 1 e passamos para o próximo caractere,
+// e a cada execução a variável invertida irá receber o caractere da string.
+for(i = spaceship.length - 1; i >= 0; i --){
+  invertida += spaceship[i] 
+}
+
+//  aqui o alerta com o novo nome da nave
+alert("O nome invertido da nave é: " + invertida)
+
+// nome da nave normal
+console.log(spaceship)
+// aqui exibimos a string invertida no console.log()
+console.log(invertida)
+```
+
+- Exemplo 4
+```
+let spaceship = "Helmet"
+let newSpaceship = ""
+
+// Aqui iremos percorrer a string declarada caractere a caractere e iremos verificar se o caractere atual da string é igual a "e", se for, iremos substituir pelo caractere "i".
+// Se não, iremos adicionar 1 e partiremos para o próximo caractere e a nova variável irá receber o caractere sem alteração.
+
+for (let i = 0; i < spaceship.length; i++) {
+  if(spaceship[i] == "e") {
+    newSpaceship += "i"
+  } else {
+    newSpaceship += spaceship[i]
+  }
+}
+console.log(spaceship)
+// Aqui a sáida normal que será "Helmet"
+
+console.log(newSpaceship)
+// E aqui saída será "Hilmit" pois os caracteres "e" foram substituidos por "i".
+```
+
+### Exercício utilizando For
+```
+- HTML
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício utilizando o For</title>
+</head>
+<body>
+    <h1>Exercício utilizando o For</h1>
+    <script src="index.js"></script>
+</body>
+</html>
+```
+
+```
+- JAVASCRIPT
+
+// Aqui pegamos o nome da nave
+let spaceship = prompt("Informe o nome da nave: ")
+
+// Aqui pegamos qual caractere/letra deseja substituir
+let caractere = prompt("Qual caractere deseja substituir ?")
+
+// Aqui pegamos a letra que irá entrar no lugar da que foi escolhida acima
+let newCaractere = prompt("Por qual caractere quer substituir?")
+
+// Aqui a variável vazia que irá receber abaixo o novo nome da nave
+let newSpaceship = ""
+
+//  Aqui percorremos a string enquanto o valor da variável i for menor que o tamanho da string spaceship.
+//  Verificamos se o caractere atual é igual ao que desejamos substituir, 
+//  se for iremos trocar o caractere atual pelo o newCaractere e iremos armazenar na variável newSpaceship. 
+//  e se não for iremos passar para o próximo caractere/letra até chegar ao fim da string e iremos adicionar o caractere normal em newSpaceship.
+for(i = 0; i < spaceship.length; i ++){
+    if(spaceship[i] == caractere){
+        newSpaceship += newCaractere //.toUpperCase()
+    } else {
+        newSpaceship += spaceship[i]
+    }
+}
+
+//  aqui o alerta com o novo nome da nave
+alert("O novo nome da nave é : " + newSpaceship)
+
+// nave antes de substituir os caracteres
+console.log(spaceship)
+// caractere que será removido
+console.log(caractere)
+// o novo caractere que irá substituir
+console.log(newCaractere)
+// e aqui o novo nome da nave
+console.log(newSpaceship)
+```
+<hr>
+<br>
+
+### Do-While
+
+- O do-while executa pelo menos 1x o bloco de código para depois realizar o teste condicional.
+- Se o teste for verdadeiro, a repetição acontecerá novamente, até a condição ser falsa.
+
+- Sintaxe
+```
+do {
+  //bloco de código a ser executado
+} while (condição)
+```
+
+- Exemplo 1
+```
+//aqui declaramos a velocidade inicial
+let velocity = 50
+
+//aqui declaramos uma taxa de aceleração de 5
+let acceleration = 5
+
+// Aqui utilizamos o do-while,
+// será executado pelo menos uma vez o bloc de código definido, a velocity irá incrementar/somar com taxa de aceleração 5,
+// ai o teste condicional será executado, enquanto o teste for verdadeiro o loop será executado novamente, no exemplo enquanto a velocidade for menor que 100 o código será executado, ao chegar a 100 será encerrado.
+
+do {
+  console.log("Acelerando: Estamos a " + velocity + "km/s")
+  velocity += acceleration
+} while(velocity <= 100)
+
+
+// E aqui basicamente o mesmo exemplo mas agora desacelerando
+
+// definimos a velocidade inicial em 1000
+let velocity = 1000
+
+// a taxa de desaceleração em 5
+let decceleration = 5
+
+// Será executado o bloco de código e será decrementado/subtraido 5 pelo menos uma vez,
+// e ai o teste condicional será executado, enquanto a velocidade for maior ou igual a 0 o do-while será executado novamente.
+
+do {
+  console.log("Acelerando: Estamos a " + velocity + "km/s")
+  velocity -= decceleration
+} while(velocity >= 0)
+```
+
+### Usando o break
+
+- Ele basicamente encerra a execução do loop em determinado momento.
+```
+// Declaramos o nome da variável
+let spaceshipName = "Supernova"
+
+// aqui percorremos a string enquanto o valor de i for menor que o tamanho de spaceshipName e a cada execução é incrementado 1 e passamos para o próximo caractere/letra,
+// verificamos se o caractere atual da string é igual a "o", se for a execução será encerrada utilizando o break.
+// e se não for será exibido o console.log() e o loop será executado novamente caractere por caractere.
+
+for(i=0; i < spaceshipName.length; i++){
+  if(spaceshipName[i] == "o"){
+    break
+  }
+  console.log(spaceshipName[i])
+}
+```
+
+### Exercício - Revisando as repetições
+
+```
+- HTML
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício - Revisão loops repetição</title>
+</head>
+<body>
+    <h1>Exercício - Revisão loops repetição</h1>
+    <script src="index.js"></script>
+</body>
+</html>
+```
+
+```
+- JAVASCRIPT
+
+// Aqui pegamos o nome da nave
+let spaceshipName = prompt("Informe o nome da nave: ")
+
+// Aqui a variável vazia que irá receber o nome da nave invertido abaixo
+let invertedName = ""
+
+// aqui utilizamos o for para percorrer a variável spaceshipName ao contrário enquanto o tamanho dela for maior ou igual a 0 e iremos decrementar a cada execução pulando para o próximo caractere 
+
+//  iremos verificar se tem algum caractere "e" na variavel spaceshipName, se houver a execução será encerrada com o break, e se não houver, a variável invertedName irá receber os caracteres normais invertidos.
+
+for(i = spaceshipName.length - 1; i >= 0; i --){
+  if(spaceshipName[i] == "e"){
+    break
+  } else {
+    invertedName += spaceshipName[i] 
+  }
+}
+// aqui será exibido no console.log o nome da nave invertido
+console.log(invertedName)
+
+// e aqui será exibidos um alert com o nome antigo da nave e o novo nome após inversão e ocultação
+alert("Nome original da nave: " + spaceshipName + "\nNome após ocultação: " + invertedName)
+```
