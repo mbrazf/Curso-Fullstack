@@ -1328,3 +1328,329 @@ console.log(invertedName)
 // e aqui será exibidos um alert com o nome antigo da nave e o novo nome após inversão e ocultação
 alert("Nome original da nave: " + spaceshipName + "\nNome após ocultação: " + invertedName)
 ```
+<hr>
+<br>
+
+## Funções
+
+### O que é uma função
+
+- Função é um bloco de código para executar uma determinada ação.
+- Esse bloco é nomeado.
+- Podemos chamar onde e quando precisarmos.
+- A declaração e a chamada de uma função segue esse modelo:
+
+- SINTAXE:
+```
+
+// declaração da função
+
+function nomeDaFunção( ) {
+  // bloco de código a ser executado
+}
+
+// e aqui a chamada da função, enquanto ela não for chamada ela não será executada
+
+nomeDaFunção( )
+```
+- Exemplo 1 - Função simples:
+```
+// Declaração da Função
+
+function greetPilot() {
+    alert("Bom dia, Piloto !")
+  }
+  
+// Chamada da função, ao chamar a função o alert será exibido, se não chamar não será exibido nada
+  greetPilot();
+```
+<hr>
+
+### Parâmetros das Funções
+
+- Parâmetros são como variáveis passadas diretamente na função.
+- São opcionais.
+- São passados dentro dos parênteses da função.
+- Os valores dos parâmetros podem ser passados diretamente na chamada da função.
+
+- Exemplo
+```
+// Declaração da Função com 2 parâmetros, velocity e acceleration
+
+function speedUp(velocity, acceleration) {
+  let newVelocity = velocity + acceleration
+  console.log("Nova velocidade: " + newVelocity)
+}
+
+// aqui chamamos a função e passamos o valor dos parâmetros.
+// devemos passar os valores dos parâmetros na mesma ordem em que foram colocados na declaração da função.
+// o primeiro valor é o da velocity e o segundo acceleration
+
+speedUp(60, 10);
+speedUp(40, 20);
+speedUp(70, 5);
+```
+<hr>
+
+### Parâmetros com valor padrão
+
+- Caso você não passe nenhum valor de parâmetro para a função, você pode declarar os parâmetros com valores já pré-definidos. 
+
+```
+// aqui a declaração da função com 2 parãmetros name e message, o message com um valor padrão já definido.
+
+function greetPilot(name, message = "Olá") {
+  alert(message + ", " + name)
+}
+
+// aqui passamos somente o valor do parâmetro name
+greetPilot("John Mars")
+
+// se o parâmetro tiver um valor padrão já definido, se passarmos um outro valor na chamada da função ele que será utilizado.
+
+greetPilot("John Mars", "Seja bem-vindo")
+```
+<hr>
+<br>
+
+### Armadilhas dos Parâmetros
+
+- Exemplo 1
+
+- Se declararmos uma função com um parâmetro e na chamada não passar o valor dele, ele irá receber um valor do tipo undefined/indefinido porque por padrão um parâmetro recebe o valor undefined.
+```
+function greetPilot(name, message = "Olá"){
+  alert(message + ", " + name)
+}
+
+greetPilot( )
+// resultado será "Olá undefined"
+```
+
+- Exemplo 2:
+```
+function speedUp(velocity, unit = "km", acceleration){
+  let newVelocity = velocity + acceleration
+  alert("Nova velocidade: " + newVelocity + unit)
+}
+
+// aqui passamos os valores dos parâmetros na ordem em que foram passados na declaração da função.
+
+speedUp(50, "mi/s", 20)
+//resultado: Nova velocidade: 70mi/s
+
+// aqui chamamos a função novamente e passamos os valores, 50 para velocity, 20 para o unit e para acceleration não é passado nenhum valor então irá receber undefined, na hora de realizar o cálculo irá calcular 50 + undefined que será igual a NaN not a number.
+
+speedUp(50, 20)
+
+-------------------------------------------------------------------------------------
+
+// Para evitar esse problema o ideal é declarar os parâmetros com valor padrão por último.
+
+function speedUp(velocity, acceleration,  unit = "km"){
+  let newVelocity = velocity + acceleration
+  alert("Nova velocidade: " + newVelocity + unit)
+}
+
+// e passar o valor também por último na mesma ordem da declaração da função
+
+speedUp(50, 20, "mi/s")
+//resultado: Nova velocidade: 70mi/s
+
+// e aqui mesmo não passando o último valor ele será executado sem problemas por ter um valor padrão na declaração da função.
+speedUp(50, 20)
+//resultado: Nova velocidade: 70km
+```
+<hr>
+<br>
+
+### Retorno da função
+
+- Para retornar alguma coisa ou valor em uma função basta usar o 'return'.
+- Você usa o return para utilizar o resultado de uma operação/função em outra função.
+
+- Exemplo 1
+```
+// declaramos a função para acelerar com 2 parâmetros, realizamos o cálculo e utilizamos o return para retornar o valor de newVelocity após o cálculo
+
+function speedUp(velocity, acceleration){
+  let newVelocity = velocity + acceleration
+  console.log("Nova velocidade: " + newVelocity)
+  return newVelocity
+}
+
+// aqui passamos os valores das variáveis
+let velocity = 80
+let acceleration = 5
+
+// aqui exibimos o valor de velocity antes de chamar a função
+console.log(velocity)
+
+// aqui a variável velocity recebe a chamada da função que faz o cálculo
+velocity = speedUp(velocity, acceleration)
+
+// e neste console.log será exibido o valor de velocity após o cálculo da função
+console.log(velocity)
+```
+- Exemplo 2
+```
+// declaramos a função para acelerar com 2 parâmetros, realizamos o cálculo e utilizamos o return para retornar o valor de newVelocity após o cálculo
+function speedUp(velocity, acceleration){
+  let newVelocity = velocity + acceleration
+  console.log("Nova velocidade: " + newVelocity)
+  return newVelocity
+}
+
+// aqui utilizamos o console.log com a chamada da função e os valores dos parâmetros
+console.log(speedUp(90, 10))
+
+
+//resultado "Nova velocidade: 100" será exibido a mensagem declarada no bloco da função e abaixo o valor retornado de newVelocity
+```
+- Exemplo 3
+```
+// Criamos a função para acelerar a nave com os parâmetros velocity e acceleration
+// e utilizamos o return para retornar o valor da soma em newVelocity para podermos usar o resultado em outras funções.
+
+function speedUp (velocity, acceleration){
+  let newVelocity = velocity + acceleration
+  return newVelocity
+}
+
+// Criamos a função para desacelerar a nave com os mesmo parãmetros da função acima.
+function speedDown(velocity, acceleration){
+  let velocitySpeedDown = velocity - acceleration
+  console.log(velocitySpeedDown)
+}
+
+// Aqui armazenamos a chamada da função speedUp com os valores dos parâmetros na variável result, ou seja o resultado da função para acelerar speedUp() é armazenado em result para poder utilizar em outra função.
+var result = speedUp(80, 5) 
+
+// E aqui chamamos a função speedDown e passamos o resultado da função speedUp() e o valor 20 como parâmetros para realizar o cálculo na função speedDown.
+speedDown((result), 20)
+```
+- Exemplo 4:
+
+```
+// - Exemplo 2:
+
+// Declaramos as variáveis
+var number = 4
+var anotherNumber = 3
+
+// Criamos a função de soma entre n1 e n2
+// 4 + 3
+function add(n1,n2) {
+  return n1 + n2
+}
+
+// Criamos a função para multiplicar n1 com n2
+function multiply(n1, n2) {
+  return n1 * n2
+}
+
+// Aqui armazenamos a chamada da função com os parâmetros passados acima na variável sum
+// e o resultado da soma acima será armazenado em sum
+var sum = add(number, anotherNumber)
+
+
+// Armazenamos na variável product a chamada da função multiply com o valor digitado pelo usuário, e sum que é a variável que contém o resultado da soma como parâmetros, e multiplicamos os 2 valores.
+var product = multiply(prompt("Enter a number: "), sum)
+console.log(product)
+```
+<hr>
+<br>
+
+### Exercício Funções
+
+```
+- HTML
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício Funções</title>
+</head>
+<body>
+    <h1>Exercício de Funções</h1>
+    <script src="index.js"></script>
+</body>
+</html>
+```
+
+```
+- JAVASCRIPT
+
+// Aqui pegamos o nome da nave
+let spaceshipName = prompt("Nome da nave: ");
+
+// Definimos a velocidade inicial da nave em 0
+let spaceshipVelocity = 0;
+
+// Aqui declaramos essa variável sem valor para utilizarmos abaixo
+let chosenOption;
+
+//  Aqui criamos uma função para exibir o menu
+//  verificamos se o option é diferente de 1, 2, 3 e 4
+
+function showMenu() {
+  let option;
+  while (option != "1" && option != "2" && option != "3" && option != "4") {
+    option = prompt(
+      "O que você deseja fazer ? \n1-Acelerar a nave em 5km/s \n2-Desacelerar em 5km/s \n3-Imprimir dados de bordo \n4-Sair do programa");
+  }
+  // e retornamos a opção escolhida
+  return option;
+}
+
+//  Aqui a função para acelerar a nave
+function speedUp(spaceshipVelocity) {
+  let newVelocity = spaceshipVelocity + 5;
+  //  e retornamos o valor após acelerar
+  return newVelocity;
+}
+
+//  Função para desacelerar a nave
+// também verificamos se a newVelocity é menor que 0 ela irá receber o valor 0
+function speedDown(spaceshipVelocity) {
+  let newVelocity = spaceshipVelocity - 5;
+  if (newVelocity < 0) {
+    newVelocity = 0;
+  }
+  //    e retornamos a newVelocity
+  return newVelocity;
+}
+
+// aqui a função para exibir o alerta com os dados da nave como o nome e a velocidade atual
+function printSpaceshipBoardData() {
+  alert(
+    "Nome da nave: " + spaceshipName + "\nVelocidade atual: " + spaceshipVelocity + "km/s");
+}
+
+// aqui executamos a chamada da função que exibe o menu enquanto a opção escolhida for diferente de "4"
+do {
+  chosenOption = showMenu();
+  //  e aqui verificamos qual foi a opção escolhida no menu
+  // e para cada opção escolhida será chamada uma função diferente,
+  //  case 1 será chamada a função que acelera a nave,
+  // case 2 será chamada a função que desacelera a nave,
+  // case 3 chama a função que exibe os dados com o nome e a velocidade atual da nave
+  // e se nenhuma das opções acima foi escolhida exibiremos um alerta com a mensagem de encerramento do programa
+  switch (chosenOption) {
+    case "1":
+      spaceshipVelocity = speedUp(spaceshipVelocity);
+      break;
+    case "2":
+      spaceshipVelocity = speedDown(spaceshipVelocity);
+      break;
+    case "3":
+      printSpaceshipBoardData(spaceshipName, spaceshipVelocity);
+      break;
+    default:
+      alert("Encerrando o programa de bordo!");
+  }
+} while (chosenOption != "4");
+```
