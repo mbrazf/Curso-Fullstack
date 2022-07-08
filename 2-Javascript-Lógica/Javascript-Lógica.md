@@ -1654,3 +1654,196 @@ do {
   }
 } while (chosenOption != "4");
 ```
+<hr>
+<br>
+
+## Scope/Escopo de Variáveis
+<br>
+
+### Tipos de Escopo:
+<br>
+
+- Global : Código como um todo
+  - Uma variável declarada fora de uma função ou de qualquer outra estrutura é uma variável de escopo global, o que faz com que seu valor seja acessível em qualquer lugar da aplicação.
+```
+- Exemplo de variável com escopo Global
+
+// declaramos a variável fora da função
+let spaceshipName = "Supernova"
+
+// aqui a função que altera o valor da variável
+// alteramos o valor da variável
+function changeSpaceshipName () {
+  spaceshipName = "Elemental"
+}
+
+// e aqui um console.log para mostrar o valor antes de ser alterado
+//  depois a chamada da função que altera o valor
+//  e abaixo outro console.log mostrando o novo valor da variável
+console.log(spaceshipName)
+changeSpaceshipName()
+console.log(spaceshipName)
+```
+<br>
+
+- Função : Corresponde ao escopo de uma função
+  - Uma variável declarada dentro de uma função é local, o que faz com que ela seja criada e destruída sempre que a função é executada não podendo ser acessada de fora da função.
+```
+- Exemplo de Variável de escopo de função/local
+
+//  Como a variável foi criada dentro de uma função, ela só pode ser acessada de dentro da função em que foi declarada, portanto ela é de escopo local/função.
+
+function startSpaceshipVelocity() {
+  let spaceshipVelocity = 0
+}
+
+// Somente se declararmos a mesma variável do lado de fora da função para sobrescrever a variável da função, ai sim conseguiremos acessar ela.
+let spaceshipVelocity = 200
+
+// ao executar o código irá ocorrer um erro : "Uncaught ReferenceError: spaceshipVelocity is not defined". 
+startSpaceshipVelocity()
+
+console.log(spaceshipVelocity)
+```
+<br>
+
+- Bloco : Instruções contidas dentro de blocos de código como: if, else, switch, for, while, do while
+```
+- Exemplo de Variável de Escopo de bloco
+
+//  Na função declaramos a variável velocity, então ela pode ser acessada de qualquer lugar da função por conter escopo local, então ela será exibida normalmente no console.log
+//  como declaramos a variável spaceshipName com o var dentro de um bloco if, por estar utilizando o var a variável vai ser elevada para o nível da função, podendo ser acessada somente dentro da função.
+
+
+function setSpaceshipDetails(){
+  let velocity = 50  
+  if (velocity == 50) {
+    velocity = 60
+    var spaceshipName = "Elemental"
+    let spaceshipType = "Discovery"
+  }
+
+  // e aqui as outras variáveis são exibidas normalmente por estarem em seus devidos escopos, velocity no escopo local/função e spaceshipName no escopo de bloco.
+  console.log(velocity)
+  console.log(spaceshipName)
+
+  //  e a variável spaceshipType como ela foi declarada dentro de um bloco if utilizando o let ela só pode ser acessada dentro desse bloco em que foi criada, então ocorrerá um erro Uncaught ReferenceError: spaceshipType is not defined.
+
+  console.log(spaceshipType)
+}
+
+setSpaceshipDetails()
+```
+
+```
+- Outro exemplo:
+
+
+//  Aqui criamos a função,
+//  e exibimos 2 console.log nas variáveis antes de serem declaradas,
+//  como declaramos spaceshipName com o var ele será considerado como primeiro elemento da função, recebendo o valor undefined que será exibido no console.log.
+
+// e declaramos spaceshipType com o let ou seja ela só poderá ser acessada após a sua declaração.
+//  se tentarmos acessá-lá ocorrerá um erro "Uncaught ReferenceError: Cannot access 'spaceshipType' before initialization", você não pode acessar a variável "spaceshipType" antes de sua inicialização/declaração.
+
+function setSpaceshipDetails(){
+  console.log(spaceshipName)
+  console.log(spaceshipType)
+  var spaceshipName = "Elemental"
+  let spaceshipType = "Discovery"
+
+  console.log(spaceshipName)
+  console.log(spaceshipType)
+}
+
+setSpaceshipDetails()
+```
+<hr>
+<br>
+
+## Funções Anônimas
+
+- Uma função anônima é uma função sem nome ou que tem seu nome omitido na criação.
+- Uma função anônima pode ser armazenada dentro de uma variável, e sua chamada dentro de outra.
+
+- Exemplo de função anônima
+```
+//  Aqui declaramos a variável doubleSpeed e armazenamos nela uma função anônima
+let doubleSpeed = function (velocity){
+  return velocity * 2
+}
+
+// aqui criamos a variável newVelocity, que recebe a chamada da função que foi armazenada na variável acima doubleSpeed() e passamos o valor do parâmetro velocity que é 40
+
+let newVelocity = doubleSpeed(40)
+
+// e aqui será exibido o resultado da função que é 40 * 2 = 80
+console.log(newVelocity)
+```
+
+- Outro exemplo:
+
+  - Funções tradicionais podem ser chamadas antes mesmo de serem criadas.
+  - Funções Anônimas por serem armazenadas em variáveis não podem ser chamadas antes de serem criadas.
+```
+//  Neste exemplo tentamos chamar as funções antes de sua criação, 
+//  Primeiro chamamos a função padrão com o console.log e seus parãmetros 60 e 10 e o resultado será 70 que é o cálculo passado na função.
+//  depois tentamos chamar a função anônima mas ocorrerá um erro, a função anônima por ser atribuida em uma variável ela segue a regra da chamada de uma variável, não podendo ser acessada/chamada antes da sua declaração.
+
+
+//  Aqui estamos chamando a função padrão
+console.log(speedUp(60, 10))
+
+//  aqui estamos chamando a função anônima e passando o valor 50 para velocity, antes da sua declaração
+console.log(doubleSpeed(50))
+
+
+//  Aqui declaramos a variável doubleSpeed e armazenamos nela uma função anônima
+let doubleSpeed = function (velocity){
+  return velocity * 2
+}
+
+// aqui criamos uma função padrão que recebe 2 parâmetro velocity e acceleration
+function speedUp(velocity, acceleration){
+  return velocity + acceleration
+}
+```
+<hr>
+<br>
+
+## Arrow Functions
+
+- Uma expressão arrow function possui uma sintaxe mais curta quando comparada a uma expressão de função tradicional.
+- Uma arrow function é uma simplificação de uma função anônima.
+
+- SINTAXE:  
+```
+let variável = (parâmetro opcional) => {
+  //  Bloco de código a ser executado
+}
+```
+
+- Exemplo 1: Arrow Function simples
+```
+// Aqui declaramos a Arrow Function que irá retornar o cálculo da velocity * 2.
+const doubleVelocity = (velocity) => {
+  return velocity * 2
+}
+
+//  Aqui chamamos a função pelo console.log e passamos o valor do parâmetro velocity 60
+console.log( doubleVelocity(60))
+//  resultado será velocity * 2 ou 60 * 2 = 120
+```
+
+- Exemplo 2: Arrow Function simplificada
+```
+// Aqui essa arrow function faz a mesma coisa que o exemplo acima porém exemplificada, como a função só tinha uma linha com o return podemos remover o return e como a função só tem um parâmetro removemos os parênteses e assim a function terá apenas uma linha de código.
+//  primeiro a variável, depois o parâmetro e depois o retorno da função.
+
+const doubleVelocity = velocity => velocity * 2
+
+
+//  Aqui chamamos a função pelo console.log e passamos o valor do parâmetro velocity 60
+console.log( doubleVelocity(60))
+//  resultado será velocity * 2 ou 60 * 2 = 120
+```
