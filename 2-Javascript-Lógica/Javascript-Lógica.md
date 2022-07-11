@@ -1847,3 +1847,347 @@ const doubleVelocity = velocity => velocity * 2
 console.log( doubleVelocity(60))
 //  resultado será velocity * 2 ou 60 * 2 = 120
 ```
+<hr>
+<br>
+
+## High Order Functions
+
+- High Order Functions significa Função de Alta Classe.
+- São funções que recebem ou retornam outras funções.
+- As funções que uma HOF recebem, geralmente são anônimas.
+  - Podendo ser uma Arrow function ou não.
+- A função que é enviada como parâmetro de uma HOF é chamada de callback.
+
+```
+- Exemplo 1 de função High Order
+- Função que retorna uma função
+
+// Aqui declaramos a função que recebe multiplier como parâmetro e retorna outra função com aNumber como parâmetro que retorna a multiplicação
+function getMultiplier(multiplier){
+    return function (aNumber) {
+      return aNumber * multiplier
+    }
+  }
+
+// Aqui uma forma simplificada de declarar a mesma função acima
+// Função getMultiplier com o parâmetro multiplier que recebe uma função aNumber que retona aNumber * multiplier
+
+const getMultiplier = multiplier => aNumber => aNumber * multiplier
+  
+// Aqui armazenamos a chamada da função nas variáveis e cada chamada é passado o valor do parâmetro multiplier para cada função.
+
+const double = getMultiplier(2)
+const triple = getMultiplier(3)
+const quadruple = getMultiplier(4)
+  
+// e aqui chamamos a funções de multiplicação e passamos o valor para realizar a multiplicação
+console.log(double(2))
+console.log(triple(5))
+console.log(quadruple(4))
+```
+
+- Exemplo 2 - Função que retorna outras funções.
+```
+// Função sum que recebe x como parâmetro que retorna outra função com y de parâmetro que retorna outra função com z como parâmetro, e retorna a soma
+function sum(x) {
+    return function(y){
+      return function(z){
+        return x + y + z
+      }
+    }
+  }
+
+// E aqui uma forma simplificada da função acima
+  const sum = x => y => z => x + y + z
+  
+  // Aqui passamos os valores dos parâmetros para realizar a soma no console.log 
+  console.log(sum(10)(20)(5))
+```
+<br>
+
+- Exemplo 3 de função passada como parâmetro:
+```
+//Aqui declaramos duas funções
+function formalGreeting() {
+    console.log("How are you?");
+  }
+  
+  function casualGreeting() {
+    console.log("What's up?");
+  }
+  
+// E aqui declaramos outra função com o parâmetro type, e também as duas funções criadas acima são passada como parâmetro.
+  function greet(type, greetFormal, greetCasual) {
+    if(type === 'formal') {
+      greetFormal();
+    } else if(type === 'casual') {
+      greetCasual();
+    }
+  }
+
+// E aqui informamos o type para verificar qual função será executada.
+greet('formal', formalGreeting, casualGreeting);
+```
+<br>
+
+- Exemplo 4
+```
+// Aqui criamos uma função com  velocity e a função printer como parâmetros
+function doubleVelocity(velocity, printer) {
+  console.log("Entrei em doubleVelocity")
+  let newVelocity = velocity * 2
+  printer(newVelocity)
+  return newVelocity
+}
+
+// Aqui criamos a função printer que recebe velocity como parâmetro
+let printVelocity = velocity => {
+  console.log("Nova velocidade: " + velocity + "km/s")
+}
+
+// E aqui armazenamos a chamada da função doubleVelocity com os parâmetros 60 que é atríbuido a velocity e a chamada da função printVelocity que é atribuído a printer na variável newVelocity.
+
+let newVelocity = doubleVelocity(60, printVelocity)
+console.log(newVelocity)
+```
+<br>
+
+- Exemplo 5
+```
+// Aqui a mesma função do exemplo acima
+function doubleVelocity(velocity, printer) {
+  console.log("Entrei em doubleVelocity")
+  let newVelocity = velocity * 2
+  printer(newVelocity)
+  return newVelocity
+}
+
+// E aqui a chamada da função doubleVelocity que recebe 50 que é o parâmetro velocity e uma função que exibe um console.log.
+let anotherVelocity = doubleVelocity(50, velocity => {
+  console.log("Outra velocidade : " + velocity)
+})
+```
+<br>
+
+- Exemplo 6
+```
+// Aqui declaramos uma arrow function que retorna uma mensagem
+const greet = name => `Hello, ${name}`
+
+// aqui declaramos uma High Order Function, que recebe outra função como parâmetro
+// armazenamos sua chamada na variável text e passamos o valor do parâmetro dessa função que é "Mary"
+// retorna uma mensagem
+function speakToMary(dialog){
+  const text = dialog('Mary')
+  return `He says "${text}"`
+}
+
+// aqui chamamos a High Order Function speakToMary e passamos outra função como parâmetro que retorna outra mensagem
+console.log(speakToMary(name => {
+  return `GoodBye, ${name}`
+}))
+```
+<br>
+
+- Exemplo 7 - High Order Function em métodos de Arrays
+```
+// Aqui criamos um array para o exemplo
+const characters = [
+  {name: `Frodo`, race: `Hobbit`},
+  {name: `Sam`, race: `Hobbit`},
+  {name: `Aragorn`, race: `Man`},
+  {name: `Legolas`, race: `Elf`},
+  {name: `Gimli`, race: `Dwarf`},
+  {name: `Boromir`, race: `Man`},
+  {name: `Merry`, race: `Hobbit`},
+  {name: `Pippin`, race: `Hobbit`},
+  {name: `Gandalf`, race: `Ainur`},
+]
+
+// Exemplo de High Order Function é o método de array filter, que é uma função retorna uma outra função
+
+const isHobbit = character => character.race === "Hobbit"
+
+// aqui passamos a variável isHobbit como parâmetro para o método filter()
+const hobbits = characters.filter(isHobbit)
+
+console.log(hobbits)
+```
+<hr>
+
+### Exercício Aprofundando nas funções
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício Aprofundando em Funções</title>
+</head>
+<body>
+    <h1>Exercício Aprofundando em Funções</h1>
+    <script src="index.js"></script>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+// Aqui declaramos a função que irá desacelerar a nave, recebe 2 parâmetros velocity e uma função printer
+// declaramos a taxa de desaceleração e verificamos enquanto a velocidade for maior que 0, iremos chamar a função printer e decrementar a deceleration da velocity
+function slowDown(velocity, printer){
+    let deceleration = 20
+    while(velocity > 0){
+      printer(velocity)
+      velocity -= deceleration
+    }
+    // Exibimos um alerta
+    alert("Nave parada, As comportas podem ser abertas")
+  }
+  
+  // Aqui declaramos a velocidade da nave
+  let spaceshipVelocity = 150
+  
+  // e aqui chamamos a função slowDown e passamos spaceshipVelocity como o valor do parâmetro velocity e passamos outra função como parãmetro que recebe velocity como parãmetro e que exibe um console.log com a velocidade atual
+  slowDown(spaceshipVelocity, function(velocity){
+    console.log("Velocidade atual: " + velocity)
+  })
+```
+<hr>
+<br>
+
+## Arrays
+
+- Array é uma Estrutura de Dados
+  - É capaz de armazenar e organizar outros dados
+
+- Dados são organizados em forma de lista
+  - Cada valor fica numa determinada posição
+
+- Pode armazenar internamente qualquer outro tipo
+  - Number, String, Boolean etc.
+  - E até outro Array
+
+```
+// Aqui criamos um array com as naves
+let hitchedSpaceships = ["Supernova", "Elemental", "Helmet"]
+
+// Aqui acessamos o array na posição 0 que contém a string "Supernova"
+console.log(hitchedSpaceships[0])
+```
+
+```
+// Podemos criar um array misto com qualquer outro tipo
+// Se tentarmos acessar um índice que não existe, irá retornar undefined ou seja indefinido
+
+//let spaceshipInfo = ["Colossus", 7, true]
+//console.log(spaceshipInfo[3])
+```
+
+```
+// Aqui outra maneira de criar um array, utilizando o new Array()
+
+let hitchedSpaceships = new Array("Supernova", "Elemental", "Helmet", "Colossus")
+console.log(hitchedSpaceships)
+```
+
+```
+//  Devemos tomar cuidado com o new Array se o array for numérico, se houver apenas 1 valor, no exemplo ao invés de adicionar o valor 5 no array ele irá criar um array com 5 casas vazias e undefined.
+//  Então apenas usar o new Array se quiser criar um array vazio, o ideal é sempre criar um array utilizando os colchetes [].
+
+let getNumber = new Array(5)
+console.log(getNumber)
+```
+<br>
+
+### Funções básicas de arrays
+<br>
+
+.push("elemento") - Adiciona um elemento no fim do Array
+```
+let hitchedSpaceships = ["Colossus", "Elemental", "Helmet"]
+
+hitchedSpaceships.push("Enterprise")
+
+console.log(hitchedSpaceships)
+
+// resultado: ["Colossus", "Elemental", "Helmet", "Enterprise"]
+```
+
+.pop() - Remove o último elemento do array, também retorna o elemento que foi removido armazenando em uma variável
+```
+let hitchedSpaceships = ["Colossus", "Elemental", "Helmet"]
+
+let removedSpaceship = hitchedSpaceships.pop()
+
+console.log(removedSpaceship)
+// resultado: ["Colossus", "Elemental"]
+```
+
+.shift() - Remove o primeiro elemento do array e também retorna o item que foi removido
+```
+let hitchedSpaceships = ["Colossus", "Elemental", "Helmet"]
+
+let removedSpaceship = hitchedSpaceships.shift()
+
+console.log(removedSpaceship)
+// resultado: "Colossus"
+```
+
+.unshift("elemento") -  Adiciona um elemento no ínicio do array
+```
+let hitchedSpaceships = ["Colossus", "Elemental", "Helmet"]
+
+hitchedSpaceships.unshift("Supernova")
+
+console.log(hitchedSpaceships)
+// resultado: ["Supernova","Colossus", "Elemental", "Helmet"]
+```
+
+.length -  Retorna o tamanho do array
+```
+let hitchedSpaceships = ["Colossus", "Elemental", "Helmet"]
+
+console.log(hitchedSpaceships.length)
+// resultado: 4
+```
+
+.indexOf() - Retorna em qual posição/índice um elemento se encontra 
+```
+// se a posição ou o elemento não for encontrado no array irá retornar -1
+
+let hitchedSpaceships = ["Colossus", "Elemental", "Helmet"]
+
+let elementalPos = hitchedSpaceships.indexOf("Elemental")
+
+console.log(elementalPos)
+// resultado: 1
+```
+<br>
+
+### Arrays bidimensionais
+
+- É basicamente um array armazenado dentro de outro array
+
+```
+//  Criamos um array de exemplo
+
+let hitchedSpaceships = [
+  ['Elemental', 7],
+  ['Helmet', 13],
+  ['Golias', 5],
+  ['Supernova', 10]
+]
+
+// adicionando outro array
+//hitchedSpaceships.push(['Colossus',8])
+
+// e para acessar os elementos do array bidimensional
+// aqui acessamos o índice 3 do array que é ['Supernova', 10] e depois acessamos o elementos dentro dele no índice 0 que é a string "Supernova".
+
+console.log(hitchedSpaceships[3][0])
+```
+
