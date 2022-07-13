@@ -2191,3 +2191,237 @@ let hitchedSpaceships = [
 console.log(hitchedSpaceships[3][0])
 ```
 
+### Métodos de Array Splice e Slice
+
+- Splice:
+  - Significa 'emendar' ou 'costurar'.
+  - Substitui o array original.
+
+-Sintaxe:
+```
+array.splice(index[, deleteCount[, elemento1[, ... [, elementoN]]]])
+```
+- Espera um primeiro parâmetro que é um índice do Array.
+- O Segundo é a quantidade de elementos que queremos remover a partir deste índice.
+- Os próximos são os elementos que queremos adicionar no lugar.
+- Apenas o primeiro parâmetro é "obrigatório".
+- Se não for declarado os elementos que seram adicionados o splice apenas remove os elementos desejados.
+- O splice retorna os elementos removidos 
+
+```
+// Aqui declaramos o array
+let spaceshipNames = ["Elemental", "Darwin", "Artemis", "Supernova"]
+
+// exibimos ele no console.log
+console.log(spaceshipNames)
+
+// e aqui criamos uma variável removedSpaceships que recebe o array acima e utilizamos o método splice nele, no exemplo ele irá começar no índice 1 que é "Darwin" e irá remover 2 elementos a partir dele e adiciona "Deméter", "Puller", "Golias" no lugar dos itens removidos.
+let removedSpaceships = spaceshipNames.splice(1, 2, "Deméter", "Puller", "Golias")
+
+// aqui será exibido o array após a utilização do splice
+console.log(spaceshipNames)
+// resultado: ["Elemental","Deméter","Puller","Golias","Supernova"]
+
+// e aqui exibimos no console.log os elementos que foram removidos
+console.log(removedSpaceships)
+```
+<br>
+
+### Slice
+
+- Significa "fatiar" ou "dividir".
+- Extrai uma parte do array sem alterar o array original. 
+- Retorna um novo array com os elementos extraidos do original.
+
+-Sintaxe:
+```
+array.slice([begin[, end]])
+```
+- Possui um primeiro parâmetro que é o índice inicial.
+- O Segundo parâmetro é o índice final.
+- Retorna todos os elementos entre o elemento de índice 'begin' e o anterior ao elemento 'end'.
+
+-Exemplo:
+```
+// Aqui declaramos o array
+let spaceshipNames = ["Elemental", "Darwin", "Artemis", "Supernova"]
+
+// aqui declaramos uma variável, e utilizamos o slice no array, começamos no índice 1 e removemos todos os elementos antes do índice 3 passado no método, ou seja irá remover o índice 1 e o 2.
+let extractedNames = spaceshipNames.slice(1, 3)
+
+// exibimos o array antes de utilizar o slice no console.log
+console.log(spaceshipNames)
+
+// aqui será exibido os elementos removidos do array
+console.log(extractedNames)
+// resultado: "Darwin", "Artemis"
+```
+<br>
+<hr>
+
+### Iteração em Arrays
+
+- As funções de iteração que veremos são HOF (High Order Functions)
+  - Enviamos callbacks (funções que enviamos como parâmetro)
+- O callback é chamado para cada elemento do Array
+
+- Segue o seguinte formato:
+```
+array.funcaoDeIterar(function(elementoAtual, indice, array){
+  // Bloco de código
+})
+```
+- Espera um callback que receba como parâmetro o elemento atual, o índice e o array completo
+<hr>
+
+- forEach:
+
+  - O método forEach() percorre o array e executa a função para cada elemento de um array.
+```
+// Aqui declaramos o array 
+let hitchedSpaceships = ['Demetér','Darwin','Supernova','Fenix', 'Puller']
+
+// e aqui utilizamos o forEach que irá percorrer o array e irá exibir uma mensagem para cada elemento do array.
+hitchedSpaceships.forEach(function(currentSpaceship, index){
+  console.log('Nave: ' + currentSpaceship + '\níndice: ' + index)
+})
+```
+<hr>
+
+- map:
+
+  - O método map modifica os elementos do array um a um sem alterar o array original.
+  - Ele irá percorrer cada elemento alterando os elementos pelo retorno do callback, e irá pegar o array que foi gerado e irá retorná-lo.
+
+-Exemplo:
+```
+// Aqui o array declarado
+let hitchedSpaceships = ["Deméter", "Darwin", "Supernova", "Fenix", "Puller"]
+
+//  aqui criamos uma variável, e utilizamos o método map no array
+//  e criamos uma variável armazenamos nela a currentSpaceship que é o índice atual e utilizamos o método toUpperCase() para deixar as letras maiúsculas e retornamos a variável
+let upcasedSpaceships = hitchedSpaceships.map(function(currentSpaceship){
+  let upcased = currentSpaceship.toUpperCase()
+  return upcased
+})
+// aqui o array antes de ser modificado
+console.log(hitchedSpaceships)
+
+// e aqui o array com as letras maiúsculas
+console.log(upcasedSpaceships)
+//["DEMÉTER","DARWIN","SUPERNOVA","FENIX","PULLER"]
+```
+<hr>
+
+- filter:
+
+  - Basicamente filtra os elementos de um array e retorna um novo array com os elementos que passaram no teste implementado.
+  - Retorna um novo array.
+
+```
+// Aqui o array declarado
+let hitchedSpaceships = ["Deméter", "Darwin", "Supernova", "Fenix", "Puller"]
+
+//  aqui criamos uma variável para armazenar a utilização do filter
+//  iremos utilizar o filter para retornar somente os elementos que tem o tamanho maior ou igual a 7 caracteres/letras
+let with7Chars = hitchedSpaceships.filter(element => { return element.length >= 7})
+
+// aqui exibimos a variável que contém os itens com 7 caracteres
+console.log(with7Chars)
+// resultado: ["Deméter","Supernova"]
+```
+<hr>
+
+- find:
+  
+  - É bem parecido com o filter porém retorna só o primeiro elemento que satisfaz tal condição.
+  - Retorna somento o elemento.
+
+```
+// Aqui o array declarado
+let hitchedSpaceships = ["Deméter", "Darwin", "Supernova", "Fenix", "Puller"]
+
+//  aqui criamos uma variável para armazenar a utilização do find,
+//  iremos utilizar o find para retornar o primeiro elemento que tem o tamanho maior ou igual a 7 caracteres/letras
+let with7Chars = hitchedSpaceships.find(element => { return element.length >= 7})
+
+// aqui exibimos a variável que contém os itens com 7 caracteres no console.log
+console.log(with7Chars)
+// resultado: "Deméter"
+```
+<hr>
+
+- reduce:
+
+  - O método reduce() executa uma função reducer (fornecida por você) para cada elemento do array, resultando num único valor de retorno. Resumindo reduz o array em um único elemento.
+```
+// Aqui criamos um array com numeros
+let numeros = [3, 2, 3, 8]
+
+//  aqui criamos uma variável e utilizamos o método reduce no array,
+//  passamos uma funçõa que recebe 2 parâmetro o valorInicial do array e o valorAtual, e retornamos a soma dos elementos.
+let arrayReduzido = numeros.reduce(function(valorInicial, valorAtual) {
+  return valorInicial + valorAtual;
+});
+
+// aqui o array reduzido em um elemento após a soma 1 + 2 + 3 + 4
+console.log(arrayReduzido);
+// resultado: 10
+```
+<hr>
+
+### Exercício Arrays
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício Arrays</title>
+</head>
+<body>
+    <h1>Exercício Arrays</h1>
+    <script src="index.js"></script>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+const hitchedSpaceships = [
+    ["Fenix", 8, true],
+    ["Golias", 10, true],
+    ["Helmet", 5, false],
+    ["Elemental", 3, true],
+    ["Darwin", 15, false]
+]
+
+// primeiro utilizamos o filter para filtrar as naves em que a tripulação é maior que 9,
+// depois utilizamos o map para retornar o nome das naves que tem a tripulação maior que 9.
+let crewGreaterThan9 = hitchedSpaceships.filter(spaceship => {
+  return spaceship[1] > 9
+}).map(spaceship => {
+  return spaceship[0]       
+})
+
+// aqui utilizamos o findIndex para retornar qual nave, com o índice 2 igual a false
+let ongoingHitchedSpaceships = hitchedSpaceships.findIndex(spaceship => {
+  return spaceship[2] == false
+})
+
+
+// aqui utilizamos o map para deixar todos os elementos com letra maiúscula
+let highlightedSpaceships = hitchedSpaceships.map(spaceship => {
+  return spaceship[0].toUpperCase()
+})
+
+// aqui criamosa mensagem que será exibida
+let message = "Espaçonaves com mais de 9 tripulantes: " + crewGreaterThan9.join(", ") 
+message += "\nPlataforma com processo de engate: " + (ongoingHitchedSpaceships + 1) 
+message += "\nEspaçonaves destacadas: " + highlightedSpaceships
+// e aqui exibimos um alert com a mensagem criada acima
+alert(message)
+```
