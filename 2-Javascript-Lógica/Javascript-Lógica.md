@@ -2425,3 +2425,343 @@ message += "\nEspaçonaves destacadas: " + highlightedSpaceships
 // e aqui exibimos um alert com a mensagem criada acima
 alert(message)
 ```
+<hr>
+<br>
+
+## Objetos
+<br>
+
+### Introdução a Objetos
+
+- Assim como os arrays, também são estruturas de dados
+  - Capazes de armazenar e organizar outros dados
+- Dados são organizados através de propriedades
+
+- Associação chave-valor
+  - Chave é o nome da propriedade
+  - Valor é o valor que esta propriedade vai receber.
+Também podem armazenar internamente qualquer outro tipo
+  - Inclusive Arrays e outros objetos
+
+-Sintaxe:
+```
+    - Declaração de um objeto dentro de chaves { }.
+
+    let nomeObjeto = {
+      propriedade: 'Valor',
+      propriedade: 'Valor'
+    }
+
+    //Abaixo duas formas de acessar os elementos do Objeto
+    console.log(nomeObjeto.propriedade)
+    console.log(nomeObjeto['propriedade'])
+
+    // Duas formas de adicionar novos elementos no Objeto.    
+     nomeObjeto.propriedade = 'valor'
+     nomeObjeto['propriedade'] = 'valor'
+```
+
+- Exemplo
+```
+// Aqui criamos o objeto
+let spaceship = {
+  name: "Fenix",
+  crewQuantity: 7,
+  type: "Batalha"
+}
+
+// Para acessar um elemento do objeto basta passar o nome do objeto, colocar um ponto e o nome da propriedade do objeto desejada
+//console.log(spaceship.type)
+//  "Batalha"
+
+// Aqui outra maneira de acessar os elementos do objeto, basta passar o nome da propriedade entre parênteses dentro de colchetes.
+//console.log(spaceship["name"])
+// "Fenix"
+
+// também podemos adicionar novos elementos basta passar o nome do objeto, ponto o nome da propriedade com seu valor
+spaceship.isHitched = false
+
+// aqui outra maneira de adicionar elementos
+spaceship["shieldLevel"] = 100
+
+// aqui acessamos as propriedades não importa como foi criado podemos acessar de qualquer maneira
+console.log(spaceship["isHitched"])
+console.log(spaceship.shieldLevel)
+```
+<hr>
+
+  - Também podemos declarar um objeto vazio
+
+``` 
+let nomeObjeto = { }
+
+ ou   
+
+let nomeObjeto = new Object () 
+```
+
+- Exemplo
+```
+let spaceship = { }
+
+// aqui será retornado o objeto vazio
+console.log(spaceship)
+
+
+// Também podemos declarar um objeto vazio utilizando o new Object
+let spaceship = new Object()
+console.log(spaceship)
+```
+
+### Armadilhas Objetos
+
+-  O ideal é evitar criar propriedades com "strings", number, boolean e sim criar assim platformsQuantity: 10 para evitar problemas, erros.
+
+- Exemplo:
+```
+// Podemos colocar qualquer tipo em uma propriedade
+let spacialStation = {
+  name: "Fox",
+  platformsQuantity: 10,
+  "new name": "Estelar",
+  true: false,
+  2: "Descoberta"
+}
+
+// se tentarmos acessar a propriedade 2 com o ponto irá ocorrer um erro
+// "Uncaught SyntaxError: missing ) after argument list"
+console.log(spacialStation.2)
+
+// para conseguir acessar temos que utilizar colchetes e a propriedade entre parênteses
+console.log(spacialStation["2"])
+// "Descoberta"
+
+// mesma coisa acessar propriedades com espaço em seu nome utilizando o ponto
+// "Uncaught SyntaxError: missing ) after argument list"
+console.log(spacialStation.new name)
+
+// para acessar normalmente utilizamos colchetes e parênteses
+console.log(spacialStation["new name"])
+```
+
+### Comparando Objetos e Arrays
+
+- Relembrando:
+  - Os objetos são uma estrutura chave-valor.
+  - Utilizamos objetos quando precisamos mapear propriedades, ou atributos.
+  - Arrays são uma estrutura de lista sequencial.
+  - Utilizamos os arrays quando precisamos armazenar uma sequencia de elementos.
+- Quando pensamos em objetos, conseguimos enxergar uma representação do mundo real.
+
+- Exemplo:
+```
+// Aqui é criado o objeto
+let spacialStation = {
+  name: "Receptora",
+  platformsQuantity: 15,
+  shape: "Esférica"
+}
+// aqui transformamos a propriedade name do objeto em UpperCase
+console.log(spacialStation.name.toUpperCase())
+
+// Aqui criamos um array
+let spaceshipNames = ["Fenix","Puller","Golias"]
+// e aqui também transformamos em UpperCase porém de maneira diferente
+console.log(spaceshipNames[0].toUpperCase())
+```
+- Os arrays e objetos embora possam trabalhar juntos eles tem objetivos diferentes.
+- Com os objetos podemos representar melhor as entidades do mundo real com a propriedade valor.
+- Já os arrays temos uma lista que não precisa de um atributo direto e seu acesso sempre acontece por meio dos índices.
+<hr>
+<br>
+
+### Aninhando Objetos e Arrays
+
+- Exemplo de array dentro de um objeto:
+```
+// Exemplo de array dentro de um objeto
+let spaceship = {
+  name: "Supernova",
+  type: "Batalha",
+  crew: ["Capitão Silva", "Ana Julia", "Thiago"]
+}
+
+// podemos utilizar os métodos de array normalmente
+// utilizamos o push na propriedade crew que contém um array com a tripulação e adicionamos um novo tripulante
+spaceship.crew.push("Ten. Fernanda")
+
+console.log(spaceship)
+```
+<hr>
+
+- Exemplo de Array com Objeto dentro:
+```
+// Array com objetos dentro
+let spaceships = [
+  { name: "Elemental", crewQuantity: 10},
+  { name: "Colossus", crewQuantity: 8},
+  { name: "Helmet", crewQuantity: 15}
+]
+
+// aqui exibimos no console.log o índice 0 do array spaceships e a propriedade name dele
+console.log(spaceships[0].name)
+```
+<hr>
+
+- Exemplo utilizando o método forEach() no array de objetos:
+```
+// Array com objetos dentro
+let spaceships = [
+  { name: "Elemental", crewQuantity: 10},
+  { name: "Colossus", crewQuantity: 8},
+  { name: "Helmet", crewQuantity: 15}
+]
+
+// aqui utilizamos o forEach no array spaceships
+// e para cada elemento do array ele irá exibir uma mensagem de alerta com o nome e a quantidade de tripulantes.
+spaceships.forEach(spaceship => {
+  alert(spaceship.name + " tem " + spaceship.crewQuantity + " tripulantes.")
+})
+```
+<hr>
+
+- Exemplo Objeto dentro de outro Objeto:
+```
+let spaceship = {
+  name: "Golias",
+  maxCrew: 20,
+  captain: {
+    name: "Hugo Trent",
+    age: 37
+  }
+}
+
+// exibimos o console.log, primeiro acessamos o objeto spaceship depois a propriedade captain que também é um objeto e acessamos a propriedade name exibindo o nome do capitão.
+console.log(spaceship.captain.name)
+// "Hugo Trent"
+```
+<hr>
+<br>
+
+### Adicionando funções aos objetos
+
+- As propriedades de um Objeto também podem receber funções e quando isso ocorre a gente chama essas funções de métodos, as outras propriedades que não tem funções são chamada de atributos.
+```
+// Aqui declaramos um objeto que recebe uma função/método chamada turnOn que exibe 2 alertas
+let spaceship = {
+  name: "Deméter",
+  type: "Extração",
+  maxCrew: 20,
+  turnOn: function(){
+    alert("Preparando Propulsão")
+    alert("Ligando computador de bordo")
+
+    // aqui exibimos só um console.log para testar o this que no caso referencia o objeto spacehip e acessamos a propriedade name dele
+    console.log(this.name)
+  }
+}
+// e aqui chamamos o objeto e chamamos a função contida nele
+spaceship.turnOn()
+
+// adicionamos a propriedade velocity com valor 0
+spaceship.velocity = 0
+
+// e aqui adicionamos a propriedade speedUp que recebe um método que contém o parâmetro acceleration.
+// para não precisarmos ficar chamando o objeto toda hora utilizamos o método this, ele irá referenciar o próprio objeto spaceship, e irá acessar a propriedade velocity
+spaceship.speedUp = function(acceleration){
+  this.velocity += acceleration
+}
+// aqui eixbimos o objeto antes de chamar o método de acelerar
+console.log(spaceship)
+
+// aqui chamamos o método speedUp e passamos o valor do parâmetro acceleration que é 10
+spaceship.speedUp(10)
+
+// aqui exibimos no console.log o objeto após chamar o método
+console.log(spaceship)
+```
+<hr>
+<br>
+
+### Exercício Objetos
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício Objetos</title>
+</head>
+<body>
+    <h1>Exercício Objetos</h1>
+    <script src="index.js"></script>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+// Aqui o objeto em que irá armazenar os dados da nave
+let spaceship = {
+  velocity: 0,
+  speedUp: function(acceleration) {
+    this.velocity += acceleration;
+  },
+};
+
+// Aqui a função para adicionar os dados da nave no objeto acima
+function registerSpaceship() {
+  spaceship.name = prompt("Informe o nome da nave");
+  spaceship.type = prompt("Informe o tipo da nave");
+  spaceship.maxVelocity = prompt("Qual a velocidade máxima da nave (km/s)");
+}
+
+//  Aqui a função para acelerar a nave
+//  Primeiro pegamos o quanto o usuário quer acelerar e armazenamos na variável acceleration
+//  Depois chamamos o método que foi criado no objeto e passamos o valor salvo na variável como parâmetro
+//  ai exibimos um menu para selecionar entre acelerar e parar a nave,
+// verificamos se a velocidade atual era maior que a velocidade máxima se for exibimos uma mensagem de alerta com a velocidade atual e a máxima da nave
+function acelerate(){
+    let acceleration = Number(prompt("Quanto você quer acelerar? (km/s)"))
+    spaceship.speedUp(acceleration)
+    if(spaceship.velocity > spaceship.maxVelocity){
+      alert("VELOCIDADE MÁXIMA ULTRAPASSADA!" +
+            "\nVelocidade da Nave: " + spaceship.velocity + "km/s" +
+            "\nVelocidade máxima da Nave: " + spaceship.maxVelocity + "km/s")
+    }
+  }
+
+// Aqui criamos a função para parar a nave
+// exibimos um alerta com os dados da nave,
+// e definimos a velocidade como 0
+function stop(){
+    alert("Nome : " + spaceship.name + "\nTipo: " + spaceship.type + "\nVelocidade da Nave: " + spaceship.velocity + "km/s" + "\nMáxima da Nave: " + spaceship.maxVelocity + "km/s")
+    spaceship.velocity = 0
+  }
+
+// Aqui uma função para exibir o menu
+// se a opção escolhida for 1 chamamos a função que acelera a nave, e se for 2 iremos chamar a função que para a nave
+function showMenu() {
+  let chosenOption
+  do {
+    chosenOption = prompt("O que deseja fazer piloto? \n1-Acelerar \n2-Parar");
+    switch (chosenOption) {
+      case "1":
+        acelerate();
+        break;
+      case "2":
+        stop();
+        break;
+      default:
+        alert("Opção inválida");
+    }
+  } while (chosenOption != "2");
+}
+
+// Aqui chamamos as funções de registro e de exibir o menu
+registerSpaceship();
+showMenu();
+```
