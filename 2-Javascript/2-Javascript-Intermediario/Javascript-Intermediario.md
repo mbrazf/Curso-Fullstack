@@ -256,3 +256,197 @@ class Spaceship{
     }
   }
 ```
+<hr>
+<br>
+
+### Associando Classes
+<br>
+
+```
+// Aqui criamos a classe Captain que irá conter os dados do capitão
+class Captain {
+  constructor(name, age, flightHours){
+    this.name = name
+    this.age = age
+    this.flightHours = flightHours
+  }
+}
+
+// Aqui criamos uma outra classe chamada Spaceship que irá armazenar os dados da nave como name, crewQuantity e também irá receber um objeto com os dados do capitão,
+// Dentro da classe criamos um atributo captain que cria uma nova instância da classe Captain e associa ela na classe Spaceship
+
+class Spaceship {
+  constructor(name, crewQuantity, captainName, captainAge, captainFlightHours){
+    this.name = name
+    this.crewQuantity = crewQuantity
+    this.captain = new Captain(captainName, captainAge, captainFlightHours)
+  }
+}
+// Aqui criamos uma instância/objeto da classe Spaceship e passamos todos os valores da nave: name, crewQuantity, captainName, captainAge, e captainFlightHours
+
+let spaceship = new Spaceship("Ártemis", 13, "Will Gray", 45, 15000)
+
+console.log(spaceship)
+```
+<hr>
+<br>
+
+### Herança
+<br>
+
+- É um recurso do paradigma Orientado a Objetos.
+- Permite que classes herdem características de outras classes
+  - Ou seja, declaramos uma classe que vai herdar métodos e atributos de outra classe
+
+- É uma ténica de reuso de código
+- As duas classe devem ter uma relação de "é um"
+  - Por exemplo: Todo capitão é uma pessoa
+  - Poderia ter uma classe Captain herdando de Person
+
+```
+// Aqui criamos uma classe Spaceship que será utilizada nas outras classes
+class Spaceship {
+  constructor(name, maxCrew, maxRecommendedVelocity){
+    this.name = name
+    this.maxCrew = maxCrew
+    this.maxRecommendedVelocity = maxRecommendedVelocity
+    this.currentVelocity = 0
+  }
+  // Aqui criamos um método para acelerar a nave e iremos verificar se a velocidade atual é maior que a recomendada se for será exibido uma mensagem de alerta
+  speedUp(acceleration){
+    this.currentVelocity += acceleration
+    if(this.currentVelocity > this.maxRecommendedVelocity){
+      alert("VELOCIDADE MÁXIMA ULTRAPASSADA!!!\nDiminua ou poderá provocar danos à nave.")
+    }
+  }
+}
+//  Aqui criamos uma classe BattleSpaceship que irá herdar o constructor, com seus atributos e métodos da classe Spaceship
+//  Para herdar utilizamos a palavra "extends"
+//  e criamos um método stop
+class BattleSpaceship extends Spaceship{
+  stop(){
+    this.currentVelocity = 0
+    alert("Recolhendo armas e parando nave de batalha.")
+  }
+}
+// Aqui declaramos mais uma classe, DiscoverySpaceship que também herda da classe Spaceship
+// ela também contém um método stop
+class DiscoverySpaceship extends Spaceship{
+  stop(){
+    this.currentVelocity = 0
+    alert("Recolhendo equipamentos de amostras e parando nave de Descoberta")
+  }
+}
+// Aqui criamos uma instância da classe DiscoverySpaceship, como ela herda o constructor da classe Spaceship passamos os valores do constructor name, maxCrew e maxRecommendedVelocity.
+let darwin = new DiscoverySpaceship("Darwin", 10, 200)
+
+// Aqui uma instância da classe BattleSpaceship, que também herda o constructor da classe Spaceship e passamos os valores do constructor name, maxCrew e maxRecommendedVelocity.
+let supernova = new BattleSpaceship("Supernova", 5, 240)
+
+// Aqui chamamos o método speedUp herdado da classe Spaceship e passamos o valor de acceleration
+darwin.speedUp(210)
+supernova.speedUp(230)
+
+console.log(darwin)
+console.log(supernova)
+
+// E aqui chamamos o método stop que zera a velocidade da nave 
+darwin.stop()
+supernova.stop()
+
+console.log(darwin)
+console.log(supernova)
+```
+<hr>
+<br>
+
+### Sobrescrita de Métodos
+<br>
+
+```
+// Aqui criamos uma classe Spaceship que será utilizada nas outras classes
+class Spaceship {
+  constructor(name, maxCrew, maxRecommendedVelocity){
+    this.name = name
+    this.maxCrew = maxCrew
+    this.maxRecommendedVelocity = maxRecommendedVelocity
+    this.currentVelocity = 0
+  }
+  // Aqui criamos um método para acelerar a nave e iremos verificar se a velocidade atual é maior que a recomendada se for será exibido uma mensagem de alerta
+  speedUp(acceleration){
+    this.currentVelocity += acceleration
+    if(this.currentVelocity > this.maxRecommendedVelocity){
+      alert("VELOCIDADE MÁXIMA ULTRAPASSADA!!!\nDiminua ou poderá provocar danos à nave.")
+    }
+  }
+}
+//  Aqui criamos uma classe TransportSpaceship que irá herdar o constructor, com seus atributos e métodos da classe Spaceship.
+//  Para herdar utilizamos a palavra "extends".
+//  Aqui declaramos um novo método que irá sobrescrever o método da classe Spaceship com o mesmo nome
+class TransportSpaceship extends Spaceship{
+  speedUp(){
+    alert("Naves de transporte só aumentam a velocidade em 1km/s")
+    this.currentVelocity += 1
+  }
+}
+
+// Aqui criamos uma instância da classe TransportSpaceship, como ela herda o constructor de Spaceship passamos seus valores
+let transportSpaceship = new TransportSpaceship("Transportadora", 4, 100)
+
+// Aqui chamamos o método speedUp que foi criado na classe TransportSpaceship, portanto esse método sobrescreve o método com o mesmo nome herdado de Spaceship
+transportSpaceship.speedUp()
+
+console.log(transportSpaceship)
+```
+<hr>
+<br>
+
+### Método Super
+<br>
+- A palavra-chave super() é usada para acessar o objeto pai de um objeto, em outros casos, é usada para acessar a classe pai de uma classe.
+
+
+```
+// Aqui criamos uma classe Spaceship que será utilizada nas outras classes
+class Spaceship {
+  constructor(name, maxCrew, maxRecommendedVelocity){
+    this.name = name
+    this.maxCrew = maxCrew
+    this.maxRecommendedVelocity = maxRecommendedVelocity
+    this.currentVelocity = 0
+  }
+  // Aqui criamos um método para acelerar a nave e iremos verificar se a velocidade atual é maior que a recomendada se for será exibido uma mensagem de alerta
+  speedUp(acceleration){
+    this.currentVelocity += acceleration
+    if(this.currentVelocity > this.maxRecommendedVelocity){
+      alert("VELOCIDADE MÁXIMA ULTRAPASSADA!!!\nDiminua ou poderá provocar danos à nave.")
+    }
+  }
+}
+
+//  Aqui criamos uma classe TransportSpaceship com um constructor que recebe os mesmos 3 parâmetros da classe Spaceship e mais um maxLoadWeight
+//  Também podemos utilizar o super em métodos estáticos.
+//  Utilizamos o método super() que chama/acessa o constructor da classe pai Spaceship e passamos os parâmetros para ele e abaixo atribuimos o novo parâmetro maxLoadWeight
+class TransportSpaceship extends Spaceship{
+  constructor(name, maxCrew, maxRecommendedVelocity, maxLoadWeight){
+    super(name, maxCrew, maxRecommendedVelocity)
+    this.maxLoadWeight = maxLoadWeight
+  }
+  
+  // aqui declaramos um método que recebe acceleration como parãmetro e dividimos seu valor por 2,
+  // e para reaproveitar o método da classe Spaceship utilizamos o método super para chamar/acessar o método e passamos o parâmetro acceleration
+  speedUp(acceleration){
+    acceleration /= 2
+    alert("Incrementando velocidade em " + acceleration + "km/s")
+    super.speedUp(acceleration)
+  }
+}
+
+// Aqui criamos uma instância/objeto da classe TransportSpaceship, como ela herda da classe Spaceship passamos os valores do parâmetros
+let transportSpaceship = new TransportSpaceship("Transportadora", 4, 100, 400)
+
+// aqui chamamos o método speedUp() e passamos o valor do parâmetro acceleration que será dividido pela metade
+transportSpaceship.speedUp(210)
+
+console.log(transportSpaceship)
+```
