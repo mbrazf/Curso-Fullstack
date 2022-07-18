@@ -450,3 +450,326 @@ transportSpaceship.speedUp(210)
 
 console.log(transportSpaceship)
 ```
+<br>
+<hr>
+
+### Métodos GET e SET
+<br>
+
+- Os métodos Set e Get são basicamente uma forma de simular variáveis
+
+- O método SET é utilizado para setar/atribuir valor a uma variável:
+```
+// Aqui criamos uma classe
+class TransportSpaceship {
+  constructor(name){
+    this.name = name
+    this.currentVelocity = 0
+  }
+  // Aqui criamos um método set para simular uma variável, que recebe newVelocity como parâmetro
+  // verificamos se newVelocity é maior que 120, se for currentVelocity irá receber 120
+  // se não, receberá o parâmetro newVelocity
+  set velocity(newVelocity){
+    if(newVelocity > 120){
+      this.currentVelocity = 120
+    } else {
+      this.currentVelocity = newVelocity
+    }
+  }
+}
+// Aqui criamos uma instância da classe e passamos o valor de name
+let spaceship = new TransportSpaceship("Transportador")
+
+
+// Aqui tentamos atribuir 130 em velocity mas o que acontece é que chamamos o método SET velocity acima, e o 130 é passado como valor do parâmetro newVelocity
+spaceship.velocity = 130
+
+console.log(spaceship)
+```
+<hr>
+
+- O método GET é utilizado para retornar um valor como uma variável:
+```
+// Criamos uma classe
+class ResourceProcessStation {
+  constructor(name, monthlyProcessedLoad){
+    this.name = name
+    this.monthlyProcessedLoad = monthlyProcessedLoad
+  }
+  
+  // Aqui utilizamos o get para simular uma variável,
+  // ao tentarmos chamar essa variável o método será executado e retornará o atributo monthlyProcessedLoad da classe dividido por 4
+  get weeklyProcessedLoad(){
+    return this.monthlyProcessedLoad / 4
+  }
+}
+
+// Aqui criamos uma instância da classe e passamos os valores dos atributos
+let resourceProcessor = new ResourceProcessStation("Gaia", 500)
+
+// e aqui exibimos um console.log e passamos a instância resourceProcessor da classe e chamamos o método weeklyProcessedLoad como uma variável e que retorna o monthlyProcessedLoad dividido por 4
+console.log(resourceProcessor.weeklyProcessedLoad)
+
+// e aqui chamamos novamente a instância e alteramos o valor do atributo monthlyProcessedLoad para 600
+resourceProcessor.monthlyProcessedLoad = 600
+
+// e aqui chamamos novamente o método que irá retornar 600 / 4 que é 150
+console.log(resourceProcessor.weeklyProcessedLoad)
+```
+<hr>
+<br>
+
+### Métodos Estáticos
+<br>
+
+- Diferente dos métodos tradicionais que são chamados no objeto, os métodos estáticos são chamados direto na classe, sao usados quando queremos ter algo que não será alterado independente da instância do objeto.
+```
+// Criamos uma classe
+class ResourceProcessorStation{
+  constructor(name, monthlyProcessing){
+    this.name = name
+    this.monthlyProcessing = monthlyProcessing
+  }
+  //  Aqui criamos um método estático utilizando a palavra static, ele recebe 2 parâmetros monthlyProcessing e hours.
+  //  O método irá retornar monthlyProcessing (processamento mensal) dividido por 720 que é o número de horas de um mês para saber o processamento por hora e depois multiplicamos pelo número de horas
+  static calculateProcessInHours(monthlyProcessing, hours){
+    return monthlyProcessing / 720 * hours
+  }
+}
+
+/*
+//  Aqui criamos uma variável e chamamos o método estático diretamente da classe, e passamos os valores de monthlyProcessing e hours
+let totalProcessing = ResourceProcessorStation.calculateProcessInHours(500, 6)
+console.log(totalProcessing)
+*/
+
+
+/*
+// Aqui tentamos chamar o método a partir de uma instância/objeto da classe mas irá ocorrer um erro: "Uncaught TypeError: processor.calculateProcessInHours is not a function"
+//  Só conseguimos chamar um método estático diretamente pela classe.
+let processor = new ResourceProcessorStation("Gaia", 2000)
+processor.calculateProcessInHours(processor.monthlyProcessing, 10)
+console.log(processor)
+*/
+
+//  Também podemos chamar o método assim
+//  Criamos uma instância da classe e passamos os valores dos atributos name e monthlyProcessing.
+//  Criamos uma variável e armazenamos nela a chamada do método estático, passamos o nome da classe e o método calculateProcessInHours e os valores dos parâmetros
+let processor = new ResourceProcessorStation("Gaia", 2000)
+let totalProcessed = ResourceProcessorStation.calculateProcessInHours(processor.monthlyProcessing, 10)
+console.log(totalProcessed)
+```
+<hr>
+<br>
+
+### Variáveis Estáticas
+<br>
+
+- As variáveis estáticas são diretamente ligadas a classe, o valor dela é o mesmo independente dos objetos instanciados a partir de uma classe.
+- Podemos utilizar o GET para gerar um método estático, ou seja ele irá criar um método estático que irá se comportar como uma variável.
+```
+// Criamos uma classe
+class Spaceship{
+  // Aqui criamos um método GET estático com a taxa de desaceleração que sempre retornará o mesmo valor
+  static get decelerationRate(){
+    return 0.15
+  }
+  constructor(name){
+    this.name = name
+    this.currentVelocity = 0
+  }
+  // Criamos um método para acelerar a nave
+  // e chamamos o método decelerationRate a partir da classe Spaceship como se fosse uma variável
+  speedUp(acceleration){
+    this.currentVelocity += (acceleration * (1 - Spaceship.decelerationRate))
+  }
+}
+
+// Aqui criamos uma instância/objeto da classe e passamos o valor de name
+let spaceship = new Spaceship("Apolo")
+
+// Aqui chamamos o método da classe e passamos o valor de acceleration
+spaceship.speedUp(100)
+
+// Aqui exibimos o resultado da aceleração
+console.log(spaceship)
+// o retorno será 85
+```
+<hr>
+<br>
+
+### Exercício 2 Classes
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="spaceship.js"></script>
+    <script src="battle_spaceship.js"></script>
+    <script src="transport_spaceship.js"></script>
+    <script src="app.js"></script>
+    <script src="index.js"></script>
+    <title>Exercício Classes 2</title>
+</head>
+<body>
+    <h1>Exercício Classes 2</h1>
+</body>
+</html>
+```
+
+- spaceship.js
+```
+// Criamos uma classe Spaceship
+// Com um método GET estático que retorna a taxa de desaceleração
+// e com um método speedUp para acelerar a nave com a taxa de desaceleração
+class Spaceship {
+    static get DECELERATION_RATE(){
+        return 0.17
+    }
+
+    constructor(name, crewQuantity){
+        this.name = name
+        this.crewQuantity = crewQuantity
+        this.currentVelocity = 0
+    }
+
+    speedUp(acceleration){
+        this.currentVelocity += acceleration * (1 - Spaceship.DECELERATION_RATE)
+    }
+}
+```
+
+- battle_spaceship.js
+```
+// Aqui criamos a classe BattleSpaceship que herda da classe Spaceship
+// utilizamos o método super para acessar e reaproveitar o constructor da classe Spaceship
+class BattleSpaceship extends Spaceship{
+    constructor(name, crewQuantity, weaponsQuantity){
+        super(name, crewQuantity)
+        this.weaponsQuantity = weaponsQuantity
+    }
+}
+```
+
+- transport_spaceship.js
+```
+// Aqui criamos a classe TransportSpaceship que herda da classe Spaceship
+// utilizamos o método super para acessar e reaproveitar o constructor da classe Spaceship
+class TransportSpaceship extends Spaceship{
+    constructor(name, crewQuantity, sitsQuantity){
+        super(name, crewQuantity)
+        this.sitsQuantity = sitsQuantity
+    }
+}
+```
+
+- app.js
+```
+class App {
+  constructor() {
+    this.spaceship = null;
+  }
+
+  // Método para exibir o menu inicial enquanto a opção escolhida for diferente de 3
+  start() {
+    this.enrollSpaceship();
+    let chosenOption;
+    do {
+      chosenOption = this.showInitialMenu();
+      this.redirectFeature(chosenOption);
+    } while (chosenOption != "3");
+    this.printAndExit();
+  }
+
+  // Criamos a função para cadastrar as naves
+  enrollSpaceship() {
+    let spaceshipName = prompt("Qual o nome da nave?");
+    let crewQuantity = prompt("Qual a quantidade de tripulates?");
+    let spaceshipKind = this.askForSpaceshipKind();
+    if (spaceshipKind == "1") {
+      let weaponsQuantity = prompt("Quantas armas a nave possui?");
+      this.spaceship = new BattleSpaceship(
+        spaceshipName,
+        crewQuantity,
+        weaponsQuantity
+      );
+    } else {
+      let sitsQuantity = prompt("Quantos lugares a nave possui?");
+      this.spaceship = new TransportSpaceship(
+        spaceshipName,
+        crewQuantity,
+        sitsQuantity
+      );
+    }
+  }
+
+  // Aqui criamos a função que exibe a pergunta do tipo da nave
+  // Para cada tipo de nave criamos uma instância diferente
+  askForSpaceshipKind() {
+    let chosenOption;
+    while (!["1", "2"].includes(chosenOption)) {
+      chosenOption = prompt("Qual o tipo da nave?\n1- Batalha\n2- Transporte");
+    }
+    return chosenOption;
+  }
+
+  // Aqui criamos a função para exibir o menu e verificar qual ação foi escolhida
+  showInitialMenu() {
+    const promptMessage =
+      "O que você deseja fazer?\n" +
+      "1- Acelerar a nave\n" +
+      "2- Trocar a nave\n" +
+      "3- Imprimir e sair";
+    let chosenOption = prompt(promptMessage);
+    while (!["1", "2", "3"].includes(chosenOption)) {
+      chosenOption = prompt(promptMessage);
+    }
+    return chosenOption;
+  }
+
+  // Aqui uma função para pegar a opção escolhida e chamar a função para cada opção escolhida
+  redirectFeature(chosenOption) {
+    switch (chosenOption) {
+      case "1":
+        this.accelerateSpaceship();
+        break;
+      case "2":
+        this.enrollSpaceship();
+        break;
+    }
+  }
+
+  // Função para acelerar a nave, pegamos a velocidade que deseja acelerar e passamos como parâmetro para o método speedUp da classe
+  accelerateSpaceship() {
+    let acceleration = Number(prompt("Quanto gostaria de acelerar?"));
+    this.spaceship.speedUp(acceleration);
+  }
+
+  // Aqui a função para imprimir os dados da nave em um alerta
+  printAndExit() {
+    let finalMessage =
+      "Nome: " +
+      this.spaceship.name +
+      "\n" +
+      "Quantidade de tripulates: " +
+      this.spaceship.crewQuantity +
+      "\n" +
+      "Velocidade atual: " +
+      this.spaceship.currentVelocity +
+      "\n";
+    alert(finalMessage);
+  }
+}
+```
+
+- app.js
+```
+// Aqui criamos uma instância da classe App
+// e chamamos o método que exibi o menu inicial
+const app = new App()
+app.start()
+```
