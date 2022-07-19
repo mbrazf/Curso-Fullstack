@@ -773,3 +773,228 @@ class App {
 const app = new App()
 app.start()
 ```
+<br>
+<hr>
+
+## Exceções
+
+### O que são Exceções
+
+-  Exceções (Exceptions) são erros que ocorrem no código
+- São capturados em tempo de execução (runtime)
+- Podem ser tratados para que o código não quebre
+- No Javascript, as exceções são lançadas pela classe Error
+  - Quando é instanciada e lançada, o interpretador entende que ocorreu um erro
+
+- Para a execução e exibe o erro
+- Podemos utilizar o try e catch para poder tratar estes erros
+- Assim como podemos lançar nosso próprios erros
+  - Utilizamos o throw
+
+### Throw
+<br>
+
+- Throw é utilizado para lançar um erro
+- throw new Error("mensagem")
+
+-  Quando um erro é encontrado ele é lançado e em seguida é encerrada a a execução do código
+
+```
+// Aqui criamos a classe Spaceship
+class SpaceshipWeapon {
+  constructor(identifier){
+    this.identifier = identifier
+    this.shotsLeft = 5
+  }
+  //  Método para atirar com a nave
+  //  Verificamos se a quantidade de tiros restantes é maior que 0, se for atiraremos novamente
+  //  Se não lançaremos uma mensagem de erro com o throw new Error(" ")
+  shoot(){
+    if(this.shotsLeft >0){
+      console.log("BANG!")
+      this.shotsLeft -= 1
+    } else {
+      throw new Error("Arma " + this.identifier + " sem munição")
+    }
+  }
+}
+// Aqui criamos uma instância da nave e passamos o valor do identifier
+let fenixWeapon = new SpaceshipWeapon(10)
+
+// Aqui chamamos o método de atirar
+fenixWeapon.shoot()
+fenixWeapon.shoot()
+fenixWeapon.shoot()
+fenixWeapon.shoot()
+fenixWeapon.shoot()
+fenixWeapon.shoot()
+
+// ao zerar o número de tiros restantes a mensagem de erro é lançada: Uncaught Error: Arma 10 sem munição 
+
+console.log(fenixWeapon)
+```
+<hr>
+
+### Try, Catch e Finally
+<br>
+
+- O try tenta executar o bloco de código
+- Se houver algum erro no try a execução é passada para o catch que recebe a mensagem lançada com o throw new Error como parâmetro podendo acessar a mensagem com o e.message e tratar os erros.
+- Também podemos utilizar o finally seu uso é opcional e ele será executado independente se houver ou não algum erro no catch.
+```
+// Aqui criamos a classe Spaceship
+class SpaceshipWeapon {
+  constructor(identifier){
+    this.identifier = identifier
+    this.shotsLeft = 5
+  }
+  //  Método para atirar com a nave
+  //  Verificamos se a quantidade de tiros restantes é maior que 0, se for atiraremos novamente
+  //  Se não lançaremos uma mensagem de erro com o throw new Error(" ")
+  shoot(){
+    if(this.shotsLeft >0){
+      console.log("BANG!")
+      this.shotsLeft -= 1
+    } else {
+      throw new Error("Arma " + this.identifier + " sem munição")
+    }
+  }
+  // Aqui criamos um método para recarregar os tiros da nave
+  reload(){
+    this.shotsLeft = 5
+  }
+}
+// Aqui criamos uma instância da nave e passamos o valor do identifier
+let fenixWeapon = new SpaceshipWeapon(10)
+
+// O try tenta executar o bloco de código, e se houver algum erro a execução do código irá passar para o catch.
+try {
+  fenixWeapon.shoot()
+  fenixWeapon.shoot()
+  fenixWeapon.shoot()
+  fenixWeapon.shoot()
+  fenixWeapon.shoot()
+  fenixWeapon.shoot()
+
+  // No catch a mensagem de erro lançada com throw new Error() é passada como parâmetro "e" do catch e podemos assim acessar a mensagem de erro com o e.message.
+  // Assim se houver algum erro na execução cairá no catch e será executada uma mensagem e depois chamamos o método para recarregar a arma
+} catch(e){
+  console.log(e.message)
+  fenixWeapon.reload()
+
+  // Aqui utilizamos o finally para exibir uma mensagem final
+} finally {
+  console.log("Arma deu bons tiros")
+}
+
+console.log(fenixWeapon)
+```
+<hr>
+<br>
+
+## Módulos Math e Date
+<br>
+
+### Principais métodos Math
+```
+// O Math.pow realiza um cálculo de potência elevando 5 a 3
+console.log(Math.pow(5, 3))
+// resultado: 125
+
+//  O Math.PI retorna uma fração do valor de PI
+console.log(Math.PI)
+// resultado: 3.141592653589793
+
+// Math.sqrt retorna a raiz quadrada de um número
+console.log(Math.sqrt(64))
+// resultado: 8
+
+// Math.cbrt retorna a raiz cúbica de um número
+console.log(Math.cbrt(30))
+// resultado: 3.1072325059538586
+
+//  Math.ceil retorna o valor arredondado para cima
+console.log(Math.ceil(5.2))
+// resultado: 6
+
+//  Math.floor retorna o valor arredondado para baixo
+console.log(Math.floor(5.2))
+// resultado: 5
+
+//  Math.ceil retorna o valor arredondado para cima
+console.log(Math.ceil(5.2))
+// resultado: 6
+
+//  Math.random retorna um valor aletório entre 0 e 1 
+console.log(Math.random())
+
+//  Math.round retorna o valor arredondado mais próximo
+console.log(Math.round(5.2))
+// resultado: 5
+
+//  Math.trunc retorna o valor inteiro, removendo ponto ou vírgula
+console.log(Math.trunc(7.2))
+// resultado: 7
+```
+- Para ver todos disponíveis: [Documentação MDN Math](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Math) 
+<br>
+
+### Principais métodos date
+<br>
+
+- Utilizados para manipular datas
+```
+// O new Date() é utilizado para criar uma instância de data, recebe vários tipos de parâmetros ano, mês, dia, hora, minuto, segundo.
+//  Objetos Date são baseados no valor de tempo que é o número de milisegundos desde 1º de Janeiro de 1970 (UTC)
+// No date os meses começam em 0 e vão até 11
+let myBirthday = new Date(1998, 0, 16)
+console.log(myBirthday)
+
+// Retorna o valor em milisegundos passados desde a data base do Javascript 1 de Janeiro de 1970 00:00:00 UTC até o dia atual.
+let today = Date.now()
+console.log(today)
+// resultado: 1658239145278 milisegundos
+```
+- Para mais detalhes [Documentação MDN Date](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Date)
+<br>
+<hr>
+
+## Eventos no HTML
+<br>
+
+- Eventos são ações que ocorrem num sistema
+  - Podem ocorrer por uma ação do usuário: como um clique de um mouse ou mudança do valor de um campo input.
+  - Ou simplesmente como um fluxo do próprio sistema: como a página concluir seu carregamento.
+
+- No HTML conseguimos mapear os eventos e definir ações
+
+- No elemento desejado no HTML você declara o evento desejado.    
+- E dentro das aspas você chama a função criada para este evento:   
+```
+ <p>
+    <button onclick="clickMe()">Clique aqui</button>
+  </p>
+```
+
+- Aqui a função JS criada para o evento acima:   
+```
+function clickMe(){
+        console.log('Fui clicado!')
+}
+```
+
+- Existem outros tipos de eventos:
+
+```
+onfocus="nomeFunção( )" - Usado ao focar/clicar no elemento.
+
+onclick="nomeFunção()" - Usado ao clicar no elemento.
+
+onblur="nomeFunção()" - Usado ao desfocar o input.
+
+onchange="nomeFunção()" - Usado se tiver alguma alteração no input.
+
+onmouseover="nomeFunção()" - Usado ao passar o mouse em cima do elemento desejado.
+```
+
+- Para ver todos os eventos disponíveis: [Documentação Eventos MDN](https://developer.mozilla.org/pt-BR/docs/Web/Events) 
