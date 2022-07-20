@@ -998,3 +998,215 @@ onmouseover="nomeFunção()" - Usado ao passar o mouse em cima do elemento desej
 ```
 
 - Para ver todos os eventos disponíveis: [Documentação Eventos MDN](https://developer.mozilla.org/pt-BR/docs/Web/Events) 
+<hr>
+<br>
+
+## Introdução ao DOM
+<br>
+
+- DOM significa Document Object Model ou Modelo de Objeto de Documento
+  - Possibilita que um documento de uma linguagem de marcação seja acessado como uma árvore de objetos.
+
+- EXEMPLO:
+```
+<html>
+    <body>
+        <table>
+            <tr>
+                <th>Cabeçalho - Coluna 01</th>
+            </tr>
+            <tr>
+                <td>Linha 01 - Coluna 01</td>
+            </tr>
+            <tr>
+                <td>Linha 02 - Coluna 02</td>
+            </tr>
+        </table>
+    </body>
+</html>
+```
+
+- O DOM pega toda a estrutura HTML e transforma em uma estrutura de objeto:
+```
+HTML    
+|- BODY   
+    |- TABLE    
+        |- TR   
+            |-TH    
+        |- TR   
+            |-TD    
+        |- TR   
+            |- TD   
+```
+
+- Com esta árvore de objetos que o DOM disponibiliza, conseguimos:
+  - Selecionar um determinado elemento
+  - Alterar seu conteúdo.
+  - Capturar o valor digitado por um usuário num campo input de um formulário.  
+<br>
+
+- Por padrão o browser já traz uma instância do DOM preparada para ser utilizada.
+  - Conseguimos acessá-lá com a palavra chave document.
+  - É o elemento raiz de toda a árvore de objetos
+  - É partir dele que conseguimos utilizar métodos para selecionar e manipular os elementos.
+<hr>
+<br>
+
+### Selecionando Elementos no DOM
+<br>
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecionando Elementos no DOM</title>
+    <script src="index.js"></script>
+</head>
+<body>
+    <button onclick="show()">Exibir!</button>
+
+    <p>
+        <label>Nome: </label>
+        <input type="text" id="name" name="fullname">
+    </p>
+
+    <div id="phones">
+        <p>
+            <label>Phone 01</label>
+            <input type="text" name="phone" id="phone01">
+        </p>
+
+        <p>
+            <label>Phone 02</label>
+            <input type="text" name="phone" id="phone02">
+        </p>
+    </div>
+</body>
+</html>
+```
+
+- Formas de selecionar os elementos:
+<br>
+
+
+- Selecionando elemento pelo ID:
+```
+    let element = document.getElementById("name")
+
+    // aqui exibimos um console.log e podemos acessar o valor do input com value
+    console.log(element.value)
+```
+
+- Seleciona os elementos pela classe:
+```
+    let elements = document.getElementsByClassName('classe')
+
+    console.log(elements)
+```
+
+- Selecionando elementos pelo atributo name:
+```
+    let elements = document.getElementsByName("phone")
+
+    // Aqui exibimos um console.log que irá retornar todos os elementos que contém o atributo name selecionado, podemos acessar o valor do elemento com o número do índice que ele se encontra [0] e value
+    console.log(elements[0].value)
+```
+
+
+- Selecionando primeiro elemento por query:
+```
+    // Aqui iremos selecionar o primeiro elemento com o seletor desejado
+    let element = document.querySelector("div#phones input[name='phone']")
+
+     // Aqui exibimos um console.log que irá retornar todos os elementos que contém o atributo name selecionado, podemos acessar o valor do elemento com o número do índice que ele se encontra [1] e value
+    console.log(element)
+```
+
+- Selecionando todos os elementos por query:
+```
+     // Aqui iremos selecionar todos os elementos input com o name phone dentro da div com id phones
+    let elements = document.querySelectorAll("div#phones input[name='phone']")
+
+     // Aqui exibimos um console.log que irá retornar todos os elementos que contém o atributo name selecionado, podemos acessar o valor do elemento com o número do índice que ele se encontra [1] e value
+    console.log(elements[1].value)
+```
+
+- Selecionando elementos pela tag name HTML
+```
+    //Aqui iremos selecionar todos os elementos com a tag input no HTML
+    let elements = document.getElementsByTagName("input")
+
+    // Aqui exibimos um console.log que irá retornar todos os elementos que contém a tag name input, podemos acessar o valor do elemento com o número do índice que ele se encontra [1] e value
+    console.log(elements)
+```
+<br>
+<hr>
+
+### Manipulando o DOM
+<br>
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manipulando o DOM</title>
+    <script src="index.js"></script>
+</head>
+<body>
+    <button onclick="addNewPhone()">Novo Telefone</button>
+    <button onclick="printPhones()">Imprimir Telefones</button>
+    <br>
+
+    <form id="phones">
+        <p>
+            <label>Telefone 1: </label>
+            <input type="text" name="phone">
+        </p>
+    </form>
+</body>
+</html>l
+```
+
+- JAVASCRIPT
+```
+// Aqui criamos a função para adicionar novos campos input para telefone
+// Selecionamos o elemento form que contém o id phones
+function addNewPhone(){
+    const phoneForm = document.querySelector("form#phones")
+
+    // Aqui utilizamos children para pegar o elemento filho que está no índice [0] e utilizamos o cloneNode() utilizado para clonar o elemento, ele recebe um parâmetro true para clonar todos os elementos filhos e filhos dos filhos, já o false clona só o primeiro filho
+    const newPhone = phoneForm.children[0].cloneNode(true)
+
+    // Aqui alteramos a posição do novo elemento clonado
+    const phonePosition = phoneForm.children.length + 1
+
+    // Aqui chamamos a variável que contém o elemento clonado e selecionamos o label dele e alteramos seu texto com a posição
+    newPhone.querySelector("label").innerText = "Telefone  " + phonePosition + ": "
+
+    // Aqui adicionamos o novo elemento clonado newPhone dentro do phoneForm ou seja adicionamos o elemento clonado no DOM
+    phoneForm.appendChild(newPhone)
+
+    // Aqui exibiremos no console.log o phoneForm com os novos elementos filhos clonados 
+    console.log(phoneForm.children)
+}
+
+// Aqui a função para exibir um alerta com o input e o valor de cada um
+// Selecionamos todos os elementos input com o name phone que irá retornar uma lsita/array
+// Utilizamos o método forEach nesse array que foi retornado que irá exibir para cada input uma mensagem de alerta com o valor digitado nos inputs
+function printPhones(){
+    let message = " "
+    const phones = document.querySelectorAll("input[name='phone']")
+    phones.forEach((phone, index) =>{
+        message += "Telefone " + (index + 1) + ": " + phone.value + "\n"
+    })
+    alert(message)
+}
+```
