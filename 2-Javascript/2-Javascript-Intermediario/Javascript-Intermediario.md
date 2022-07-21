@@ -1210,3 +1210,282 @@ function printPhones(){
     alert(message)
 }
 ```
+<br>
+<hr>
+
+### Enviando o DOM para a função
+<br>
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviando o DOM para função</title>
+    <script src="index.js"></script>
+</head>
+<body>
+    <form>
+        <!-- Aqui chamamos a função sayMyFirstName() com o evento on change e passamos esse elemento input como parâmetro da função utilizando o this-->
+        <p>
+            <label>Nome: </label>
+            <input type="text" name="first-name" onchange="sayMyFirstName(this)">
+        </p>
+
+        <!--Aqui chamamos a função sayMyLastName() a partir do evento onchange-->
+        <p>
+            <label>Sobrenome: </label>
+            <input type="text" name="last-name" onchange="sayMyLastName()">
+        </p>
+    </form>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+// Aqui criamos uma função que recebe element como parâmetro que no caso é o próprio input HTML que foi passado como parâmetro.
+// Exibimos um alerta e acessamos o valor do element que vai ser digitado no input
+
+function sayMyFirstName(element){
+    alert("Meu primeiro nome é " + element.value)
+}
+
+// Aqui a função do segundo input
+// Acessamos o evento a partir da palavra event, ele é uma variável global do navegador que armazena o último evento que foi chamado no DOM, e o target armazena de qual elemento o evento foi chamado e o value o valor digitado nesse evento
+// Podemos utilizar o event.target em qualquer tipo de evento onclick, onmouseover, onfocus etc.
+
+function sayMyLastName(){
+    console.log(event)
+    alert("Meu ultimo nome é " + event.target.value)
+}
+```
+<br>
+<hr>
+
+### Exercício Manipulando DOM
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício Manipulando o DOM</title>
+    <script src="index.js"></script>
+</head>
+<body>
+    <h1>Registro de Casas</h1>
+    <form id="house">
+        <p>
+            <label>Número: </label>
+            <input type="text" name="numero" id="numero">
+        </p>
+        <p>
+            <label>Bairro: </label>
+            <input type="text" name="bairro" id="bairro">
+        </p>
+        <p>
+            <label>Cidade: </label>
+            <input type="text" name="cidade" id="cidade">
+        </p>
+        <p>
+            <label>Área: </label>
+            <input type="text" name="area" id="area">
+        </p>
+        <button onclick="addHouse()" type="button">Adicionar</button>
+    </form>
+
+    <ul id="house-list">
+        
+    </ul>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+// Aqui criamos a função para adicionar a casa na lista
+function addHouse(){
+    let numero = document.getElementById("numero").value
+    let bairro = document.getElementById("bairro").value
+    let cidade = document.getElementById("cidade").value
+    let area = document.getElementById("area").value
+
+    // Aqui criamos um elemento li
+    // e passamos o texto da casa com os dados pegos nos inputs
+    let lista = document.createElement("li")
+    lista.innerText = area + "m²,  número " + numero + " (" + bairro + " - " + cidade + ")" 
+
+    // Aqui criamos um botão para remover
+    // setamos o tipo dele como "button" com o type
+    // setamos seu texto como "Remover" com o innerText
+    // e utilizamos o setAttribute para setar o atributo onclick que irá chamar a função de remover as casas e passamos o próprio elemento como parâmetro da função
+    let removeButton = document.createElement("button")
+    removeButton.type = "button"
+    removeButton.innerText = "Remover"
+    removeButton.setAttribute("onclick" , "removeHouse(this)")
+    
+    // Aqui inserimos o removeButton como filho do li
+    lista.appendChild(removeButton)
+
+    // Aqui selecionamos a ul pelo id e inserimos a lista com o li criada, como filho da ul
+    document.getElementById("house-list").appendChild(lista)
+}
+
+//  Aqui criamos a função para remover as casas, ela recebe o elemento removeButton como parâmetro
+// Pegamos o elemento LI pai do button que recebemos como parâmetro com o parentNode
+// e selecionamos a UL pelo seu id e utilizamos o removeChild(removeList) e passamos a variável que pega o elemento pai do button como parâmetro para ser removido 
+function removeHouse(button){
+    let removeList = button.parentNode
+    document.getElementById("house-list").removeChild(removeList)
+}
+```
+-  [Documentação createElement](https://developer.mozilla.org/pt-BR/docs/Web/API/Document/createElement)
+-  [Documentação setAttribute](https://developer.mozilla.org/pt-BR/docs/Web/API/Element/setAttribute)
+-  [Documentação removeChild](https://developer.mozilla.org/pt-BR/docs/Web/API/Node/removeChild)
+-  [Documentação parentNode](https://developer.mozilla.org/pt-BR/docs/Web/API/Node/parentNode)
+<hr>
+
+### Seletores para formulários
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seletores para Formulários</title>
+    <script src="index.js"></script>
+</head>
+
+<body>
+    <form>
+        <p>
+            <label>Nome :</label>
+            <input type="text" name="name">
+        </p>
+
+        <p>
+            <label>Cor primária: </label>
+            <select name="color">
+                <option value="yellow">Amarelo</option>
+                <option value="blue">Azul</option>
+                <option value="red">Vermelho</option>
+            </select>
+        </p>
+
+        <p>
+            <label>Gosta de programar? </label>
+            <input type="radio" value="Sim" name="like-programming"> Sim
+            <input type="radio" value="Não" name="like-programming"> Não
+        </p>
+
+        <p>
+            <label>Conhecimentos em programação web: </label>
+            <br>
+            <input type="checkbox" value="HTML" name="developer-options">HTML
+            <input type="checkbox"value="Javascript"name="developer-options">Javascript
+            <input type="checkbox" value="CSS" name="developer-options">CSS
+            <input type="checkbox" value="React"name="developer-options">React
+        </p>
+
+        <button type="button" onclick="showInfo()">Mostrar informações</button>
+    </form>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+// Aqui a função para exibir as informações
+function showInfo(){
+
+    // Aqui selecionamos o elemento input pelo seu name e pegamos seu valor com o value
+    let name = document.querySelector("input[name ='name']").value
+
+    // Aqui selecionamos o select pelo seu name e selecionamos opção que está marcada e acessamos o texto dela com text
+    let favoriteColor = document.querySelector("select[name='color'] option:checked").text
+
+    // Aqui selecionamos o input pelo seu name like-programming e pegamos o value da opção selecionada
+    let likeProgramming = document.querySelector("input[name='like-programming']:checked").value
+
+    // Aqui selecionamos todos os inputs com o name developer-options e os que foram selecionados
+    let developerOptions = document.querySelectorAll("input[name='developer-options']:checked")
+
+    // Aqui criamos um array vazio e utilizamos o forEach para percorrer cada elemento selecionado e adicionamos no array
+    let optionsValue = []
+    developerOptions.forEach(element => { optionsValue.push(element.value) })
+
+    // Aqui utilizamos o método join no array optionsValue para adicionar uma vírgula entre os itens do array e criamos a mensagem de alerta para exibir os dados pegos nos inputs
+    let optionsChecked = optionsValue.join(", ")
+    alert("Nome: " + name + "\nCor primária: " + favoriteColor + "\nGosta de programar? " + likeProgramming + "\nConhecimento em programação web: " + optionsChecked)
+}
+```
+<hr>
+<br>
+
+### Evento para o formulário
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos para formulários</title>
+    <script src="index.js"></script>
+</head>
+<body>
+    <!---onsubmit é usado quando se tem um formulário com o botão do tipo submit usado para chamar alguma ação do Javascript-->
+    <form onsubmit="save()">
+        <p>
+            <label>Nome: </label>
+            <input type="text" name="name">
+        </p>
+
+        <p>
+            <label>Programa em:</label>
+            <select name="programming-lang">
+                <option value="Javascript">Javascript</option>
+                <option value="Ruby">Ruby</option>
+                <option value="Python">Python</option>
+                <option value="PHP">PHP</option>
+            </select>
+        </p>
+        <!-- Aqui o botão do tipo submit que irá chamar a função save() do form-->
+        <button type="submit">Salvar</button>
+    </form>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+// Criamos a função save que será executada ao clicar no botão submit
+function save(){
+
+    // Aqui utilizamos o event.prevenDefault() que evita o comportamento padrão de recarregar a página para enviar o formulário do evento onsubmit()
+    event.preventDefault()
+
+    // Selecionamos o input com o name name e pegamos seu valor
+    let name = document.querySelector("input[name='name']").value
+
+    // Aqui selecionamos o select com o name programming-lang e acessamos o valor selecionado com o value
+    let programmingLang = document.querySelector("select[name='programming-lang']").value
+
+
+    // Aqui exibimos um alerta com os dados colocados no input
+    alert("Nome: " + name + "\nLinguagem de Programação: " + programmingLang)
+}
+```
