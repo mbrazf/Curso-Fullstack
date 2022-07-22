@@ -1489,3 +1489,420 @@ function save(){
     alert("Nome: " + name + "\nLinguagem de Programação: " + programmingLang)
 }
 ```
+<hr>
+<br>
+
+### Manipulando Estilos
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manipulando estilos</title>
+    <script src="index.js"></script>
+    <style>
+        p.red-color {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <button type="button" onclick="setBlueBackground()">Fundo Azul</button>
+    <button type="button" onclick="setTransparentBackground()">Fundo Transparente</button>
+    <button type="button" onclick="setRedColor()">Fonte vermelha</button>
+    <button type="button" onclick="removeRedColor()">Fonte normal</button>
+    <br>
+    <p id="style-text">
+        Manipulando CSS via DOM
+    </p>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+// Função para alterar a cor do fundo do texto
+// Selecionamos o elemento desejado e alteramos sua cor de fundo com a propriedade style.backgroundColor = "blue"
+function setBlueBackground(){
+    let element = document.getElementById("style-text")
+    element.style.backgroundColor = "blue"
+}
+
+// Aqui uma forma mais direta de alterar os estilos
+// Função para alterar a cor do fundo do texto
+// Selecionamos o elemento desejado e alteramos sua cor de fundo com a propriedade style.backgroundColor = "transparent"
+function setTransparentBackground(){
+    document.getElementById("style-text").style.backgroundColor = "transparent"
+}
+
+// Função para alterar a cor do texto
+// Selecionamos o elemento desejado e adicionamos uma classe com o classList.add(" ")
+// nessa classe definimos a cor de texto como red
+function setRedColor(){
+    let element = document.getElementById("style-text")
+    element.classList.add("red-color")
+}
+
+// Função para remover a cor aplicada no texto
+// Selecionamos o elemento desejado e removemos a classe que foi adicionada com o classList.remove(" ")
+function removeRedColor(){
+    let element = document.getElementById("style-text")
+    element.classList.remove("red-color")
+}
+```
+<hr>
+<br>
+
+### Manipulando atributos
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manipulando Estilos</title>
+    <script src="index.js"></script>
+</head>
+<body>
+    <p>
+        <select onchange="verifyEnablement()">
+            <option value="enabled">Habilitado</option>
+            <option value="disabled">Desabilitado</option>
+        </select>
+    </p>
+    <p>
+        <label>Algum texto: </label>
+        <input type="text" name="some-text">
+    </p>
+    <p id="message"></p>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+
+// Função para ativar desativar o input
+function verifyEnablement(){
+
+    // Primeiro selecionamos o select e acessamos seu valor
+    // Depois verificamos se o valor do select é igual a disabled, se for iremos selecionar o parágrafo abaixo do input e iremos alterar seu atributo disabled para true desativando o input e alteramos a mensagem que será exibida e as cores
+
+    let selectedValue = document.querySelector("select").value
+    if(selectedValue == "disabled"){
+        document.querySelector("input[name='some-text']").disabled = true
+        let pElement = document.getElementById("message")
+        pElement.innerText = "DESABILITADO"
+        pElement.style.color = "white"
+        pElement.style.backgroundColor = "red"
+    } else {
+
+        // E aqui a mesma coisa selecionamos o input e alteramos seu atributo disabled para false, e alteramos os estilos caso o input esteja habilitado
+
+        document.querySelector("input[name='some-text']").disabled = false
+        let pElement = document.getElementById("message")
+        pElement.innerText = "HABILITADO"
+        pElement.style.color = "white"
+        pElement.style.backgroundColor = "green"
+    }
+}
+```
+<hr>
+<br>
+
+### Exercício Manipulando o DOM
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício Manipulando o DOM</title>
+    <script src="property.js"></script>
+    <script src="app.js"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+    <h3>Cadastro de Imóveis</h3>
+    <form onsubmit="app.addProperty()">
+       <p>
+           <label>Tipo: </label>
+           <select name="kind">
+               <option value="Casa">Casa</option>
+               <option value="Apartamento">Apartamento</option>
+           </select>
+       </p>
+        <p>
+            <label>Área: </label>
+            <input type="number" name="area" step="any" min="0">
+        </p>
+        <p>
+          <input type="checkbox" name="rented">Alugado
+        </p>
+
+        <button  type="submit">Salvar</button>
+        <button  type="button" onclick="app.cleanForm()">Limpar</button>
+    </form>
+
+    <h3>Imóveis cadastrados</h3>
+
+    <ul id="properties">
+        
+    </ul>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+- property.js
+
+// Aqui criamos a classe Property que contém o constructor que recebe kind, area e rented como parâmetros
+class Property {
+    constructor(kind, area, rented){
+        this.kind = kind
+        this.area = area
+        this.rented = rented
+    }
+}
+```
+
+```
+- main.js
+
+// Aqui criamos uma instância global da classe App podendo assim acessar ela de qualquer lugar
+const app = new App()
+```
+
+```
+- app.js
+
+//  Aqui criamos a classe App que irá conter toda a aplicação
+class App {
+    // Criamos um método addProperty()
+    // removemos o comportamento padrão do botão submit
+    // selecionamos os elementos e criamos uma instância da classe Property do outro arquivo
+    // chamamos o método addOnPropertiesList e passamos o objeto/instância como parâmetro
+    // e chamamos o método que limpa os campos do formulário
+    addProperty (){
+        event.preventDefault()
+        let kind = document.querySelector("select[name='kind']").value
+        let area = document.querySelector("input[name='area']").value
+        let rented = document.querySelector("input[name='rented'] ").checked
+        let property = new Property(kind, area, rented)
+
+        this.addOnPropertiesList(property)
+        this.cleanForm()
+    }
+
+    // Aqui criamos outro método que recebe a instância/objeto criado acima
+        addOnPropertiesList(property){
+        // Aqui criamos um elemento li e criamos o texto com os dados pegos nos inputs
+        // Verificamos se a property.rented está marcada, se estiver chamamos o método que exibe a marca de ALUGADO se não estiver iremos chamar o método da marca DISPONÍVEL
+        // e inserimos a rentedMark como filho da li
+        let listElement = document.createElement("li")
+        let propertyInfo = "Tipo: " + property.kind + " (Área: " + property.area + "m²)"
+        if(property.rented){
+            let rentedMark = this.createRentedMark()
+            listElement.appendChild(rentedMark)
+        } else {
+            let availableMark = this.createAvailableMark()
+            listElement.appendChild(availableMark)
+        }
+
+        // Aqui atualizamos o texto da li com o texto com os dados do imóvel
+        // chamamos o método que cria o botão de remover
+        // e inserimos o botão como filho da li
+        listElement.innerHTML += propertyInfo
+        let buttonToRemove = this.createRemoveButton()
+        listElement.appendChild(buttonToRemove)
+
+        // e aqui selecionamos a ul e inserimos a li como filho
+        document.getElementById("properties").appendChild(listElement)
+    }
+
+    //  Aqui o método para criar a marca de alugado
+    //  Criamos um elemento span
+    //  alteramos seus estilos e retornamos ele
+    createRentedMark(){
+        let rentedMark = document.createElement("span")
+        rentedMark.style.color = "white"
+        rentedMark.style.backgroundColor = "red"
+        rentedMark.innerText = "ALUGADO!"
+        return rentedMark
+    }
+
+    //  Aqui o método para criar a marca de disponível
+    //  Criamos um elemento span
+    //  alteramos seus estilos e retornamos ele
+    createAvailableMark(){
+        let availableMark = document.createElement("span")
+        availableMark.style.color = "white"
+        availableMark.style.backgroundColor = "green"
+        availableMark.innerText = "DISPONÍVEL!"
+        return availableMark
+    }
+
+    // Aqui criamos o método para criar o botão para remover
+    // setamos seu atributo com o evento onclick que chama o método remove()
+    // alteramos o texto que será exibido no botão
+    // e retornamos o botão criado
+    createRemoveButton(){
+        let buttonToRemove = document.createElement("button")
+        buttonToRemove.setAttribute("onclick", "app.remove()")
+        buttonToRemove.innerText = "Remover"
+        return buttonToRemove
+    }
+
+    //  Aqui criamos o método para limpar o formulário
+    //  e definimos os valores como vazio
+    cleanForm(){
+        document.querySelector("input[name='area']").value = " "
+        document.querySelector("input[name='rented']").checked = false
+    }
+
+    // Aqui o método para remover os itens da lista
+    // Armazenamos em uma variável o event do botão e pegamos o parentNode que é o elemento pai
+    // Selecionamos o elemento com o id properties que é a UL e utilizamos o removeChild(liToRemove) para remover o elemento filho LI
+    remove(){
+        let liToRemove = event.target.parentNode
+        document.getElementById("properties").removeChild(liToRemove)
+    }
+}
+```
+<hr>
+<br>
+
+### Eventos a partir do Javascript
+<br>
+
+- Para adicionar eventos pelo Javascript utilizamos o addEventListener() que recebe 2 parâmetros o primeiro é o evento desejado onclick, onmouseover e todos os outros disponíveis e o segundo parâmetro é a função que será executada
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos a partir do Javascript</title>
+</head>
+<body>
+    <form>
+        <select name="select-option">
+            <option>Opção 01</option>
+            <option>Opção 02</option>
+        </select>
+    </form>
+    <script src="index.js"></script>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+// Aqui selecionamos o elemento select pelo seu name
+// e para adicionar eventos diretamente pelo JS utilizamos o addEventListener() que recebe 2 parâmetros o primeiro é o evento desejado onclick, onmouseover e todos os outros disponíveis e o segundo parâmetro é a função que será executada
+
+document.querySelector("select[name='select-option']").addEventListener("change", function(){
+    alert(event.target.value)
+})
+```
+<hr>
+<br>
+
+### Manipulando Eventos
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manipulando Eventos</title>
+</head>
+<body>
+    <form>
+        <label>Algum texto: </label>
+        <input type="text" name="sample-input">
+    </form>
+    <script src="index.js"></script>
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+function doChange(){
+    alert(event.target.value)
+}
+
+// Selecionamos o elemento desejado
+let sampleInput = document.querySelector("input[name='sample-input']")
+
+// Adicionamos um evento change nesse elemento que chama a função doChange criada acima
+sampleInput.addEventListener("change", doChange)
+
+// Instanciamos um objeto Event que recebe como parâmetro o nome do evento a ser criado
+let changeEvent = new Event("change")
+
+// Aqui iremos disparar um evento com o dispacthEvent() ele espera receber um objeto Event que contém o evento que iremos disparar no caso a variável changeEvent
+sampleInput.dispatchEvent(changeEvent)
+
+// E o removeEventListener() remove o evento de determinada função, passamos o evento e a função como parâmetros para remover
+//sampleInput. removeEventListener("change", doChange)
+```
+<hr>
+<br>
+
+### This e as Arrow functions
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>This e as Arrow Functions</title>
+    <script src="index.js"></script>
+</head>
+<body>
+    
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+ //Uma função padrão tem um próprio this que no exemplo o this se refere ao objeto testingArrow, já a Arrow Function não tem seu próprio this, então ao chamarmos o this na arrow function irá retornar um objeto vazio, ou um objeto window que corresponde ao contexto do navegador.
+
+testingArrow = {
+    name: "Escola de Javascript",
+    normalFunction: function(){
+      console.log(this.name)
+    },
+    arrowFunction: () => {
+      console.log(this.name)
+    }
+  }
+  testingArrow.normalFunction()
+  testingArrow.arrowFunction()
+  
+  // A função padrão ela obedece ao escopo do objeto, então ela é chamada dentro do contexto de onde foi criada
+  // A Arrow Function sempre vai estar inserida no contexto de onde ela é chamada
+```
