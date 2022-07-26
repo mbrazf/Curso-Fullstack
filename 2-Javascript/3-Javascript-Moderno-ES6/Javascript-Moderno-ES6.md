@@ -193,3 +193,202 @@ greetCrew("Seja bem vindo", "Marcelo", "Rodrigo", "Arthur")
 ```
 <hr>
 <br>
+
+### O que é NodeJS e como instalar
+<br>
+
+- Interpretador de código Javascript
+- Criado por Ryan Dahl em 2009
+- Utiliza como motor o interpretador Javascript V8 da Google
+  - Permite criarmos códigos que serão executados fora do Browser
+  - Seja no terminal, backend de uma aplicação, etc.    
+<br>      
+
+- [Download NodeJS](https://nodejs.org/pt-br/download/)
+<hr>
+<br>
+
+### Formato JSON
+<br>
+
+- JSON significa Javascript Object Notation.
+- Um formato de representação de dados no formato texto.
+- Ele é um derivado da forma como os objetos do JS são organizados.
+
+### Por que usar?
+<br>
+
+- Diferentes sistemas precisam se comunicar.
+  - É necessário que exista um padrão para que possam mandar dados um para o outro.
+- JSON é um formato bem compacto e altamente adotado.
+- Pode ser um texto salvo num arquivo.
+  - Geralmente num arquivo com formato .json.
+- Ou até mesmo numa string.
+
+```
+- Exemplo de arquivo JSON
+
+{
+    "name": "Terra",
+    "physicalCharacteriscts": {
+        "surfaceArea": 510072000,
+        "equatorialDiameter": 12756.2
+    },
+    "colors": ["Azul","Branco", "Marrom"],
+    "startRotation": "00:00",
+    "finishRotation": "23:59"
+}
+```
+<br>
+
+- Convertendo JSON para Objeto
+```
+// Criamos uma string JSON
+let planet_json = `{
+    "name": "Terra",
+    "physicalCharacteriscts": {
+        "surfaceArea": 510072000,
+        "equatorialDiameter": 12756.2
+    },
+    "colors": ["Azul","Branco", "Marrom"],
+    "startRotation": "00:00",
+    "finishRotation": "23:59"
+}`
+
+console.log(planet_json)
+
+// Função para conversão de uma string JSON em um objeto Javascript que podemos manipular
+let planet = JSON.parse(planet_json)
+
+console.log(planet)
+```
+<br>
+
+- Convertendo Javascript para JSON
+```
+// Criamos um objeto simples
+let planetaTerra = {
+    "name": "Terra",
+    "diameter": 3000000
+}
+console.log(planetaTerra)
+
+// E aqui convertemos o objeto Javascript para JSON
+let jsonString = JSON.stringify(planetaTerra)
+
+console.log(jsonString)
+```
+<hr>
+<br>
+
+## NPM e YARN
+<br>
+
+### O que são NPM e YARN ?
+<br>
+
+- NPM e YARN são duas ferramentas gerenciadoras de pacotes do Javascript. NPM vem de Node Package Manager.
+- O YARN surgiu em contrapartida ao NPM, que apresentava problemas de performance.
+  - Criado pelo Facebook
+- Com o surgimento do Yarn, o NPM melhorou e vários destes problemas foram resolvidos.
+  - Como o NPM evoluiu bastante desde a sua versão 5, nós utilizaremos ele.  
+<hr>
+<br>
+
+### O que é um gerenciador de pacote?
+<br>
+
+- É uma ferramenta responsável por gerenciar as dependências da aplicação.
+- Conseguimos instalar dependências(pacotes) pela linha de comando.
+- Permite que mantenhamos as versões necessárias das ferramentas para a aplicação  
+<hr>
+<br>
+
+### NPM
+<br>
+
+- NPM é uma ferramenta que possui 3 recursos:   
+<br>
+
+- Uma ferramenta de linha de comando para instalar pacotes.
+- Repositório de pacotes Javascript.
+  - Quando executamos um comando de instalação, o NPM busca no próprio repositório.
+- Site para pesquisa sobre as documentações de um pacote.  
+<br>   
+
+- Aqui o link do npm para buscar pacotes:  [Link npm](https://www.npmjs.com/package/moment)
+- No exemplo procuramos a biblioteca moment para manipular datas   
+<hr>
+<br>
+
+### Como utilizar o npm
+<br>
+
+1-  Primeiro você inicia o npm com o comando "npm init" na pasta desejada e preenche os dados do projeto, que irá gerar um arquivo package.json.   
+```
+- package.json
+
+{
+  "name": "npm_class",
+  "version": "1.0.0",
+  "description": "Aula para estudar NPM",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "NPM",
+    "class",
+    "study"
+  ],
+  "author": "Marcelo Braz",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.29.4"
+  }
+}
+```
+2-  Depois você instala o pacote desejado usando o comando: (no exemplo o moment)
+```
+npm install moment --save
+```
+
+3- Adiciona o script do pacote no HTML na tag script src e pronto ja podemos utilizar o moment
+```
+<!--Aqui adicionamos o pacote instalado pela tag script, acessamos a pasta node_modules e dentro dela a pasta do pacote moment e depois o arquivo moment.js-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Npm Init e Instalação de Pacotes</title>
+</head>
+<body>
+    
+    <script src="node_modules/moment/moment.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
+```
+
+```
+- index.js
+
+// Aqui utilizamos a biblioteca instalada moment
+const today = moment().format("DD/MM/YYYY")
+alert(`Data atual: ${today}`)
+```
+
+npm init
+- Inicia o npm na pasta selecionada
+
+npm init -y
+  - Inicia o npm e concorda com todas as perguntas padrão
+
+npm install nomeDoPacote --save
+  - Instala o pacote desejado e informa que ele é uma dependência do nosso projeto
+
+npm start
+- Inicia o servidor localhost ao instalar o webpack
