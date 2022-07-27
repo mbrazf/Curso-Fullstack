@@ -1,0 +1,20 @@
+{
+  "name": "2-transpilacao-babel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "testing-es8.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.18.9",
+    "@babel/core": "^7.18.9",
+    "@babel/preset-env": "^7.18.9"
+  },
+  "dependencies": {
+    "core-js": "^3.24.0"
+  }
+}

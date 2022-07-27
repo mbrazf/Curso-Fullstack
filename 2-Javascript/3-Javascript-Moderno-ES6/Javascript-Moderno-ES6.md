@@ -392,3 +392,539 @@ npm install nomeDoPacote --save
 
 npm start
 - Inicia o servidor localhost ao instalar o webpack
+<hr>
+<br>
+
+## Transpilação com Babel
+<br>
+
+### O que é Babel ?
+<br>
+
+- Transpilar é converter o código que está numa linguagem para outra
+- Babel é utilizado para isso
+  - Converte o código numa versão do ECMA para outras versões anteriores
+
+- Desenvolvido em Javascript
+- Utilizado para permitir compatibilidade com navegadores que ainda não suportam determinada versão   
+<br>
+
+- npm init -y    para iniciar o npm na pasta desejada
+
+- Instalamos os pacotes que serão utilizados
+  - npm install @babel/core @babel/cli @babel/preset-env --save-dev
+<hr>
+
+- @babel/core
+  - É o pacote base para o babel funcionar
+
+- @babel/cli
+  - Pacote para podermos utilizar o babel por linha de comando
+
+- @babel/preset-env
+  - Pacote para converter qualquer versão do ES6 ou superior, para ES5
+<hr>
+
+- Aqui iremos utilizar o babel para transpilar o arquivo:  
+<br>
+
+```
+- testing-es8.js
+
+//Aqui criamos um código atual
+
+function testingES8(text1, text2, ){
+    alert(`${text1}\n${text2}`)
+}
+```
+
+- Comando para transpilar para uma versão anterior
+  - npx babel nomeArquivo
+
+- Comando usado para salvar em um novo arquivo o código transpilado  
+  - npx babel nomeArquivoOriginal -o nomeDoArquivoTranspilado
+
+<br>
+
+
+```
+//Aqui o código transpilado, no código atual tinha uma vírgula depois do parâmetro text2 e ao transpilar a vírgula foi removida
+
+function testingES8(text1, text2){
+    alert(`${text1}\n${text2}`)
+}
+```
+<br>
+
+-   Comando para transpilar exatamente para a versão ES5 com o pacote preset-env
+    - npx babel nomeArquivoOriginal -o nomeDoArquivoTranspilado --presets=@babel preset-env
+```
+//Aqui o arquivo transpilado para ES5 
+
+"use strict";
+
+function testingES8(text1, text2) {
+  alert("".concat(text1, "\n").concat(text2));
+} 
+```
+
+-   Transpila o diretório/pasta inteiro e salva o arquivo transpilado em outro diretório/pasta
+      - npx babel nomeDaPastaAtual --out-dir nomeDaPastaNova --presets=@babel/preset-env
+<hr>
+<br>
+
+### babel.config.js e .babelrc
+<br>
+
+- Babel 7 foi lançado em 2018
+- Antes possuia como arquivo de configuração apenas o .babelrc
+- No 7, passou a ser recomendada a utilização do babel.config.js
+<hr>
+
+### babel.config.js
+<br>
+
+- É um arquivo Javascript
+- Configuramos os presets, plugins e etc.
+- Lido no momento de converter os arquivos
+- É utilizado na Raiz do projeto para as configurações padrões
+<hr>
+
+- npx babel nomeDaPastaAtual --out-dir nomeDaPastaNova --presets=@babel/preset-env
+  - Transpila o diretório inteiro e faz o output da transpilação em outro diretório
+- Outra forma de fazer isso é criar o arquivo babel.config.js e configurar o preset e exportá-lo sem ter que ficar utilizando a linha de comando do terminal
+```
+- babel.config.js
+
+const presets = [
+    [
+        "@babel/preset-env",
+        {
+            useBuiltIns: "usage",
+            corejs: "3.3.2"
+        }
+    ]
+]
+module.exports = { presets }
+```
+- Comando para instalar o core-js na versão 3, pacote que importa recursos que o ES5 não possui nativamente
+  - npm install core-js@3  
+<br>
+
+- Ai basta usar o seguinte comando:
+  - npx babel nomeDaPastaAtual --out-dir nomeDaPastaNova. 
+- Que ai o arquivo irá fazer a importação dos pacotes do corejs necessários para transpilar para versão ES5.
+<hr>
+<br>
+
+### .babelrc
+<br>
+
+- É um arquivo JSON
+- Configuramos os presets, plugins e etc.
+- Lido no momento de converter os arquivos
+- É utilizado em subdiretórios para sobrescrever os valores padrões que vem no babel.config.js
+<hr>
+<br>
+
+### NPX e NPM Scripts
+<br>
+
+- Criamos um arquivo HTML dentro da pasta public
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPX e NPM Scripts</title>
+</head>
+<body>
+    NPX e NPM Scripts
+</body>
+</html>
+```
+
+- Instalamos o babel
+  - npm install @babel/core @babel/cli
+<hr>
+
+```
+- Aqui criamos um arquivo index.js com um console.log()
+
+console.log("Testando NPX e NPM")
+```
+<hr>
+
+- E executamos o babel para transpilar a index.js e salvar em transpiled.js
+  - npx babel index.js -o transpiled.js
+<hr>
+
+- Aqui instalamos uma ferramenta que cria um servidor http
+  - npm install http-server --global
+
+- Para executar ele utilizamos o comando:
+  - http-server
+
+- Ele pega por padrão o arquivo que se encontra na pasta public no exemplo é o arquivo index.html
+<hr>
+
+- Podemos também criar atalhos para comandos no package.json
+- Na parte de "scripts" adicionamos um novo comando, "build" que executa o comando para transpilar "npx babel index.js -o transpiled.js".
+```
+- package.json
+
+{
+  "name": "3-npx-npm-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx babel index.js -o transpiled.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/cli": "^7.18.9",
+    "@babel/core": "^7.18.9"
+  }
+}
+```
+-  Agora para transpilar basta utilizar o comando:  
+    - npm run build
+
+- Mais detalhes em [Documentação npm](https://docs.npmjs.com/)
+<hr>
+<br>
+
+## Webpack
+<br>
+
+- É uma ferramenta conhecida como static module bundler
+- Lê todo o código e monta um gráfico de dependências
+- Este gráfico é utilizado para montar os pacotes de código
+- A idéia é ter todo o código modularizado no JS
+  - Através do código e do arquivo de configuração
+- Possui espaço para plugins e loaders
+  - Permite incluir outros tipos de arquivos além do JS ou
+  transpilar os arquivos JS com o Babel
+- Tudo no webpack é configurado num arquivo webpack.config.js (nome padrão)
+<hr>
+
+### Começando a usar o webpack
+
+- Primeiro iniciamos o npm na pasta/diretório:
+  - npm init -y  
+
+- Instalamos o webpack:
+  - npm install --save-dev webpack webpack-cli
+
+- Instalamos o moment pacote para manipular datas
+  - npm install moment
+<hr>
+
+- Criamos um diretório dist com o index.html e importamos na tag script o main.js arquivo padrão criado pelo webpack
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desvendando o Webpack</title>
+</head>
+<body>
+    Testando o webpack
+    <script src="main.js"></script>
+</body>
+</html>
+```
+
+- Criamos um diretório src com um index.js
+```
+// Aqui importamos o pacote moment instalado diretamente pelo Javascript, assim não precisamos importar pelo HTML
+
+import moment from "moment/src/moment"
+alert(moment().format("HH:mm:ss"))
+```
+
+- Executamos o webpack
+  - npx webpack
+
+- O webpack irá unir os pacotes instalados em um único arquivo main.js minificado, ai para utilizar basta importar o main.js no html
+- Ao abrirmos o arquivo HTML no navegador veremos que a importação foi executada.
+<hr>
+
+- Criamos um arquivo webpack.config.js para as configurações do webpack
+```
+- webpack.config.js
+
+
+// Aqui o webpack irá ler o arquivo index.js e irá gerar outro arquivo index.js no diretório dist e irá sobrescrever o main.js
+// Por padrão ele gera um arquivo main.js
+module.exports = {
+    entry: {
+        index: './src/index.js'
+    }
+}
+```
+- Executamos o webpack agora de uma forma otimizada para desenvolvimento
+- E o arquivo index.js será gerado como adicionado no webpack.config.js e substituira o main.js
+  - npx webpack --mode development
+<hr>
+
+- Como o index.js substitui o main.js alteramos o script
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desvendando o Webpack</title>
+</head>
+<body>
+    Testando o webpack
+    <script src="index.js"></script>
+</body>
+</html>
+```
+- Criamos o arquivo planet.js mas escrevemos apenas um texto para ocorrer um erro
+```
+Sou um erro
+```
+
+- Aqui importamos o planet.js
+```
+// Aqui importamos o pacote moment instalado diretamente pelo Javascript, assim não precisamo importar pelo HTML
+import moment from "moment/src/moment"
+
+// Importamos o arquivo planet.js criado
+import "planet.js"
+
+alert(moment().format("HH:mm:ss"))
+```
+- E executamos o webpack novamente:
+  - npx webpack --mode development  
+<br>
+- Como colocamos o index.js como entrada no webpack.config.js ele irá buscar no arquivo index.js, como no index.js tem um import do planet.js então ele também será incluido no processamento, mas como o planet.js tem um erro o webpack não irá permitir a compilação e será exibido um erro.
+<hr>
+<br>
+
+- Outro exemplo:
+<br>
+
+- Adicionamos uma nova entrada no webpack.config.js
+```
+// Aqui adicionamos as configurações do webpack
+
+// Aqui o webpack irá ler o arquivo index.js e irá gerar outro arquivo index.js no diretório dist e irá sobrescrever o main.js
+// Por padrão ele gera um arquivo main.js
+// Adicionamos uma nova entrada galaxy.js
+
+module.exports = {
+    entry: {
+        index: './src/index.js',
+        galaxy: './src/galaxy.js'
+    }
+}
+```
+- Criamos o arquivo galaxy.js
+```
+alert("Bem vindo à Via Láctea")
+```
+
+- Alteramos o webpack.config.js:
+```
+// Aqui adicionamos as configurações do webpack
+
+
+const path = require("path")
+
+// Aqui o webpack irá ler o arquivo index.js e irá gerar outro arquivo index.js no diretório dist e irá sobrescrever o main.js
+// Por padrão ele gera um arquivo main.js
+// Adicionamos uma nova entrada com galaxy.js
+module.exports = {
+    entry: {
+        index: './src/index.js',
+        galaxy: './src/galaxy.js'
+    },
+
+    // Aqui adicionamos uma nova chave output que irá utilizar o padrão do nome do arquivo, tudo que houver na chave entry irá conter o nome.bundle.js.
+    // e irá adicionar esse arquivo dentro da pasta/diretório dist
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    }
+}
+```
+- E ao executar novamente o webpack : npx webpack --mode development
+- Ele irá fazer o que foi definido no webpack.config.js, alterar o nome dos arquivos e adiciona os arquivos no diretório dist.
+<hr>
+
+- Agora só importar os arquivos novos no HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desvendando o Webpack</title>
+</head>
+<body>
+    Testando o webpack
+    <script src="index.bundle.js"></script>
+    <script src="galaxy.bundle.js"></script>
+</body>
+</html>
+```
+- Ao abrir no navegador será executado os códigos dos dois arquivos bundle.js.
+<hr>
+<br>
+
+- Instalamos os pacotes que serão utilizados 
+  - npm install @babel/core @babel/preset-env babel-loader core-js@3
+<hr>
+
+- Adicionamos novas configurações no webpack.config.js
+```
+// Aqui adicionamos as configurações do webpack
+
+
+
+const path = require("path")
+
+// Aqui o webpack irá ler o arquivo index.js e irá gerar outro arquivo index.js no diretório dist e irá sobrescrever o main.js
+// Por padrão ele gera um arquivo main.js
+// Adicionamos uma nova entrada com galaxy.js
+module.exports = {
+    entry: {
+        index: './src/index.js',
+        galaxy: './src/galaxy.js'
+    },
+
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
+
+    // Aqui adicionamos uma nova chave rules que é um array com as regras 
+    //  Adionamos uma regra que irá pegar todos os arquivos que terminam com .js e irá executar o babel-loader neles
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: ['babel-loader']
+            }
+        ]
+    }
+}
+```
+
+- Criamos um arquivo babel.config.js
+```
+// Aqui inserimos as configurações do babel
+
+module.exports = {
+    presets: [
+        [
+            "@babel/preset-env"
+        ]
+    ]
+}
+```
+- E executamos o webpack: npx webpack --mode development
+- E após executar veremos que ele irá ter transpilado os códigos em index.bundle.js minificado para o ES5.
+<hr>
+
+- Aqui outro recurso do webpack que cria um servidor que atualiza a cada alteração como se fosse um liveserver
+  - npm install webpack-dev-server --save-dev
+<hr> 
+
+- Alteramos as configurações do webpack.config.js
+```
+// Aqui adicionamos as configurações do webpack
+
+
+
+const path = require("path")
+
+// Aqui o webpack irá ler o arquivo index.js e irá gerar outro arquivo index.js no diretório dist e irá sobrescrever o main.js
+// Por padrão ele gera um arquivo main.js
+// Adicionamos uma nova entrada com galaxy.js
+module.exports = {
+    entry: {
+        index: './src/index.js',
+        galaxy: './src/galaxy.js'
+    },
+
+    // Aqui adicionamos uma nova chave output que irá utilizar o padrão do nome do arquivo, tudo que houver na chave entry irá conter o nome.bundle.js.
+    // e irá adicionar esse arquivo dentro da pasta/diretório dist
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
+
+    // Aqui adicionamos uma nova chave rules que é um array com as regras 
+    //  Adionamos uma regra que irá pegar todos os arquivos que terminam com .js e irá executar o babel-loader neles
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: ['babel-loader']
+            }
+        ]
+    },
+
+    //Adicionamos outra configuração com a chave watch
+    // Ele irá monitorar por qualquer alteração nos arquivos, e quando encontrar irá processar o webpack novamente.
+    watch: true,
+
+    // Aqui outra chave com as configuração desse servidor que foi instalado
+    //  O servidor vai monitorar a pasta dist e se houver algum arquivo novo ele irá recarregar o navegador automaticamente
+    devServer: {
+        static: {
+            directory: path.join(__dirname, './dist'),
+        },
+
+        liveReload: true
+    }
+}
+```
+
+- E alteramos o package.json
+- Adicionamos um atalho "start" para executar o servidor.
+```
+{
+  "name": "4-desvendando-webpack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.3"
+  },
+  "dependencies": {
+    "@babel/core": "^7.18.9",
+    "@babel/preset-env": "^7.18.9",
+    "babel-loader": "^8.2.5",
+    "core-js": "^3.24.0",
+    "moment": "^2.29.4"
+  }
+}
+```
+- E ao digitar o comando npm run start irá criar o servidor no navegador que atualiza automaticamente ao realizar uma alteração.
+<hr>
+<br>
