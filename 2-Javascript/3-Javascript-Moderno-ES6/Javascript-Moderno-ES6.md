@@ -928,3 +928,236 @@ module.exports = {
 - E ao digitar o comando npm run start irá criar o servidor no navegador que atualiza automaticamente ao realizar uma alteração.
 <hr>
 <br>
+
+## Módulos
+<br>
+
+### O que são Módulos ?
+<br>
+
+- São arquivos de código que dividimos para importar quando necessário
+- Quando estamos programando, nosso código pode ser dividido em partes que permitam
+  - Reusabilidade
+  - Manutenibilidade
+  - Separação de contextos
+<hr>
+
+### Tipos de Módulos
+<br>
+
+- Antes do ES6, o JS não possuía um jeito de tratar os módulos
+- Foram criado vários padrões, dentr eles o CommonJS
+  - É uma especificação de modularização para o Javascript
+
+- É o padrão que o NodeJS adota
+  - Após o surgiemtn do ES6, o node conseguiu adaptar sua estrutura para utilizar este novo formato que estudaremos, mas manteve o formato do CommonJS
+  - Graças ao Babel também podemos utilizar no frontend
+<hr>
+<br>
+
+- npm install
+  - Ao colocar npm install sem nome de pacote, ele irá procurar no package.json e irá instalar tudo que estiver na devDependencies
+```
+- package.json
+
+{
+  "name": "desvendando_webpack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.41.1",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.8.2",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "babel-loader": "^8.0.6"
+  }
+}
+```
+- npm start
+  - Para iniciar o servidor para atualizar o browser/navegador
+<hr>
+
+### Exportando e Importando um Módulo CommonJS
+<br>
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Módulo CommonJS</title>
+  <script src="index.bundle.js"></script>
+</head>
+<body>
+  
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+- planet.js
+
+// Aqui criamos a classe Planet, que contém um contructor que recebe name e surfaceArea como parâmetros
+
+class Planet {
+    constructor(name, surfaceArea){
+        this.name = name
+        this.surfaceArea = surfaceArea
+    }
+
+    // Aqui criamos um método
+    rotate(){
+        console.log("Rotacionando")
+    }
+}
+
+// Aqui exportamos a classe Planet
+module.exports = Planet
+```
+<hr>
+
+```
+- solar_system.js
+
+// Aqui exportamos um objeto vazio diretamente na declaração
+
+module.exports = {
+    planets: [],
+    central_star: "Sol"
+}
+```
+<hr>
+
+- npm install moment
+  - Instalamos a biblioteca moment para utilizar com o require
+  
+```
+- index.js
+
+
+// Aqui declaramos uma variável que recebe require(), ele recebe um parâmetro que é o caminho do arquivo desejado, ele irá procurar se tem algum módulo sendo exportado, no exemplo a classe Planet
+const Planet = require("./planet")
+
+// Aqui importamos o módulo/objeto exportado do arquivo solar_system
+const solarSystem = require("./solar_system")
+
+// Podemos também importar bibliotecas e pacotes, passamos o nome dele diretamente como parâmetro do require, porque o require considera o node_modules como um caminho padrão
+const moment = require('moment')
+
+
+// Aqui utilizamos a classe e criamos uma instância/objeto dela
+const earth = new Planet("Terra", 50100000)
+// Aqui chamamos o método que contém na classe Planet
+earth.rotate()
+// Aqui adicionamos a instância da classe no objeto importado de solar_system
+solarSystem.planets.push(earth)
+
+// Aqui criamos novas instâncias da classe Planet e adicionamos no objeto importado de solar_system.js
+solarSystem.planets.push( new Planet("Saturno" , 100000000))
+solarSystem.planets.push( new Planet("Marte" , 256200))
+solarSystem.planets.push( new Planet("Júpiter" , 11111256200))
+
+console.log(solarSystem)
+
+// Aqui utilizamos o moment para exibir a hora atual
+console.log(moment().format("HH:mm"))
+```
+<hr>
+<br>
+
+### Exercício Módulos CommonJS
+<br>
+
+- HTML
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Exercício Módulos CommonJS</title>
+  <script src="index.bundle.js"></script>
+</head>
+<body>
+  
+</body>
+</html>
+```
+
+- JAVASCRIPT
+```
+- planet.js
+
+
+// Aqui criamos uma classe Planet e exportamos diretamente
+
+export default class Planet {
+    constructor(name, auToSun){
+        this.name = name
+        this.auToSun = auToSun
+    }
+}
+```
+
+```
+- planet_operations.js
+
+// Aqui declaramos uma variável com o valor da unidade astronômica em km e exportamos 
+export const AU_IN_KILOMETERS = 149587870
+
+
+// Aqui criamos a função para converter e exportamos ela
+export function convertAUtoKm(au){
+    return au * AU_IN_KILOMETERS
+}
+```
+
+```
+- index.js
+
+
+// Aqui importamos a classe Planet de planet.js
+import Planet from './planet'
+
+// Aqui importamos a função para conversão
+import { convertAUtoKm  } from './planet.operations'
+
+
+// Aqui criamos um array/lista com as instâncias dos planetas da classe Planet que contém o nome e o valor da AU
+let planets = [
+    new Planet("Mercúrio" , 0.39),
+    new Planet("Vênus" , 0.72),
+    new Planet("Terra" , 1),
+    new Planet("Marte" , 1.52),
+    new Planet("Júpiter" , 5.2),
+    new Planet("Saturno" , 9.53),
+    new Planet("Urano" , 19.1),
+    new Planet("Netuno" , 30),
+]
+
+// E aqui percorremos a lista de planetas com o forEach
+// e para cada elemento chamamos a função de conversão importada e exibimos no console.log os dados do planeta nome, distância em unidade astronômica e convertida em km
+planets.forEach(planet => {
+    let distanceFromSun = convertAUtoKm(planet.auToSun).toFixed(2)
+    console.log(`${planet.name} - ${planet.auToSun}AU - ${distanceFromSun}km `)
+})
+```
+
+
+
+
+
