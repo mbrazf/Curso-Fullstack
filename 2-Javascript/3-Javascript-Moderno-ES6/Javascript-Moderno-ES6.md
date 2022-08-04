@@ -1156,8 +1156,160 @@ planets.forEach(planet => {
     console.log(`${planet.name} - ${planet.auToSun}AU - ${distanceFromSun}km `)
 })
 ```
+<hr>
+<br>
+
+### Export, Import Default e Nomeados ES6
+<br>
+
+- Aqui utilizamos o export default, podemos ter somente um export default por arquivo Js
+<br>
+
+- spaceship.js
+```
+/* 
+Podemos exportar também diretamente na criação da classe
+
+export default class Spaceship {
+    constructor(name, captain, armaments = [], defenses = []){
+        this.name = name
+        this.captain = captain
+        this. armaments = armaments
+        this.defenses = defenses
+    }
+}
+*/
+//----------------------------------------------------//
+
+// Criamos uma classe
+class Spaceship {
+    constructor(name, captain, armaments = [], defenses = []){
+        this.name = name
+        this.captain = captain
+        this. armaments = armaments
+        this.defenses = defenses
+    }
+}
+
+// e aqui exportamos a classe Spaceship utilizando o export default
+export default Spaceship
+```
+<br>
+
+- armaments.js
+```
+// Aqui exportamos diretamente um objeto com as armas da nave
+
+export default {
+    laser: ["Phasers", "Torpedos de Fóton"],
+    explosion: ["Canhão", "Torpedos de TNT"]
+}
+```
+<br>
+
+- defenses.js
+```
+// Aqui criamos dois arrays com as defesas da nave
+const laserDefenses = ["Escudos Defletores", "Arma anti-laser"]
+const steelDefenses = ["Escudos de Aço"]
+
+// E aqui exportamos os recursos desejados utilizando o export nomeado, dessa forma podemos exportar mais de um item
+// Podemos também renomear a exportação, para renomear temos que utilizar a exportação dessa forma
+export { laserDefenses as laserDef, steelDefenses } 
 
 
+// Aqui uma forma de exportar os itens diretamente na sua criação
+//export const laserDefenses = ["Escudos Defletores", "Arma anti-laser"]
+//export const steelDefenses = ["Escudos de Aço"]
 
 
+// Aqui exportamos utilizando o export default, só podemos ter um export default por arquivo, e só podemos exportar 1 item
+export default ["Escudo Repulsor"]
+```
+<br>
+
+- E aqui veremos os imports default e nomeados
+<br>
+
+- index.js
+```
+// Aqui importamos a classe exportada em spaceship.js
+import Spaceship from "./spaceship";
+
+// e aqui importamos o objeto declarado em armaments.js e armazenamos na variável armamentKind
+import armamentKind from "./armaments"
+
+// Aqui importamos os itens que foram exportados de defenses.js, como utilizamos export nomeado temos que importar utilizando o import nomeado, ou seja temos que utilizar o mesmo nome que foi exportado.
+// Também não precisamos importar itens que não vamos utilizar
+// Podemos também alterar o nome da importação
+import  { laserDef as laserD } from "./defenses";
+
+
+// E aqui importamos de defenses.js o array vazio que foi exportado com o export default
+import basicDefenses from "./defenses"
+
+// Aqui criamos uma instância da classe Spaceship, passamos o valor de name e  captain da nave e acessamos a variável armamentKind que contém o objeto com as armas e também acessamos o array laserDefenses que foi importado com as defesas de laser
+const spaceship = new Spaceship("Colossus", "Marcelo", armamentKind.laser, laserD)
+
+// e aqui outra instância da classe agora utilizando o basicDefenses importado com o import default
+const falcon = new Spaceship("Falcon", "Elon Musk", [], basicDefenses)
+
+
+console.log(spaceship)
+console.log(falcon)
+```
+<hr>
+<br>
+
+## setInterval e setTimeOut
+<br>
+
+- São funções de alta ordem (Recebem outra função como parâmetro)
+- Executam a função depois de um tempo decorrido
+- A setTimeOut executa apenas uma vez
+- A setInterval executa em intervalos de tempo
+<br>
+
+```
+- index.js
+
+//- setTimeout é uma função que recebe uma arrow function como parâmetro, dentro dela a ação que será executada, e no fim passamos o tempo que será executada em milisegundos, no exemplo 2000 milisegundos são 2 segundos.
+// setTimeout é executado apenas uma vez
+
+let timeoutId = setTimeout(() => {
+    console.log("Executando após 2 segundos")
+}, 2000);
+
+// e aqui uma função que cancela a execução do setTimeout, para utilizar ela precisamos armazenar em uma variável o setTimeout, e passamos essa variável para o clearTimeout
+
+clearTimeout(timeoutId)
+
+
+// - setInterval, sua sintaxe é a mesma do setTimeOut, ela irá executar o código em intervalos de tempo
+
+let intervalId = setInterval(() => {
+    console.log("Executando a cada 2 segundos !") 
+}, 2000);
+
+
+// e aqui uma função que interrompe a execução do setInterval, para utilizar ela precisamos armazenar em uma variável o setInterval, e passamos essa variável para o clearInterval
+
+clearInterval(intervalId)
+```
+
+- Exemplo
+```
+//  declaramos uma variável para armazenar os segundos
+//  a cada execução somaremos 2 em seconds
+//  e ao chegar em 10 iremos parar a execução do setInterval
+
+let seconds = 0
+let intervalId = setInterval(() => {
+    seconds += 2
+    console.log(`Executando após ${seconds} segundos !`) 
+    if(seconds == 10){
+        clearInterval(intervalId)
+    }
+}, 2000);
+```
 
