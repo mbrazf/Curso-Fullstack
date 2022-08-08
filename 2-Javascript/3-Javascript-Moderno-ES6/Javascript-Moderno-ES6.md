@@ -1312,4 +1312,250 @@ let intervalId = setInterval(() => {
     }
 }, 2000);
 ```
+<hr>
+<br>
 
+## Síncrono e Assíncrono
+<br>
+
+- Uma execução Síncrona segue um fluxo linear
+- Executa passo a passo do trecho do código
+- Só executa uma instrução após a anterior ter sido executada
+- A execução Assíncrona não segue este formato
+- Não aguarda o fim da execução para passar para o próximo passo
+- Passa para a instrução seguinte sem aguardar a conclusão da atual  
+<br>
+
+
+- Exemplo Síncrono - executa passo a passo
+```
+// - Primeiro executa o passo 01 depois chama a função do passo 02  e depois executa o passo 03.
+function step02(){
+    console.log("Passo 02")
+}
+
+console.log("Passo 01")
+
+step02()
+console.log("Passo 03")
+```
+
+- Exemplo Assíncrono - passa para a execução seguinte sem aguardar a conclusão da outra.
+```
+// - Aqui executamos o passo 04 e passamos para o setTimeout(Assincrono) mas como ele só será executado depois de 1 segundo, durante este intervalo de tempo a execução pula para o passo 06 e depois executa o setTimeOut com o passo 05.
+console.log("Passo 04")
+
+setTimeout(() => {
+    console.log("Passo 05")
+}, 1000);
+
+console.log("Passo 06")
+```
+<hr>
+<br>
+
+## Promises
+
+### O que são Promises ?
+<br>
+
+- Basicamente dão suporte para operações assíncronas
+- Guardam a operação que precisamos dentro de um objeto cuja classe é chamada de Promise
+- Quando precisamos executar, basta chamar este objeto  
+<br>
+
+- Possui 4 estados:
+  - Pendente: quando a Promise é criada e ainda não foi executada
+  - Realizada: quando teve sucesso na operação
+  - Recusada: quando teve falha na operação
+  - Estabelecida: quando foi realizada ou executada  
+<br>
+
+- Pendente é o status inicial
+- Nós decidimos se ela vai para Realizada ou Recusada
+
+```
+// Aqui criamos o objeto que contém os dados da nave
+let komodoShip = {
+    name: "Komodo",
+    velocity: 80,
+    acceleration: 10
+}
+
+// Criamos uma função que irá retornar a promise, e que recebe como parâmetros velocity e acceleration, podemos utilizar eles dentro da promise.
+
+//  Criamos uma promise que recebe uma função como parâmetro que será executada de forma assíncrona que recebe 2 parâmetros:
+// -  resolve é uma função que será chamada quando a gente quiser que a promise seja encerrada com sucesso, faz com que a promise receba o status de realizada,
+// - reject  é usado quando a gente quer que a promise seja encerrada com falha, faz com que a promise receba o status de rejeitada.
+
+// Criamos um setTimeout para ser executado após 1 segundo, e dentro dele verificamos a acceleration da nave, se a verificação for verdadeira chamamos o resolve() que pode receber parâmetro nesse caso recebe a velocidade atualizada.
+// e se for falsa chamamos o reject() que também pode receber parâmetro, com uma mensagem de erro.
+
+const velocityAfter2Seconds = (velocity, acceleration) => {
+    new Promise(function(resolve, reject){
+        setTimeout(() => {
+            if(acceleration > 0){
+                velocity += acceleration * 2
+                console.log(`Nova velocidade: ${velocity}`)
+                resolve(velocity)
+            } else {
+                console.log(`Aceleração inválida`)
+                reject("Não possui aceleração")
+            }
+        }, 1000);
+    })
+}
+
+// Aqui chamamos a função que retorna a promise e passamos os valores dos parâmetros velocity e acceleration
+
+velocityAfter2Seconds(komodoShip.velocity, komodoShip.acceleration)
+
+// Então o  console.log será executado Assincronamente ou seja ele será executado antes de tudo, e a promise será executada depois de 1 segundo com o setTimeOut()
+
+console.log("Execução de Promises")
+```
+<hr>
+<br>
+
+### Utilizando o Then e o Catch na Promise
+<br>
+
+- Utilizamos o mesmo exemplo acima da Promise agora utilizando o Then e o Catch para tratar erros.
+
+```
+// Aqui criamos o objeto que contém os dados da nave
+let komodoShip = {
+    name: "Komodo",
+    velocity: 80,
+    acceleration: 0
+}
+
+// Criamos uma função que irá retornar a promise, e que recebe como parâmetros velocity e acceleration, podemos utilizar eles dentro da promise.
+
+//  Criamos uma promise que recebe uma função como parâmetro que será executada de forma assíncrona que recebe 2 parâmetros:
+// -  resolve é uma função que será chamada quando a gente quiser que a promise seja encerrada com sucesso, faz com que a promise receba o status de realizada,
+// - reject  é usado quando a gente quer que a promise seja encerrada com falha, faz com que a promise receba o status de rejeitada.
+
+// Criamos um setTimeout para ser executado após 1 segundo, e dentro dele verificamos a acceleration da nave, se a verificação for verdadeira chamamos o resolve() que pode receber parâmetro nesse caso recebe a velocidade atualizada.
+// e se for falsa chamamos o reject() que também pode receber parâmetro, com uma mensagem de erro.
+
+const velocityAfter2Seconds = (velocity, acceleration) => {
+    return new Promise(function(resolve, reject){
+        setTimeout(() => {
+            if(acceleration > 0){
+                velocity += acceleration * 2
+                console.log(`Nova velocidade: ${velocity}`)
+                resolve(velocity)
+            } else {
+                console.log(`Aceleração inválida`)
+                reject("Não possui aceleração")
+            }
+        }, 1000);
+    })
+}
+
+// Aqui chamamos a função que retorna a promise e passamos os valores dos parâmetros velocity e acceleration.
+
+//  Para utilizar o método then precisamos utilizar o return na Promise,
+// O then é utilizado para acessar/tratar/alterar o que foi passado no resolve.
+// Agora utilizamos o método .then() na chamada da Promise, que também recebe uma função e que recebe como parâmetro o valor passado no resolve no exemplo a velocity, agora quando a promise for chamada o método then irá alterar a velocidade da nave e exibirá no console.log.
+
+//  E também temos o método catch que é utilizado para capturar e tratar erros caso a Promise seja reject/rejeitada,
+//  Ele também recebe uma função que recebe como parâmetro o que foi passado no reject, nesse exemplo o parâmetro message recebe a mensagem de erro "Não possui aceleração" que foi passada no reject.
+
+velocityAfter2Seconds(komodoShip.velocity, komodoShip.acceleration).then(velocity => {
+    komodoShip.velocity = velocity
+    console.log("Depois de acelerar:\n", komodoShip)
+}).catch(message => {
+    console.log(`Komodo: ${message}`)
+})
+
+// Então o  console.log será executado Assincronamente ou seja ele será executado antes de tudo, e a promise será executada depois de 1 segundo com o setTimeOut()
+
+console.log("Execução de Promises")
+
+console.log(komodoShip)
+```
+<hr>
+<br>
+
+### Exercício Promises
+<br>
+
+```
+- spaceship.js
+
+// Aqui criamos e exportamos diretamente a classe Spaceship com os dados da nave
+export default class Spaceship {
+    constructor(name, maxCapacity, currentCharge){
+        this.name = name
+        this.maxCapacity = maxCapacity
+        this.currentCharge = currentCharge
+    }
+
+    // Aqui criamos o método para calcular a porcentagem da carga atual
+    currentPercentCharge(){
+        return this.currentCharge * 100 / this.maxCapacity
+    }
+}
+```
+```
+- spaceship_engine.js
+
+
+// Aqui criamos e exportamos uma classe
+export default class{
+    constructor(spaceship){
+        this.spaceship = spaceship
+    }
+
+    // Criamos o método para ligar as naves e fazer a validação da carga da bateria
+    // Utilizamos o then para pegar o resolve da Promise e exibir uma mensagem,
+    // E também utilizamos o catch para capturar o erro do reject e exibir uma mensagem de erro
+    turnOn(){
+        this.checkCurrentCharge().then(currentCharge => {
+            console.log(`(${this.spaceship.name}) Partida autorizada: carga atual em ${currentCharge}%`)
+        }).catch(currentCharge => {
+            console.log(`(${this.spaceship.name} Partida não autorizada. Carga em ${currentCharge})%`)
+        })
+    }
+
+
+    // Criamos o método que retorna uma Promise nela verificamos a carga atual  se for maior que 30 retorna o resolve com a carga atual e se for menor que 30 retorna o reject com a carga atual.
+    checkCurrentCharge(){
+        return new Promise((resolve, reject) => {
+            let currentCharge = this.spaceship.currentPercentCharge()
+            if(currentCharge >= 30){
+                resolve(currentCharge)
+            } else {
+                reject(currentCharge)
+            }
+        })
+    }
+}
+```
+
+```
+- index.js
+
+// Aqui importamos as classes criadas nos outros arquivos
+import Spaceship from "./spaceship";
+import SpaceshipEngine from "./spaceship_engine";
+
+// Aqui criamos as instâncias de cada nave com seus dados
+const sophia = new Spaceship("Sophia", 10, 5)
+const amsterda = new Spaceship("Amsterdã", 14, 10)
+const dwarfStar = new Spaceship("Estrela-Anã", 20, 4)
+
+// Aqui instanciamos a outra classe e passamos a instância anterior como parâmetro
+const sophiaEngine = new SpaceshipEngine(sophia)
+const amsterdaEngine = new SpaceshipEngine(amsterda)
+const dwarfStarEngine = new SpaceshipEngine(dwarfStar)
+
+// e aqui chamamos o método para dar partida nas naves
+sophiaEngine.turnOn()
+amsterdaEngine.turnOn()
+dwarfStarEngine.turnOn()
+
+console.log("Promises")
+```
