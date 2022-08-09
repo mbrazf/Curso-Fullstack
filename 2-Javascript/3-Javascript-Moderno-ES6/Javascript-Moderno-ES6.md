@@ -1559,3 +1559,223 @@ dwarfStarEngine.turnOn()
 
 console.log("Promises")
 ```
+<hr>
+<br>
+
+### Promises Encadeadas
+<br>
+
+```
+// Aqui um objeto com os dados da nave
+const spaceship = {
+    name: "Rontaro",
+    currentBateryCharge: 50,
+    consumptionPerKms: 0.00008
+}
+
+// Aqui uma função que retorna uma Promise utilizada para atualizar a  carga da bateria com base na carga consumida
+
+const updateBateryCharge = function(chargeConsumed){
+    return new Promise((resolve, reject) => {
+        spaceship.currentBateryCharge -= chargeConsumed
+        if(spaceship.currentBateryCharge > 0) {
+            resolve(spaceship.currentBateryCharge)
+        } else {
+            reject("Bateria esgotada! Nave será desativada em alguns segundos.")
+        }
+    })
+}
+
+// E aqui outra função que retorna uma Promise para calcular o consumo da bateria da nave
+
+const calculateBateryConsumption = function(velocity, seconds) {
+    return new Promise((resolve, reject) => {
+        if(spaceship.consumptionPerKms <= 0 || velocity <= 0){
+            reject("Nave está parada !.")
+        } else {
+            let chargeConsumed = spaceship.consumptionPerKms * velocity * seconds
+            resolve(chargeConsumed)
+        }
+    })
+}
+
+// Aqui chamamos a Promise calculateBateryConsumption com os valores do parâmetro velocity e seconds
+// Utilizamos o then que retorna uma promise para pegar o resultado da promise e retorna a chamada da outra promise updateBateryCharge
+// pegamos o resultado da promise com o then e exibimos a mensagem com a nova carga no console.log
+// e pegamos também a mensagem de erro do reject da promise e exibimos no console.log
+// Portanto se em alguma das promises acima ocorrer algum erro ele será capturado pelo mesmo catch
+
+calculateBateryConsumption(90, 300).then(chargeConsumed => {
+    return  updateBateryCharge(chargeConsumed)
+}).then(newCharge => {
+        console.log(`Carga atual: ${newCharge}`)
+}).catch(error => {
+    console.log(error)
+})
+```
+<hr>
+<br>
+
+### Executando várias Promises
+<br>
+
+- Executando várias promises utilizando o promise.all()
+- O promise.all recebe um array de promises e retorna uma outra promise
+- Ele irá tentar executar as promises de forma atômica ou seja ou todas elas são resolvidas ou irá retornar o erro.
+```
+// Promise para calcular o aumento de velocidade com a taxa de 10%
+const increaseVelocity = function(velocityToIncrease){
+    return new Promise((resolve, reject) => {
+        if(velocityToIncrease <= 0) {
+            reject("Frenagem acionada.")
+        } else {
+            resolve(velocityToIncrease * 0.9)
+        }
+    })
+}
+
+// Promise para calcular o novo consumo de bateria com base na velocidade atual e a velocidade a ser incrementada
+const newBateryConsumption = function(currentVelocity, velocityToIncrease) {
+    return new Promise((resolve, reject) => {
+        let newBateryConsumption = (currentVelocity + velocityToIncrease) / 10000
+        if(newBateryConsumption > 0){
+            resolve(newBateryConsumption)
+        } else {
+            reject("Consumo zerado!")
+        }
+    })
+}
+
+let velocity = 70
+
+// Aqui armazenamos as Promises em variáveis
+let velocityIncreased = increaseVelocity(velocity)
+let bateryConsumption = newBateryConsumption(80, velocity)
+
+
+//  O promise.all recebe um array de promises e retorna uma outra promise
+//  Ele irá tentar executar as promises de forma atômica ou seja ou todas elas são resolvidas ou irá retornar o erro
+//  O promise.all retorna o resultado das promises também como um array
+Promise.all([velocityIncreased, bateryConsumption]).then(results => {
+    console.log(results)
+}).catch(errors => {
+    console.log(errors)
+})
+```
+<hr>
+<br>
+
+### Exercício Avançando em Promises
+<br>
+
+```
+- spaceship.js
+
+// Aqui criamos e exportamos diretamente a classe Spaceship com os dados da nave
+export default class Spaceship {
+    constructor(name, maxCapacity, currentCharge, shield){
+        this.name = name
+        this.maxCapacity = maxCapacity
+        this.currentCharge = currentCharge
+        this.shield = shield
+    }
+
+    // Aqui criamos o método para calcular a porcentagem da carga atual
+    currentPercentCharge(){
+        return this.currentCharge * 100 / this.maxCapacity
+    }
+}
+```
+
+```
+- spaceship_engine.js
+
+// Aqui criamos e exportamos uma classe
+export default class{
+    constructor(spaceship){
+        this.spaceship = spaceship
+    }
+
+    // Criamos o método para ligar as naves e fazer a validação da carga da bateria e alterar o valor do escudo
+    //  Armazenamos a chamada das promises em variáveis e utilizamos o Promise.all para tentar executar as promises 
+    //  Utilizamos o then para pegar o resolve da Promise e exibir uma mensagem,
+    //  E também utilizamos o catch para capturar o erro do reject e exibir uma mensagem de erro
+    turnOn(){
+        let currentChargeChecking = this.checkCurrentCharge()
+        let shieldChecking = this.testShield()    
+
+        Promise.all([currentChargeChecking, shieldChecking]).then(results => {
+            console.log(results)
+            return this.shieldNormalizer(results[1])
+        }).then(newShield => {
+            this.spaceship.shield = newShield
+            console.log(`(${this.spaceship.name}) Partida autorizada: Escudo (${this.spaceship.shield}) - Carga ${currentCharge}%`)
+        }).catch(error => {
+            console.log(`(${this.spaceship.name}) Partida não autorizada: ${error}`)
+        })
+    }
+    
+
+
+    // Criamos o método que retorna uma Promise nela verificamos a carga atual  se for maior que 30 retorna o resolve com a carga atual e se for menor que 30 retorna o reject com a carga atual.
+    checkCurrentCharge(){
+        return new Promise((resolve, reject) => {
+            let currentCharge = this.spaceship.currentPercentCharge()
+            if(currentCharge >= 30){
+                resolve(currentCharge)
+            } else {
+                reject(currentCharge)
+            }
+        })
+    }
+
+    // Função que retorna uma Promise para testar o escudo e dobrar seu valor
+    testShield(){
+        return new Promise((resolve,reject) => {
+            let doubleShield = this.spaceship.shield * 2
+            if(doubleShield >= 100){
+                resolve(doubleShield)
+            } else {
+                reject("Escudo em sobrecarga !")
+            }
+        })
+    }
+
+    // Função que retorna uma  Promise que normaliza o escudo da nave
+    shieldNormalizer(shield){
+        return new Promise((resolve, reject) => {
+            let normalizedShield = shield * 0.7
+            if(normalizedShield > 120) {
+                reject("Escudo em supercarga")
+            } else {
+                resolve(normalizedShield)
+            }
+        })
+    }
+}
+```
+
+```
+- index.js
+
+// Aqui importamos as classes criadas nos outros arquivos
+import Spaceship from "./spaceship";
+import SpaceshipEngine from "./spaceship_engine";
+
+// Aqui criamos as instâncias de cada nave com seus dados
+const sophia = new Spaceship("Sophia", 10, 5, 70)
+const amsterda = new Spaceship("Amsterdã", 14, 10, 40)
+const dwarfStar = new Spaceship("Estrela-Anã", 20, 4, 80)
+
+// Aqui instanciamos a outra classe e passamos a instância anterior como parâmetro
+const sophiaEngine = new SpaceshipEngine(sophia)
+const amsterdaEngine = new SpaceshipEngine(amsterda)
+const dwarfStarEngine = new SpaceshipEngine(dwarfStar)
+
+// e aqui chamamos o método para dar partida nas naves
+sophiaEngine.turnOn()
+amsterdaEngine.turnOn()
+dwarfStarEngine.turnOn()
+
+console.log("Promises")
+```
