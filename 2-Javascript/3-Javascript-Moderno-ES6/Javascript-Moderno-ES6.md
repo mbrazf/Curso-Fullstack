@@ -1779,3 +1779,314 @@ dwarfStarEngine.turnOn()
 
 console.log("Promises")
 ```
+<hr>
+<br>
+
+## Preparando o ambiente para Async Functions
+<br>
+
+-   Instalar 2 pacotes para que o Babel possa transpilar para ES5.
+    -   npm install core-js@3 regenerator-runtime --save
+<hr>
+<br>
+
+## Async Functions
+
+### O que são Async Functions?
+<br>
+
+-   Async Functions são funções que lidam com ações assíncronas
+-   Retornam Promises
+    -   Então, podemos tratá-las exatamente como tratamos as Promises, utilizando o then e o catch.
+-   Evitamos ficar instanciando Promises manulmente
+
+```
+// Importamos os pacotes instalados
+import "core-js"
+import "regenerator-runtime/runtime"
+
+// Criamos um objeto com os dados
+let laserGun = {
+    shotsPerSecond: 30,
+    currentPosition: [30, 45, 70],
+    firing: false
+}
+
+// Função para ajustar a posição das armas
+// Exemplo de async Function, ela envolve o código em uma Promise e o retorno/return da async function retorna no resolve da Promise.
+// Ai então o return/resolve é passado como parâmetro coord para a primeira função then abaixo.
+
+//  Também fizemos uma verificação se z é maior que 90, se sim iremos utilizar um método estático Promise.reject() , que retorna o status de rejeitado para a Promise e assim enviando o erro como parâmetro para o catch para ser tratado.
+async function adjustPosition(x, y ,z){
+    if(z > 90){
+        return Promise.reject("Angulo Z inválido para arma")
+    }
+    laserGun.currentPosition = [x, y, z]
+    return([x, y, z])
+}
+
+// Função para atirar
+// Aqui também o return é passado como o parâmetro coord agora para a segunda função then abaixo.
+async function fire(x, y, z){
+    laserGun.firing = true
+    return([x, y, z])
+}
+
+// Aqui a função para mover e atirar e também tratamos o resolve com a função then e o reject com o catch das async functions acima.
+function moveAndFire(x, y, z){
+    adjustPosition(x, y, z).then(coord => {
+        console.log(`Arma ajustada para as coordenadas (${coord[0]}, ${coord[1]}, ${coord[2]})`)
+        return fire(...coord)
+    }).then(coord => {
+        console.log(`Começando a atirar nas coordenadas (${coord[0]}, ${coord[1]}, ${coord[2]})`)
+    }).catch(error => {
+        console.log(error)
+    })
+}
+
+// Aqui chamamos a função e passamos os valores dos parâmetro
+moveAndFire(20, 40, 10)
+```
+<hr>
+<br>
+
+
+### O que é Await ?
+<br>
+
+-   Await é uma palavra-chave que pode ser utilizada dentro de uma async function
+-   Com ela , é possível aguardar a execução de uma Promise
+    -   Só é possível utilizar quando temos uma Promise que depende da execução de outra.
+
+-   Faz com que a chamada da Promise retorne diretamente o seu resolve
+-   Com o await podemos eliminar o uso de then interno a outro
+-   Quando ocorre algum erro, podemos utilizar o tratamento de exceções.
+
+```
+// Importamos os pacotes instalados
+import "core-js"
+import "regenerator-runtime/runtime"
+
+// Criamos um objeto com os dados
+let laserGun = {
+    shotsPerSecond: 30,
+    currentPosition: [30, 45, 70],
+    firing: false
+}
+
+// Função para ajustar a posição das armas
+// Exemplo de async Function, ela envolve o código em uma Promise e o retorno/return da async function retorna no resolve da Promise.
+// Ai então o return/resolve é passado como parâmetro coord para a primeira função then abaixo.
+
+//  Também fizemos uma verificação se z é maior que 90, se sim iremos utilizar um método estático Promise.reject() , que retorna o status de rejeitado para a Promise e assim enviando o erro como parâmetro para o catch para ser tratado.
+async function adjustPosition(x, y ,z){
+    if(z > 90){
+        return Promise.reject("Angulo Z inválido para arma")
+    }
+    laserGun.currentPosition = [x, y, z]
+    return([x, y, z])
+}
+
+// Função para atirar
+// Aqui também o return é passado como o parâmetro coord agora para a segunda função then abaixo.
+async function fire(x, y, z){
+    laserGun.firing = true
+    return([x, y, z])
+}
+
+//  Aqui a async function com o await
+//  O await irá aguardar a execução da promise e irá armazenar seu retorno/resolve nas variáveis newCoordinates e fireCoord.
+//  O try envolve o código e tenta executá-lo e o catch irá capturar o reject com a mensagem de erro da async function mais acima.
+async function moveAndFire(x, y, z){
+    try {
+        let newCoordinates = await adjustPosition(x, y, z)
+        console.log(`Arma ajustada para as coordenadas (${newCoordinates[0]}, ${newCoordinates[1]}, ${newCoordinates[2]})`)
+        let fireCoord = await fire(...newCoordinates)
+        console.log(`Começando a atirar nas coordenadas (${fireCoord[0]}, ${fireCoord[1]}, ${fireCoord[2]})`)
+    } catch(error){
+        console.log(error)
+    } 
+}
+
+// Aqui chamamos a função e passamos os valores dos parâmetro
+moveAndFire(20, 40, 10)
+```
+<hr>
+<br>
+
+### Executando várias Promises com Await
+<br>
+
+```
+// Importamos os pacotes instalados
+import "core-js"
+import "regenerator-runtime/runtime"
+
+// Criamos um objeto com os dados
+let laserGun = {
+    shotsPerSecond: 30,
+    currentPosition: [30, 45, 70],
+    firing: false
+}
+
+// Função para ajustar a posição das armas
+// Exemplo de async Function, ela envolve o código em uma Promise e o retorno/return da async function retorna no resolve da Promise.
+// Ai então o return/resolve é passado como parâmetro coord para a primeira função then abaixo.
+
+//  Também fizemos uma verificação se z é maior que 90, se sim iremos utilizar um método estático Promise.reject() , que retorna o status de rejeitado para a Promise e assim enviando o erro como parâmetro para o catch para ser tratado.
+async function adjustPosition(x, y ,z){
+    if(z > 90){
+        return Promise.reject("Angulo Z inválido para arma")
+    }
+    laserGun.currentPosition = [x, y, z]
+    return([x, y, z])
+}
+
+// Função para atirar
+// Aqui também o return é passado como o parâmetro coord agora para a segunda função then abaixo.
+async function fire(x, y, z){
+    laserGun.firing = true
+    return([x, y, z])
+}
+
+// Outra função que retorna uma Promise com setTimeOut de 2 segundos
+function loadAmmo(){
+    return new Promise(resolve => {
+        setTimeout(() =>{
+            resolve("Arma carregada")
+        }, 2000)
+    })
+}
+
+//  Aqui a async function com o await
+//  O await irá aguardar a execução da promise e irá armazenar seu retorno/resolve nas variáveis newCoordinates e fireCoord.
+//  O try envolve o código e tenta executá-lo e o catch irá capturar o reject com a mensagem de erro da async function mais acima.
+//  Armazenamos em variáveis as chamadas das promises, 
+//  Para executar as Promises utilizamos o Promise.all() e passamos as variáveis com os returns com os resolves das Promises com await que irá esperar a execução das Promises e irá armazenar em uma variável.
+async function moveAndFire(x, y, z){
+    try {
+        const adjustPositionPromise = adjustPosition(x, y, z)
+        const loadAmmoPromise = loadAmmo()
+        let promiseResult = await Promise.all([adjustPositionPromise, loadAmmoPromise])
+        let newCoordinates = promiseResult[0]
+        
+        console.log(`Arma ajustada para as coordenadas (${newCoordinates[0]}, ${newCoordinates[1]}, ${newCoordinates[2]})`)
+        let fireCoord = await fire(...newCoordinates)
+        console.log(`Começando a atirar nas coordenadas (${fireCoord[0]}, ${fireCoord[1]}, ${fireCoord[2]})`)
+    } catch(error){
+        console.log(error)
+    } 
+}
+
+// Aqui chamamos a função e passamos os valores dos parâmetro
+moveAndFire(20, 40, 10)
+```
+<hr>
+<br>
+
+### Exercício Async Functions
+<br>
+
+```
+-spaceship.js
+
+// Aqui criamos e exportamos diretamente a classe Spaceship com os dados da nave
+export default class Spaceship {
+    constructor(name, maxCapacity, currentCharge, shield){
+        this.name = name
+        this.maxCapacity = maxCapacity
+        this.currentCharge = currentCharge
+        this.shield = shield
+    }
+
+    // Aqui criamos o método para calcular a porcentagem da carga atual
+    currentPercentCharge(){
+        return this.currentCharge * 100 / this.maxCapacity
+    }
+}
+```
+
+```
+-   spaceship_engine.js
+
+// Importamos os pacotes baixados
+import "core-js"
+import "regenerator-runtime/runtime"
+
+// Aqui criamos e exportamos uma classe
+export default class{
+    constructor(spaceship){
+        this.spaceship = spaceship
+    }
+
+    // Criamos o método para ligar as naves e fazer a validação da carga da bateria e alterar o valor do escudo
+    //  Armazenamos a chamada das promises em variáveis e utilizamos o Promise.all para tentar executar as promises 
+    //  Utilizamos o then para pegar o resolve da Promise e exibir uma mensagem,
+    //  E também utilizamos o catch para capturar o erro do reject e exibir uma mensagem de erro
+    async turnOn(){
+        try{
+            let currentChargeChecking = this.checkCurrentCharge()
+            let shieldChecking = this.testShield()    
+            let results = await Promise.all([currentChargeChecking, shieldChecking])
+            this.spaceship.shield = await  this.shieldNormalizer(results[1])
+            console.log(`(${this.spaceship.name}) Partida autorizada: Escudo (${this.spaceship.shield}) - Carga ${this.spaceship.currentCharge}%`)
+        } catch(error) {
+            console.log(`(${this.spaceship.name}) Partida não autorizada: ${error}`)
+        }
+    }
+    
+    // Criamos o método que retorna uma Promise nela verificamos a carga atual  se for maior que 30 retorna o resolve com a carga atual e se for menor que 30 retorna o reject com a carga atual.
+    async checkCurrentCharge(){
+        let currentCharge = this.spaceship.currentPercentCharge()
+        if(currentCharge < 30){
+            return Promise.reject(`Carga em apenas ${currentCharge}GJ`)
+        } 
+        return currentCharge
+    }
+
+    // Função que retorna uma Promise para testar o escudo e dobrar seu valor
+    async testShield(){
+        let doubleShield = this.spaceship.shield * 2
+        if(doubleShield < 100){
+            return Promise.reject(`Escudo em sobrecarga!`)
+        } 
+        return doubleShield
+    }
+
+    // Função que retorna uma  Promise que normaliza o escudo da nave
+    async shieldNormalizer(shield){
+            let normalizedShield = shield * 0.7
+            if(normalizedShield > 120) {
+                return Promise.reject("Escudo em supercarga")
+            } 
+            return normalizedShield 
+    }
+}
+```
+
+```
+-   index.js
+
+
+
+// Aqui importamos as classes criadas nos outros arquivos
+import Spaceship from "./spaceship";
+import SpaceshipEngine from "./spaceship_engine";
+
+// Aqui criamos as instâncias de cada nave com seus dados
+const sophia = new Spaceship("Sophia", 10, 5, 70)
+const amsterda = new Spaceship("Amsterdã", 14, 10, 40)
+const dwarfStar = new Spaceship("Estrela-Anã", 20, 4, 80)
+
+// Aqui instanciamos a outra classe e passamos a instância anterior como parâmetro
+const sophiaEngine = new SpaceshipEngine(sophia)
+const amsterdaEngine = new SpaceshipEngine(amsterda)
+const dwarfStarEngine = new SpaceshipEngine(dwarfStar)
+
+// e aqui chamamos o método para dar partida nas naves
+sophiaEngine.turnOn()
+amsterdaEngine.turnOn()
+dwarfStarEngine.turnOn()
+
+console.log("Promises")
+```
