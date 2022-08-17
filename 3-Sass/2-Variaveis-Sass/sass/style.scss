@@ -1,0 +1,15 @@
+/*Aqui declaramos as variáveis com cifrão $ nessa variável setamos a cor do botão e a largura*/
+$btn-color: #ff4043;
+$width-btn: 95px;
+
+
+/*Aqui as classes dos itens html e para utilizar o variável basta chamar ela com o nome que ela foi criada $btn-color */
+.btn1{
+    width: $width-btn;
+    background-color: $btn-color;
+}
+
+.btn2{
+    width: $width-btn;
+    background-color: $btn-color;
+}

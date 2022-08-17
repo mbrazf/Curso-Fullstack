@@ -1,0 +1,14 @@
+@charset "UTF-8";
+/*Aqui declaramos as variáveis com cifrão $ nessa variável setamos a cor do botão e a largura*/
+/*Aqui as classes dos itens html e para utilizar o variável basta chamar ela com o nome que ela foi criada $btn-color */
+.btn1 {
+  width: 95px;
+  background-color: #ff4043;
+}
+
+.btn2 {
+  width: 95px;
+  background-color: #ff4043;
+}
+
+/*# sourceMappingURL=style.css.map */
