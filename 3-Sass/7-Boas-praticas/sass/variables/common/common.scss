@@ -1,0 +1,23 @@
+// Aqui colocamos todos os estilos que serão comuns em todas as páginas
+#title-home {
+    font-size: 44px;
+    font-family: sans-serif;
+}
+
+// Aqui o estilo principal dos botões
+.btn {
+    width: 95px;
+    padding: 10px;
+    cursor: pointer;
+    background-color: $btn-background;
+    color: white;
+    display: block;
+    margin-top: 10px;
+}
+
+// Aqui criamos um mixin para os elementos que tem o mesmo estilo
+@mixin text-style($color, $font-size, $font-family){
+    color: $color;
+    font-size: $font-size;
+    font-family: $font-family;
+}

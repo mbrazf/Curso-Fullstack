@@ -1,0 +1,41 @@
+/*.
+// Aqui definimos os estilos dos elementos de uma forma comum
+texts {
+    h1 {
+        color: #ff4043;
+        font-size: 34px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    p {
+        color: blue;
+        font-size: 22px;
+        font-family: sans-serif;
+    }
+}
+*/
+
+// Aqui uma forma de escrever estilos com o mixin, o mixin é uma forma de reaproveitar os estilos mais facilmente, declaramos o @mixin e depois o nome dele e dentro de () passamos as variáveis quer serão utilizadas como parâmetro, associamos as propriedades css com as variáveis
+@mixin text-style($color, $font-size, $font-family){
+    color: $color;
+    font-size: $font-size;
+    font-family: $font-family;
+}
+
+
+
+
+// e para utilizar o mixin utilizamos o @include com o nome do mixin e passamos os estilos como parâmetro
+
+// também podemos utilizar com variáveis independentes
+$primary-color: purple;
+
+.texts {
+    h1 {
+        @include text-style(#ff4043, 34px, Arial)
+    }
+
+    p {
+        @include text-style($primary-color, 22px, sans-serif)
+    }
+}

@@ -1,0 +1,4 @@
+// Aqui selecionamos o id cadastro-text e utilizamos o mixin criado em outro arquivo, basta passar o valor das propriedades css
+#cadastro-text {
+    @include text-style(red, 16px, sans-serif);
+}

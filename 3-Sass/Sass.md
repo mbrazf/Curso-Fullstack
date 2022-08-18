@@ -373,3 +373,290 @@ sass --watch sass/style.scss:css/style.css
 ```
 <hr>
 <br>
+
+## Aproveitamento de código com Mixins
+<br>
+
+```
+- index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Mixins</title>
+</head>
+<body>
+    <div class="texts">
+        <h1>Hello , World!</h1>
+        <p>Hello, World!</p>
+    </div>
+</body>
+</html>
+```
+
+```
+- sass/styles.scss
+
+/*.
+// Aqui definimos os estilos dos elementos de uma forma comum
+texts {
+    h1 {
+        color: #ff4043;
+        font-size: 34px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    p {
+        color: blue;
+        font-size: 22px;
+        font-family: sans-serif;
+    }
+}
+*/
+
+// Aqui uma forma de escrever estilos com o mixin, o mixin é uma forma de reaproveitar os estilos mais facilmente, declaramos o @mixin e depois o nome dele e dentro de () passamos as variáveis quer serão utilizadas como parâmetro, associamos as propriedades css com as variáveis
+@mixin text-style($color, $font-size, $font-family){
+    color: $color;
+    font-size: $font-size;
+    font-family: $font-family;
+}
+
+
+// e para utilizar o mixin utilizamos o @include com o nome do mixin e passamos os estilos como parâmetro
+
+// também podemos utilizar com variáveis independentes
+$primary-color: purple;
+
+.texts {
+    h1 {
+        @include text-style(#ff4043, 34px, Arial)
+    }
+
+    p {
+        @include text-style($primary-color, 22px, sans-serif)
+    }
+}
+```
+
+- não esqueça de utilizar o comando para o sass ser executado
+```
+sass --watch sass/style.scss:css/style.css
+```
+<hr>
+<br>
+
+## Heranças e Extends
+<br>
+
+-   Criamos o html com alguns botões e neles adicionamos 2 classes uma principal e uma secundária
+```
+- index.html
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Heranças e Extends</title>
+</head>
+<body>
+    <button class="btn-roxo">Button Roxo</button>
+    <button class="btn btn-amarelo">Button Amarelo</button>
+    <button class="btn btn-azul">Button Azul</button>
+</body>
+</html>
+```
+
+```
+-   sass/style.scss
+
+
+// Aqui declaramos os estilos que todos os botões irão conter na classe principal
+.btn {
+    width: 125px;
+    padding: 10px 0px;
+    border-radius: 20px;
+    display: block;
+    margin-top: 10px;
+
+// Aqui utilizamos a herança com o &. e o nome da classe secundária, só podemos utilizar a herança se o elemento tiver 2 classes uma principal e a secundária que irá herdar.
+    &.btn-amarelo {
+        background-color: yellow;
+        color: black;
+    }
+
+    &.btn-azul {
+        background-color: blue;
+        color: white;
+    }
+}
+
+// Aqui utilizamos o @extend e o nome da classe em que herdaremos os estilos, com o extend não precisamos criar uma outra classe
+.btn-roxo {
+    @extend .btn;
+    background-color: rebeccapurple;
+    color: white;
+}
+```
+<hr>
+<br>
+
+## Boas práticas Sass
+<br>
+
+- Criamos uma index.html
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Home</title>
+</head>
+<body>
+    <h1 id="title-home">Home</h1>
+    <a href="./paginas-html/cadastro.html">
+        <button class="btn">Cadastro</button>
+    </a>
+    <a href="./paginas-html/login.html">
+        <button class="btn">Login</button>
+    </a>
+</body>
+</html>
+```
+-   Criamos uma pasta paginas-html onde ficaram as páginas
+```
+- paginas-html/login.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Login</title>
+</head>
+<body>
+    <div class="container">
+        <h1 id="title-home">Login</h1>
+        <a href="../index.html">
+            <button class="btn">Home</button>
+        </a>
+        <a href="./login.html">
+            <button class="btn">Login</button>
+        </a>
+        <p>Login aqui!</p>
+    </div>
+</body>
+</html>
+```
+```
+- paginas-html/cadastro.html
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Cadastro</title>
+</head>
+<body>
+    <h1 id="title-home">Cadastro</h1>
+    <a href="../index.html">
+        <button class="btn">Home</button>
+    </a>
+    <a href="login.html">
+        <button class="btn">Login</button>
+    </a>
+    <p id="cadastro-text">Cadastre-se aqui!</p>
+</body>
+</html>
+```
+
+- Criamos a pasta sass com style.scss
+```
+- sass/style.scss
+
+// Import do arquivo com as cores
+@import "./variables/colors/colors.scss";
+
+// Import do arquivo common.scss
+@import "./variables/common/common.scss";
+
+// Import dos estilos da página de cadastro
+@import "./pages/cadastro.scss";
+
+// Import dos estilos da página de login
+@import "./pages/login.scss";
+```
+
+- dentro da pasta sass criamos a pasta pages onde fica os estilos de cada página
+```
+-   sass/pages/cadastro.scss
+
+// Aqui selecionamos o id cadastro-text e utilizamos o mixin criado em outro arquivo, basta passar o valor das propriedades css
+#cadastro-text {
+    @include text-style(red, 16px, sans-serif);
+}
+```
+
+```
+-   sass/pages/login.scss
+
+// Aqui selecionamos a div com a classe .container e utilizando nesting acessamos o elemento p dentro dela, e utilizamos o mixin e passamos os valores das propriedades
+.container {
+    p {
+        @include text-style($btn-background, 22px, sans-serif);
+    }
+}
+```
+
+- dentro da pasta sass também criamos a pasta variables e dentro de variables outras 2 pastas colors com colors.scss e common com common.scss
+```
+- sass/variables/colors/colors.scss
+
+// Aqui declaramos as variáveis de cores
+$primary-color: #ff4043;
+$btn-background: #0a092c;
+```
+
+```
+- sass/variables/common/common.scss
+
+// Aqui colocamos todos os estilos que serão comuns em todas as páginas
+#title-home {
+    font-size: 44px;
+    font-family: sans-serif;
+}
+
+// Aqui o estilo principal dos botões
+.btn {
+    width: 95px;
+    padding: 10px;
+    cursor: pointer;
+    background-color: $btn-background;
+    color: white;
+    display: block;
+    margin-top: 10px;
+}
+
+// Aqui criamos um mixin para os elementos que tem o mesmo estilo
+@mixin text-style($color, $font-size, $font-family){
+    color: $color;
+    font-size: $font-size;
+    font-family: $font-family;
+}
+```

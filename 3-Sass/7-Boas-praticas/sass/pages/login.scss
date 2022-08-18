@@ -1,0 +1,6 @@
+// Aqui selecionamos a div com a classe .container e utilizando nesting acessamos o elemento p dentro dela, e utilizamos o mixin e passamos os valores das propriedades
+.container {
+    p {
+        @include text-style($btn-background, 22px, sans-serif);
+    }
+}

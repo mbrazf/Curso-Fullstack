@@ -1,0 +1,26 @@
+// Aqui declaramos os estilos que todos os botões irão conter na classe principal
+.btn {
+    width: 125px;
+    padding: 10px 0px;
+    border-radius: 20px;
+    display: block;
+    margin-top: 10px;
+
+// Aqui utilizamos a herança com o &. e o nome da classe secundária, só podemos utilizar a herança se o elemento tiver 2 classes uma principal e a secundária que irá herdar.
+    &.btn-amarelo {
+        background-color: yellow;
+        color: black;
+    }
+
+    &.btn-azul {
+        background-color: blue;
+        color: white;
+    }
+}
+
+// Aqui utilizamos o @extend e o nome da classe em que herdaremos os estilos, com o extend não precisamos criar uma outra classe
+.btn-roxo {
+    @extend .btn;
+    background-color: rebeccapurple;
+    color: white;
+}

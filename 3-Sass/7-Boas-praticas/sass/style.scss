@@ -1,0 +1,11 @@
+// Import do arquivo com as cores
+@import "./variables/colors/colors.scss";
+
+// Import do arquivo common.scss
+@import "./variables/common/common.scss";
+
+// Import dos estilos da página de cadastro
+@import "./pages/cadastro.scss";
+
+// Import dos estilos da página de login
+@import "./pages/login.scss";
