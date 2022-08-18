@@ -664,3 +664,121 @@ $btn-background: #0a092c;
     font-family: $font-family;
 }
 ```
+<hr>
+<br>
+
+## O que são e como usar as Funções no Sass
+<br>
+
+```
+-   index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Funções no Sass</title>
+</head>
+<body>
+    <div class="title">
+        <h1>Hello, World!</h1>
+    </div>
+
+    <!-- <h1 id="title">Hello, World!</h1> -->
+    
+</body>
+</html>
+```
+
+```
+- sass/style.scss
+
+/*
+// Aqui um exemplo da função mix que mistura duas cores 
+
+#title{
+    color: mix( green,  blue,  50%);
+}
+*/
+
+// Aqui um reset css para remover as margens e paddings dos elementos
+* {
+    margin: 0;
+    padding: 0;
+}
+
+// Aqui criamos uma função 
+// ela irá alterar a cor do texto baseado no brilho da cor de fundo
+@function color-title($background-color){
+    @if(lightness($background-color) > 50){
+        @return black;
+    } @else {
+        @return white;
+    }
+}
+
+// Aqui criamos um mixin para alterar a cor de fundo, e chamamos a função passando o parâmetro $color para eles.
+@mixin background-color-mixin($color){
+    background-color: $color;
+    color: color-title($color);
+}
+
+// Aqui utilizamos o mixin e passamos a cor de fundo como parâmetro
+.title{
+    height: 100vh;
+    @include background-color-mixin(black);
+}
+```
+
+-   Para ver as funções do Sass [W3C Funções do Sass](https://www.w3schools.com/sass/sass_functions_string.php)
+<hr>
+<br>
+
+## Como deixar o site mais rápido com minify
+<br>
+
+- O minify é uma forma de diminuir ainda mais o código css gerado após processar o scss, para acelerar o site
+
+```
+- Aqui o estilo final css gerado após o Sass ser processado
+
+#title-home {
+  font-size: 44px;
+  font-family: sans-serif;
+}
+
+.btn {
+  width: 95px;
+  padding: 10px;
+  cursor: pointer;
+  background-color: #0a092c;
+  color: white;
+  display: block;
+  margin-top: 10px;
+}
+
+#cadastro-text {
+  color: red;
+  font-size: 16px;
+  font-family: sans-serif;
+}
+
+.container p {
+  color: #0a092c;
+  font-size: 22px;
+  font-family: sans-serif;
+}
+```
+
+-   Para reduzir o tamanho do código utilizamos este comando no terminal.
+-   basta passar o caminho e o nome do arquivo e adicionar --style compressed para comprimir o código
+```
+    sass sass/style.scss:css/style.css --style compressed
+```
+- o resultado será esse
+```
+#title-home{font-size:44px;font-family:sans-serif}.btn{width:95px;padding:10px;cursor:pointer;background-color:#0a092c;color:#fff;display:block;margin-top:10px}#cadastro-text{color:red;font-size:16px;font-family:sans-serif}.container p{color:#0a092c;font-size:22px;font-family:sans-serif}/*# sourceMappingURL=style.css.map */
+```

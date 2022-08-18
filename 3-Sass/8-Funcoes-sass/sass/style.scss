@@ -1,0 +1,33 @@
+/*
+#title{
+    color: mix( green,  blue,  50%);
+}
+*/
+
+// Aqui um reset css para remover as margens e paddings dos elementos
+* {
+    margin: 0;
+    padding: 0;
+}
+
+// Aqui criamos uma função 
+// ela irá alterar a cor do texto baseado no brilho da cor de fundo
+@function color-title($background-color){
+    @if(lightness($background-color) > 50){
+        @return black;
+    } @else {
+        @return white;
+    }
+}
+
+// Aqui criamos um mixin para alterar a cor de fundo, e chamamos a função passando o parâmetro $color para eles.
+@mixin background-color-mixin($color){
+    background-color: $color;
+    color: color-title($color);
+}
+
+// Aqui utilizamos o mixin e passamos a cor de fundo como parâmetro
+.title{
+    height: 100vh;
+    @include background-color-mixin(black);
+}
