@@ -511,6 +511,10 @@ sass --watch sass/style.scss:css/style.css
 ## Boas práticas Sass
 <br>
 
+- Estrutura das pastas e arquivos
+
+![teste](https://github.com/mbrazf/Curso-Fullstack/blob/master/3-Sass/estrutura-pastas-sass.png)
+
 - Criamos uma index.html
 ```
 <!DOCTYPE html>
