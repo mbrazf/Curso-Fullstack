@@ -1,0 +1,53 @@
+// Aqui declaramos os estilos da página
+
+
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+body {
+    background-image: url("../img/backgroundLp.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: right;
+    color: white;
+}
+
+// Container onde está tudo
+.container-1 {
+    background-color: $background-color;
+    width: 450px;
+    height: auto;
+}
+
+.topLogo{
+    width: 185px;
+}
+
+.paragraph {
+    margin: 8px 0px;
+}
+
+// Botão
+.btn-send{
+    color: $button-color;
+    border: 1px solid $button-color;
+
+    &:hover{
+        background-color: $button-color;
+        color: white;
+    }
+}
+
+.footer {
+    margin-top: 30px;
+    margin-bottom: -30px;
+}
+
+// Responsividade
+@media (max-width:  485px) {
+    .container-1{
+        width: 100%;
+    }
+}
