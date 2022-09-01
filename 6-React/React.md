@@ -662,9 +662,627 @@ const Planets = () => {
 
 export default Planets;
 ```
+<hr>
+<br>
+
+## Eventos no React
+<br>
+
+-   Basicamente são bem parecidos com os eventos do JS
+-   Exemplo:
+```
+// Aqui declaramos uma funçõa qualquer
+
+const showMessage = () => {
+  console.log("Meu primeiro evento")
+}
+```
+-   E aqui adicionamos o elemento button com o evento onClick, basta passar o nome da função nas chaves do evento.
+```
+ <button onClick={showMessage}>Exibir Mensagem</button>
+```
+<hr>
+<br>
+
+### Passando um evento como parâmetro para outro component
+<br>
+
+-   Exemplo:
+```
+-   planets/index.js
 
 
+// Aqui criamos um component Planets
+
+// Aqui importamos components e recursos que serão utilizados
+import { Fragment } from "react";
+import Planet from "./planet";
 
 
+// Aqui criamos uma função que recebe o name como parâmetro para exibir um console.log() com uma mensagem e o nome do planeta
+
+const clickOnPlanet = (name) => {
+  console.log(`Um Clique no planeta: ${name}`)
+}
 
 
+//  no Component Planet passamos a função como prop para outro component com clickOnPlanet={clickOnPlanet}
+
+const Planets = () => {
+  return (
+    <Fragment>
+      <h3>Planet List</h3>
+      <button>Exibir Mensagem</button>
+      <hr />
+      <Planet
+        name="Mercúrio"
+        description="Mercúrio é o menor e mais interno planeta do Sistema Solar, orbitando o Sol a cada 87,969 dias terrestres. A sua órbita tem a maior excentricidade e o seu eixo apresenta a menor inclinação em relação ao plano da órbita dentre todos os planetas do Sistema Solar."
+        img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Mercury_in_color_-_Prockter07-edit1.jpg/280px-Mercury_in_color_-_Prockter07-edit1.jpg"
+        link="https://pt.wikipedia.org/wiki/Merc%C3%BArio_(planeta)"
+        clickOnPlanet={clickOnPlanet}
+      />
+
+      <Planet
+        name="Saturno"
+        description="Saturno é o sexto planeta a partir do Sol e o segundo maior do Sistema Solar atrás de Júpiter. Pertencente ao grupo dos gigantes gasosos, possui cerca de 95 massas terrestres e orbita a uma distância média de 9,5 unidades astronômicas."
+        img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/300px-Saturn_during_Equinox.jpg"
+        link="https://pt.wikipedia.org/wiki/Saturno_(planeta)"
+        clickOnPlanet={clickOnPlanet}
+      />
+
+       <Planet
+        name="Júpiter"
+        description="Júpiter é o maior planeta do Sistema Solar, tanto em diâmetro quanto em massa, e é o quinto mais próximo do Sol.[11] Possui menos de um milésimo da massa solar, contudo tem 2,5 vezes a massa de todos os outros planetas em conjunto. É um planeta gasoso, junto com Saturno, Urano e Netuno."
+        img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/300px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg"
+        link="https://pt.wikipedia.org/wiki/J%C3%BApiter_(planeta)"
+        clickOnPlanet={clickOnPlanet}
+      />
+    </Fragment>
+  );
+};
+
+export default Planets;
+```
+
+```
+-   planet/index.js
+
+
+// Aqui criamos um component Planet com as informações dos planetas
+
+
+// Aqui importamos os components
+import GrayImg from "../../shared/gray_img";
+import DescriptionWithLink from "../../shared/description_with_link";
+
+
+// na div adicionamos o evento onClick que chama a função passada do outro component Planets
+// ao utilizar parâmetros o evento será executado instantaneamente, quando você não quiser chamar o método na hora e chamar somente quando for clicado basta colocar uma função anônima antes da chamada
+
+const Planet = (props) => {
+    return (
+        <div onClick={() => props.clickOnPlanet(props.name)}>
+            <h4>{props.name}</h4>
+            <DescriptionWithLink description={props.description} link={props.link}/>
+            <GrayImg img_url={props.img_url}/>
+        </div>
+    )
+}
+
+export default Planet;
+```
+<hr>
+<br>
+
+## Renderização Condicional
+<br>
+
+-   É uma forma de exibir um component quando uma condição for verdadeira
+```
+-   planet/index.js
+
+
+// Aqui criamos um component Planet com as informações dos planetas
+
+// Aqui importamos os components
+import GrayImg from "../../shared/gray_img";
+import DescriptionWithLink from "../../shared/description_with_link";
+
+
+// Aqui iremos utilizar o if else para verificar,
+//  Se no component houver a propriedade title_with_underline será exibido o texto riscado se não será exibido normalmente
+// E no return adicionamos a variável title que exibe o texto
+
+// e no component GrayImg passamos uma prop gray para outro component
+
+const Planet = (props) => {
+    let title;
+    if(props.title_with_underline)
+        title = <h4><u>{props.name}</u></h4>
+    else 
+        title = <h4>{props.name}</h4>
+
+    return (
+        <div >
+            {title}
+            <DescriptionWithLink description={props.description} link={props.link}/>
+            <GrayImg img_url={props.img_url} gray={props.gray}/>
+        </div>
+    )
+}
+
+export default Planet;
+```
+
+```
+-   description_with_link/index.js
+
+// Criamos o component que irá conter a descrição do planeta
+import { Fragment } from "react";
+
+
+// O component recebe props, e nos elementos passamos as props que esperamos receber do outro component
+
+// Aqui utilizamos a renderização condicional, verificamos se o elemento/component contém a props.link, se houver exibe o component normalmente com o link, se não exibe o component sem o link e com o texto underline
+
+const DescriptionWithLink = (props) => {
+    if(props.link){
+        
+        return (
+            <Fragment>
+                <p>{props.description}</p>
+                <p>
+                    <a href={props.link}>{props.link}</a>
+                </p>
+            </Fragment>
+        )
+    } else {
+        return (
+            <Fragment>
+                <p><u>{props.description}</u></p>
+            </Fragment>
+        )
+    }
+}
+
+export default DescriptionWithLink;
+```
+
+```
+-   gray_img/style.css
+
+// Aqui a classe que deixa a imagem preto e branco
+.gray-img {
+    width: 300px;
+    filter: grayscale(100%);
+}
+
+// Aqui adicionamos uma classe para a imagem colorida
+.color-img{
+    width: 300px;
+}
+```
+
+```
+// Aqui criamos um component para a imagem 
+
+// importamos o css
+import "./style.css"
+
+
+// criamos o component com a imagem, ele recebe como parâmetro as props
+// e na imagem chamamos a prop que irá conter a url da imagem.
+
+// Aqui na classe verificamos se algum elemento tiver a props.gray irá aplicar a classe que deixa a imagem preto e branco, se não irá aplicar a classe que deixa a cor da imagem colorida
+
+const GrayImg = (props) => {
+    return (
+        <img className={props.gray  ? 'gray-img' : 'color-img'} src={props.img_url} alt="Imagem do Planeta"/>
+    )
+}
+
+export default GrayImg;
+```
+
+```
+-   planets/index.js
+
+
+// Aqui criamos um component Planets
+
+// Aqui importamos components e recursos que serão utilizados
+import { Fragment } from "react";
+import Planet from "./planet";
+
+
+// E aqui apagamos o link de um dos itens para testar a renderização condicional
+//  Aqui passamos as props "title_with_underline={true}" para o texto ser exibido riscado e o "gray={true}" para a imagem ter sua cor alterada para preto e branco.
+
+const Planets = () => {
+  return (
+    <Fragment>
+      <h3>Planet List</h3>
+      <button>Exibir Mensagem</button>
+      <hr />
+      <Planet
+        name="Mercúrio"
+        description="Mercúrio é o menor e mais interno planeta do Sistema Solar, orbitando o Sol a cada 87,969 dias terrestres. A sua órbita tem a maior excentricidade e o seu eixo apresenta a menor inclinação em relação ao plano da órbita dentre todos os planetas do Sistema Solar."
+        img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Mercury_in_color_-_Prockter07-edit1.jpg/280px-Mercury_in_color_-_Prockter07-edit1.jpg"
+        title_with_underline={true}
+      />
+
+      <Planet
+        name="Saturno"
+        description="Saturno é o sexto planeta a partir do Sol e o segundo maior do Sistema Solar atrás de Júpiter. Pertencente ao grupo dos gigantes gasosos, possui cerca de 95 massas terrestres e orbita a uma distância média de 9,5 unidades astronômicas."
+        img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/300px-Saturn_during_Equinox.jpg"
+        link="https://pt.wikipedia.org/wiki/Saturno_(planeta)"
+        gray={true}
+      />
+
+       <Planet
+        name="Júpiter"
+        description="Júpiter é o maior planeta do Sistema Solar, tanto em diâmetro quanto em massa, e é o quinto mais próximo do Sol.[11] Possui menos de um milésimo da massa solar, contudo tem 2,5 vezes a massa de todos os outros planetas em conjunto. É um planeta gasoso, junto com Saturno, Urano e Netuno."
+        img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/300px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg"
+        link="https://pt.wikipedia.org/wiki/J%C3%BApiter_(planeta)"
+      />
+    </Fragment>
+  );
+};
+
+export default Planets;
+```
+<hr>
+<br>
+
+### Impedindo o component de renderizar até que uma condição seja atingida
+<br>
+
+```
+-   description_with_link/index.js
+
+
+// Criamos o component que irá conter a descrição do planeta
+
+import { Fragment } from "react";
+
+
+// O component recebe props, e nos elementos passamos as props que esperamos receber do outro component
+// E aqui impedimos um component de ser exibido, verificamos se não tiver a prop description iremos retornar null ou seja não irá exibir nada
+
+
+const DescriptionWithLink = (props) => {
+
+    if(!props.description)
+    return null;
+
+
+    if(props.link){
+        return (
+            <Fragment>
+                <p>{props.description}</p>
+                <p>
+                    <a href={props.link}>{props.link}</a>
+                </p>
+            </Fragment>
+        )
+    } else {
+        return (
+            <Fragment>
+                <p><u>{props.description}</u></p>
+            </Fragment>
+        )
+    }
+}
+
+export default DescriptionWithLink;
+```
+-   No exemplo acima impedimos o component de renderizar porque abaixo não temos a prop description no elemento.
+
+```
+-   planets/index.js
+
+
+// Aqui criamos um component Planets
+
+// Aqui importamos components e recursos que serão utilizados
+import { Fragment } from "react";
+import Planet from "./planet";
+
+
+// E aqui apagamos o link de um dos itens para testar a renderização condicional
+// e adicionamos a prop title_with_underline como true
+
+// aqui em um dos component removemos a prop description para impedir a renderização do component
+
+const Planets = () => {
+  return (
+    <Fragment>
+      <h3>Planet List</h3>
+      <button>Exibir Mensagem</button>
+      <hr />
+      <Planet
+        name="Mercúrio"
+        img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Mercury_in_color_-_Prockter07-edit1.jpg/280px-Mercury_in_color_-_Prockter07-edit1.jpg"
+        title_with_underline={true}
+      />
+
+      <Planet
+        name="Saturno"
+        description="Saturno é o sexto planeta a partir do Sol e o segundo maior do Sistema Solar atrás de Júpiter. Pertencente ao grupo dos gigantes gasosos, possui cerca de 95 massas terrestres e orbita a uma distância média de 9,5 unidades astronômicas."
+        img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/300px-Saturn_during_Equinox.jpg"
+        link="https://pt.wikipedia.org/wiki/Saturno_(planeta)"
+        gray={true}
+      />
+
+       <Planet
+        name="Júpiter"
+        description="Júpiter é o maior planeta do Sistema Solar, tanto em diâmetro quanto em massa, e é o quinto mais próximo do Sol.[11] Possui menos de um milésimo da massa solar, contudo tem 2,5 vezes a massa de todos os outros planetas em conjunto. É um planeta gasoso, junto com Saturno, Urano e Netuno."
+        img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/300px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg"
+        link="https://pt.wikipedia.org/wiki/J%C3%BApiter_(planeta)"
+      />
+    </Fragment>
+  );
+};
+
+export default Planets;
+```
+<hr>
+<br>
+
+### Renderizando Múltiplos Components
+<br>
+
+```
+-   planet/index.js
+
+// Aqui criamos um component Planet com as informações dos planetas
+
+
+// Aqui importamos os components
+import GrayImg from "../../shared/gray_img";
+import DescriptionWithLink from "../../shared/description_with_link";
+
+
+// Iremos criar uma variável que irá conter um array e nesse array utilizamos o método map que irá executar uma ação para cada elemento do array, no exemplo iremos criar um item de lista para cada elemento
+
+
+// E abaixo no return iremos colocar um título e criar uma ul e dentro da ul adicionamos a variável que contem os itens da lista
+
+const Planet = (props) => {
+
+    const names = ['a', 'b','c','d']
+    const satellites = names.map((n) => 
+        <li>Satélite {n}</li>
+    )
+
+    let title;
+    if(props.title_with_underline)
+        title = <h4><u>{props.name}</u></h4>
+    else 
+        title = <h4>{props.name}</h4>
+
+    return (
+        <div >
+            {title}
+            <DescriptionWithLink description={props.description} link={props.link}/>
+            <GrayImg img_url={props.img_url} gray={props.gray}/>
+
+            <h4>Satélites</h4>
+            <ul>
+                {satellites}
+            </ul>
+            <hr />
+        </div>
+    )
+}
+
+export default Planet;
+```
+<hr>
+<br>
+
+### Renderizando Múltiplos elementos no JSX
+<br>
+
+```
+-   planet/index.js
+
+
+// Aqui criamos um component Planet com as informações dos planetas
+
+// Aqui importamos os components
+import GrayImg from "../../shared/gray_img";
+import DescriptionWithLink from "../../shared/description_with_link";
+
+
+// Aqui iremos fazer a mesma coisa que o exemplo anterior mas de uma forma mais direta
+// dentro do return criamos o título e uma ul e dentro da ul criamos o array e utilizamos diretamente o método map nele e para cada elemento do array será criado um li 
+
+
+const Planet = (props) => {
+
+    let title;
+    if(props.title_with_underline)
+        title = <h4><u>{props.name}</u></h4>
+    else 
+        title = <h4>{props.name}</h4>
+
+    return (
+        <div >
+            {title}
+            <DescriptionWithLink description={props.description} link={props.link}/>
+            <GrayImg img_url={props.img_url} gray={props.gray}/>
+
+
+            <h4>Satélites</h4>
+            <ul>
+                {['a', 'b','c','d'].map((n) => 
+                     <li>Satélite {n}</li>
+                    )}
+            </ul>
+            <hr />
+
+        </div>
+    )
+}
+
+export default Planet;
+```
+<hr>
+<br>
+
+## O que são Estados / States
+<br>
+
+-   Staté é um objeto javascript que guarda os dados de um component e determina seu comportamento.
+-   Quando um estado é atualizado o component é re-renderizado
+<hr>
+<br>
+
+### Diferença entre props e state
+<br>
+
+-   Props são passadas por outros components, o component pai passa as props para o component filho, basicamente são mais externas.
+-   E o state pertence a cada component, são mais internos.
+-   Os dois quando são atualizados serão re-renderizados
+<hr>
+<br>
+
+### Component de Classe vs Component Funcional
+<br>
+
+-   Declaração de um estado em um component de classe:
+```
+constructor(props){
+    super(props);
+    this.state = {
+        count: 0
+    }
+}
+```
+<hr>
+
+### Manipulando o state em um component de classe
+<br>
+
+-   Utilizamos o método setState, passamos nele o estado anterior state.count manipulamos ele e setamos/adicionamos no estado count.
+
+```
+incrementCount() {
+    this.setState((state) => {
+        return {count: state.count + 1}
+    });
+}
+```
+<hr>
+
+### Para declarar um estado em um component funcional
+<br>
+
+-   Precisamos importar o useState no React
+-   Primeiro criamos uma variável const e passamos um array  com o nome do estado que é count, depois o nome do método que vai alterar o estado que é o setCount e chamamos o useState com o valor de inicialização.
+
+```
+import React, {useState} from 'react';
+
+
+const [count, setCount] = useState(0);
+```
+<hr>
+
+### Para manipular um component em um component de classe
+```
+setCount(count + 1)
+```
+<hr>
+<br>
+
+### Criando um component de classe com estado e alterando estados
+<br>
+
+```
+// Aqui criamos um component Planets
+
+// Aqui importamos components e recursos que serão utilizados
+import React, { Fragment } from "react";
+import Planet from "./planet";
+
+// Aqui convertemos o component Planets para um component de classe, com estado, no estado criamos um array com um objeto para cada planeta que armazena seus dados.
+class Planets extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      planets: [
+        {
+          name: "Mercúrio",
+          description:
+            "Mercúrio é o sexto planeta a partir do Sol e o segundo maior do Sistema Solar atrás de Júpiter. Pertencente ao grupo dos gigantes gasosos, possui cerca de 95 massas terrestres e orbita a uma distância média de 9,5 unidades astronômicas.",
+          img_url:
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Mercury_in_color_-_Prockter07-edit1.jpg/280px-Mercury_in_color_-_Prockter07-edit1.jpg",
+        },
+        {
+          name: "Saturno",
+          description:
+            "Saturno é o sexto planeta a partir do Sol e o segundo maior do Sistema Solar atrás de Júpiter. Pertencente ao grupo dos gigantes gasosos, possui cerca de 95 massas terrestres e orbita a uma distância média de 9,5 unidades astronômicas.",
+          img_url:
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/300px-Saturn_during_Equinox.jpg",
+          link: "https://pt.wikipedia.org/wiki/Saturno_(planeta)",
+        },
+      ],
+    };
+  }
+
+  // Aqui criamos um método que remove o último elemento/planeta do state acima,
+  // Pegamos todos os dados do state e armazenamos em uma variável,
+  // Utilizamos o método pop() que remove o último elemento de um array na variável,
+  // Depois alteramos o state atual atribuindo nele a variável que utilizamos para remover o último elemento
+
+  removeLast = () => {
+    let new_planets = [...this.state.planets];
+    new_planets.pop();
+    this.setState((state) => ({
+      planets: new_planets,
+    }));
+  };
+
+  // E aqui criamos um método que duplica o último elemento
+  // Armazenamos o último item em uma variável,
+  // e depois setamos/alteramos o state planets e atribuimos nele a variável last_planet
+
+  duplicateLastPlanet = () => {
+    let last_planet = this.state.planets[this.state.planets.length - 1];
+    this.setState((state) => ({
+      planets: [...this.state.planets, last_planet],
+    }));
+  };
+
+  //  Para exibir os itens do component de classe precisamos utilizar o render(),
+  //  No botão passamos a chamada do método que irá remover os itens do Array
+  //  e adicionamos outro botão que chama o método de duplicar o último planeta,
+  //  E utilizamos um método map no array do state para acessar os dados de cada elemento do objeto e exibí-los na tela.
+
+  render() {
+    return (
+      <Fragment>
+        <h3>Planet List</h3>
+        <button onClick={this.removeLast}>Remove Last!</button>
+        <button onClick={this.duplicateLastPlanet}>
+          Duplicate Last Planet!
+        </button>
+        <hr />
+
+        {this.state.planets.map((planet) => (
+          <Planet
+            name={planet.name}
+            description={planet.description}
+            img_url={planet.img_url}
+            link={planet.link}
+          />
+        ))}
+      </Fragment>
+    );
+  }
+}
+
+export default Planets;
+```
