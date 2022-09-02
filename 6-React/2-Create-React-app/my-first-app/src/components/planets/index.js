@@ -4,29 +4,35 @@
 import React, { Fragment } from "react";
 import Planet from "./planet";
 
+
+// Aqui criamos uma async function que será executada de forma assíncrona ou seja será executada antes de tudo, ela retorna uma promise
+// Nela iremos consumir a API fictícia na pasta api e armazenar o result da promise na variável response e depois iremos tranformar em json e armazenamos na variável data e iremos retornar ela
+async function getPlanets(){
+  let response = await fetch('http://localhost:3000/api/planets.json')
+  let data = await response.json()
+  return data
+}
+
+
 // Aqui convertemos o component Planets para um component de classe, com estado, no estado criamos um array com um objeto para cada planeta que armazena seus dados.
 class Planets extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      planets: [
-        {
-          name: "Mercúrio",
-          description:
-            "Mercúrio é o sexto planeta a partir do Sol e o segundo maior do Sistema Solar atrás de Júpiter. Pertencente ao grupo dos gigantes gasosos, possui cerca de 95 massas terrestres e orbita a uma distância média de 9,5 unidades astronômicas.",
-          img_url:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Mercury_in_color_-_Prockter07-edit1.jpg/280px-Mercury_in_color_-_Prockter07-edit1.jpg",
-        },
-        {
-          name: "Saturno",
-          description:
-            "Saturno é o sexto planeta a partir do Sol e o segundo maior do Sistema Solar atrás de Júpiter. Pertencente ao grupo dos gigantes gasosos, possui cerca de 95 massas terrestres e orbita a uma distância média de 9,5 unidades astronômicas.",
-          img_url:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/300px-Saturn_during_Equinox.jpg",
-          link: "https://pt.wikipedia.org/wiki/Saturno_(planeta)",
-        },
-      ],
+      planets: []
     };
+  }
+
+
+  // O componentDidMount é um método que será executado sempre que um component for montado/exibido na tela
+  // Aqui chamamos a função async getPlanets e utilizamos o then para pegar o result da promise retornada pela função
+  // setamos o state com o result da promise
+  componentDidMount(){
+    getPlanets().then(data => {
+      this.setState(state => ({
+        planets: data['planets']
+      }))
+    })
   }
 
   // Aqui criamos um método que remove o último elemento/planeta do state acima,
@@ -71,6 +77,8 @@ class Planets extends React.Component {
             description={planet.description}
             img_url={planet.img_url}
             link={planet.link}
+            id={planet.id}
+            key={planet.key}
           />
         ))}
       </Fragment>
