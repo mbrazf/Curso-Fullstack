@@ -1483,3 +1483,677 @@ class Planet extends React.Component {
 
 export default Planet;
 ```
+<hr>
+<br>
+
+## O que são Hooks ?
+<br>
+
+- Os Hooks são uma forma de usarmos  state, lifecycle e compartilharmos lógica em componentes funcionais.
+- Eles foram inseridos na versão 16.8    
+<br>
+
+### Exemplo de component com Hook de state
+```
+  // Aqui importamos o hook de state
+
+  import React, { useState } from 'react';
+
+// Aqui uma função utilizando o state
+
+function Example() {
+    const [count, setCount] = useState(0);
+
+// e aqui os elementos e o botão que chama a função
+
+    return (
+        <div>
+            <p>You clicked {count} times </p>
+            <button onClick={() => setCount(count + 1)} >
+                Click me
+            </button>
+        </div>       
+    );
+}
+```
+<hr>
+
+### Exemplo de component com Hook associado a lifecycle
+<br>
+
+```
+// Aqui importamos os hooks
+import React, { useState, useEffect } from 'react';
+
+    // aqui a função com um state 
+    function Example() {
+    const [count, setCount] = useState(0);
+
+
+    //  useEffect é Similar ao componentDidMount e componentDidUpdate sempre que o component for montado ou alterado ele será chamado
+
+    useEffect(() => {
+
+        //  Atualiza o título do documento usando API do navegador
+        document.title = `You clicked ${count} times`;
+    });
+
+    return (
+        <div>
+            <p>You clicked {count} times </p>
+            <button onClick={() => setCount(count + 1)} >
+                Click me
+            </button>
+        </div>       
+    );
+}
+```
+<hr>
+
+### Porque usar Hooks ?
+<br>
+
+- Os components de função são mais fáceis de compreender.
+- Hooks nos ajudam a compartilhar lógica entre components.
+<hr>
+<br>
+
+### Refatorando nosso state e lifecycle com hooks
+<br>
+
+```
+  - planets/index.js
+
+
+  // Aqui criamos um component Planets
+
+// Aqui importamos components e os hooks
+import React, { Fragment, useState, useEffect } from "react";
+import Planet from "./planet";
+
+
+// Aqui criamos uma async function que será executada de forma assíncrona ou seja será executada antes de tudo, ela retorna uma promise
+// Nela iremos consumir a API fictícia na pasta api e armazenar o result da promise na variável response e depois iremos tranformar em json e armazenamos na variável data e iremos retornar ela
+async function getPlanets(){
+  let response = await fetch('http://localhost:3000/api/planets.json')
+  let data = await response.json()
+  return data
+}
+
+
+// Aqui transformamos o component de classe em um component funcional
+const Planets = (props) => {
+  
+  
+  // Aqui declaramos um state o primeiro parâmetro é o nome do state, o segundo o método que irá alterar o state e o último é o valor inicial dentro dos parênteses do useState()
+  const [planets, setPlanets ] = useState([])
+  
+
+  // Aqui utilizamos o hook useEffect ele é um método que será executado sempre que um component for montado para ser exibido na tela e sempre que o state é atualizado, ele irá re-renderizar o component.
+  //  Quando quisermos que o método seja executado uma única vez basta passar um array vazio no fim do método, ou se quiser que seja executado somente quando determinado state seja atualizado basta passar o state dentro do array no fim do método, assim ele será executado sempre que este state for alterado, ou podemos simplesmente deixar vazio assim ele será executado toda vez que um state for atualizado.
+  useEffect(() => {
+    getPlanets().then(data => {
+      setPlanets(data['planets'])
+    })
+  }, [])
+  
+
+    //  Os métodos podem ficar dentro do component funcional mas devem ser declarados como uma const 
+    // Aqui criamos um método que remove o último elemento/planeta,
+    // Pegamos todos os dados do state e armazenamos em uma variável,
+    // Utilizamos o método pop() que remove o último elemento de um array na variável,
+    // Depois alteramos o state atual chamando o método setPlanets que altera o state e passamos para ele a variável onde removemos os elementos
+    const removeLast = () => {
+      let new_planets = [...planets];
+      new_planets.pop();
+      setPlanets(new_planets)
+    };
+  
+    // E aqui criamos um método que duplica o último elemento
+    // Armazenamos o último item em uma variável,
+    // e depois setamos/alteramos o state planets e atribuimos nele a variável last_planet
+    const duplicateLastPlanet = () => {
+      let last_planet = planets[planets.length - 1];
+      setPlanets([...planets, last_planet])
+    };
+  
+
+    //  No botão passamos a chamada do método que irá remover os itens do Array
+    //  e adicionamos outro botão que chama o método de duplicar o último planeta,
+    //  E utilizamos um método map no state para acessar os dados de cada elemento do objeto e exibí-los na tela.
+      return (
+        <Fragment>
+          <h3>Planet List</h3>
+          <button onClick={removeLast}>Remove Last!</button>
+          <button onClick={duplicateLastPlanet}>
+            Duplicate Last Planet!
+          </button>
+          <hr />
+          {planets.map((planet) => (
+            <Planet
+              name={planet.name}
+              description={planet.description}
+              img_url={planet.img_url}
+              link={planet.link}
+              id={planet.id}
+              key={planet.key}
+            />
+          ))}
+        </Fragment>
+      );
+}
+
+export default Planets;
+```
+<hr>
+<br>
+
+### Exercício Refatorando com Hooks useState e useEffect
+```
+- planet/index.js
+
+
+// Aqui criamos um component Planet com as informações dos planetas
+
+// Aqui importamos os components e os hooks
+import GrayImg from "../../shared/gray_img";
+import DescriptionWithLink from "../../shared/description_with_link";
+import React, { useEffect, useState } from "react";
+
+// Aqui criamos uma async function que será executada de forma assíncrona ou seja será executada antes de tudo, ela retorna uma promise, e passamos para ela como parâmetro id que cada item da api irá conter um id.
+// Nela iremos consumir a API fictícia na pasta api e armazenar o result da promise na variável response e depois iremos tranformar em json e armazenamos na variável data e iremos retornar ela
+async function getSatellites(id) {
+  let response = await fetch(`http://localhost:3000/api/${id}.json`);
+  let data = await response.json();
+  return data;
+}
+
+// Aqui convertemos o component de classe para component funcional
+const Planet = (props) => {
+
+  
+  // Aqui criamos um state satellites com o método setSatellites que altera ele
+  const [satellites, setSatellites] = useState([]);
+
+  // Aqui utilizamos o useEffect que é chamado uma única vez no ínicio
+  useEffect(() => {
+    getSatellites().then((data) => {
+      setSatellites(data["satellites"]);
+    });
+  }, []);
+
+  // Aqui uma renderização condicional
+  let title;
+  if (props.title_with_underline)
+    title = (
+      <h4>
+        <u>{props.name}</u>
+      </h4>
+    );
+  else title = <h4>{props.name}</h4>;
+
+  //  Aqui retorna os components e elementos, e utilizamos o método map em satellites e para cada item iremos criar um li e criar uma chave para cada satellite baseado no seu índice
+  return (
+    <div>
+      {title}
+      <DescriptionWithLink description={props.description} link={props.link} />
+      <GrayImg img_url={props.img_url} gray={props.gray} />
+      <h4>Satélites</h4>
+      <ul>
+        {satellites.map((satellite, index) => (
+          <li key={index}>{satellite.name}</li>
+        ))}
+      </ul>
+      <hr />
+    </div>
+  );
+};
+
+export default Planet;
+```
+<hr>
+<br>
+
+## Controlled e UnControlled Components
+<br>
+
+### O que é um Uncontrolled Component?
+<br>
+
+- Em geral é um component que tem seus dados gerenciados pelo próprio DOM (como um input normal) sem relação com o state do component
+<br>
+
+### Exemplo
+```
+import React from 'react'
+
+const Form = () => {
+    return(
+        <div>
+            <label htmlFor="name">Name: </label>
+            <input type="text" id="name"/>
+        </div>
+    )
+}
+
+export default Form;
+```
+<hr>
+<br>
+
+### O que é um Controlled Component ?
+<br>
+
+- Components controlados estão associados aos estados do component, ou seja, eles exibem informações baseadas no state e quando alterados alteram também o state.
+<br>
+
+### Exemplo
+```
+    import React, { useState } from 'react';
+
+    const Form = () => {
+        const [name, setName] = useState(' ');
+        const handleChange = (e) => setName(e.currentTarget.value)
+
+        return(
+            <div>
+            <label htmlFor="name">Name: </label>
+            <input type="text" id="name" value={name} onChange={handleChange}/>
+        </div>
+        )
+    }
+
+    export default Form;
+```
+<hr>
+
+### Criando um Form controlado
+<br>
+
+- Aqui criamos o component Form
+```
+- planets/form/index.js
+
+// Aqui importamos os recursos e hooks utilizados
+import { Fragment , useState} from 'react'
+
+
+// Aqui criamos o component Form
+const Form = (props) => {
+
+    // Aqui criamos um state name com o método setName
+    const [name, setName] = useState(' ')
+
+    // Aqui criamos uma função que recebe o event como parâmetro e altera o state chamando o método setName() com o value digitado no input
+    const handleChange = e => setName(e.target.value)
+
+
+    // Aqui criamos outra função que irá adicionar o planeta digitado no input ao clicar no botão, e utilizamos o e.preventDefault() para evitar o reload da página ao clicar no botão submit
+    const handleSubmit = e => {
+        props.addPlanet({name : name})
+        e.preventDefault()
+    }
+
+
+    // Aqui os elementos do input, no input chamamos o método onChange que chama a função criada acima e no form chamamos o evento onSubmit que chama a função handleSubmit
+    return(
+        <Fragment>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="name">Planet Name: </label>
+                    <input id="name" type="text" value={name} onChange={handleChange}/>
+                </div>
+                <br />
+                <input type="submit" />
+            </form>
+        </Fragment>
+    )
+}
+
+// Aqui exportamos o component
+export default Form;
+```
+- E aqui adicionamos o component Form na página
+```
+- planets/index.js
+
+// Aqui criamos um component Planets
+
+// Aqui importamos components e os hooks
+import React, { Fragment, useState, useEffect } from "react";
+import Planet from "./planet";
+import Form from "./form";
+
+
+// Aqui criamos uma async function que será executada de forma assíncrona ou seja será executada antes de tudo, ela retorna uma promise
+// Nela iremos consumir a API fictícia na pasta api e armazenar o result da promise na variável response e depois iremos tranformar em json e armazenamos na variável data e iremos retornar ela
+async function getPlanets(){
+  let response = await fetch('http://localhost:3000/api/planets.json')
+  let data = await response.json()
+  return data
+}
+
+
+// Aqui transformamos o component de classe em um component funcional
+const Planets = () => {
+  
+  
+  // Aqui declaramos um state o primeiro valor é o nome do state o segundo o método que irá alterar o state e o último é o valor inicial dentro dos parênteses do useState()
+  const [planets, setPlanets ] = useState([])
+  
+
+  // Aqui utilizamos o hook useEffect ele é um método que será executado sempre que um component for montado para ser exibido na tela e sempre que o state é atualizado, ele irá re-renderizar o component.
+  //  Quando quisermos que o método seja executado uma única vez basta passar um array vazio no fim do método, ou se quiser que seja executado somente quando determinado state seja atualizado basta passar o state dentro do array no fim do método, assim ele será executado sempre que este state for alterado, ou podemos simplesmente deixar vazio assim ele será executado toda vez que um state for atualizado.
+  useEffect(() => {
+    getPlanets().then(data => {
+      setPlanets(data['planets'])
+    })
+  }, [])
+
+
+  // Aqui criamos um método para adicionar planetas via Form
+  // chamamos o método setPlanets que altera o state planets e insere na variável new_planet
+  const addPlanet = (new_planet) => {
+    setPlanets([...planets, new_planet])
+  }
+  
+  
+    // Aqui dentro do return fica todos os elementos e components,
+    //  adicionamos o component Form que recebe a chamada do método addPlanet criado acima.
+    //  E utilizamos um método map no state para acessar os dados de cada elemento do objeto e exibí-los na tela.
+      return (
+        <Fragment>
+          <h3>Planet List</h3>
+          <hr />
+          <Form addPlanet={addPlanet}/>
+          <hr />
+          {planets.map((planet) => (
+            <Planet
+              name={planet.name}
+              description={planet.description}
+              img_url={planet.img_url}
+              link={planet.link}
+              id={planet.id}
+              key={planet.key}
+            />
+          ))}
+        </Fragment>
+      );
+}
+
+export default Planets;
+```
+<hr>
+<br>
+
+### Controlando Múltiplos Inputs
+<br>
+
+```
+- planets/form/index.js
+
+// Aqui importamos os recursos e hooks utilizados
+import { Fragment , useState} from 'react'
+
+
+// Aqui criamos um state inicial com um objeto com os itens que serão adicionados no form
+const initialState = {
+        name: ' ',
+        description: ' ',
+        img_url: '',
+        link: ' '
+}
+
+// Aqui criamos o component Form
+const Form = (props) => {
+
+    // Aqui criamos um state fields com o método setFields que recebe o objeto initialState com os itens que serão adicionados ao form
+    const [fields, setFields] = useState( initialState )
+
+    // Aqui criamos uma função que recebe o event como parâmetro e altera o state 
+    // pegamos todos os fields/campos do input  utilizando o spread, e passamos o value digitado nos fields para o name
+    const handleFieldsChange = e => setFields({
+        ...fields,
+        [e.currentTarget.name]: e.currentTarget.value
+    })
+
+
+    // Aqui criamos outra função que irá adicionar o planeta digitado no input ao clicar no botão, e utilizamos o e.preventDefault() para evitar o reload da página ao clicar no botão submit, e abaixo chamamos o método setFields para alterar o state e passamos para ele a variável initialState e alteramos o state para vazio ou seja após enviar o form ele será limpo
+    const handleSubmit = e => {
+        props.addPlanet(fields)
+        e.preventDefault()
+        setFields(initialState)
+    }
+
+
+    // Aqui os elementos do input, no input chamamos o método onChange que chama a função criada acima e no form chamamos o evento onSubmit que chama a função handleSubmit
+    // Agora podemos adicionar vários inputs e no campo value acessamos o state fields que contém o objeto com os itens e a propriedade desejada, e ai basta alterar o id, o name e seu value
+    return(
+        <Fragment>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="name">Planet Name: </label>
+                    <input id="name" type="text" name="name" value={fields.name} onChange={handleFieldsChange}/>
+                </div>
+                <div>
+                    <label htmlFor="description">Planet Description: </label>
+                    <input id="description" type="text" name="description" value={fields.description} onChange={handleFieldsChange}/>
+                </div>
+                <div>
+                    <label htmlFor="img_url">Planet Image: </label>
+                    <input id="img_url" type="text" name="img_url" value={fields.img_url} onChange={handleFieldsChange}/>
+                </div>
+                <div>
+                    <label htmlFor="link">Planet Link: </label>
+                    <input id="link" type="text" name="link" value={fields.link} onChange={handleFieldsChange}/>
+                </div>
+                <br />
+                <input type="submit" />
+            </form>
+        </Fragment>
+    )
+}
+
+// Aqui exportamos o component
+export default Form;
+```
+- E aqui adicionamos o component Form em planets
+
+```
+- planets/index.js
+
+
+// Aqui criamos um component Planets
+
+// Aqui importamos components e os hooks
+import React, { Fragment, useState, useEffect } from "react";
+import Planet from "./planet";
+import Form from "./form";
+
+
+// Aqui criamos uma async function que será executada de forma assíncrona ou seja será executada antes de tudo, ela retorna uma promise
+// Nela iremos consumir a API fictícia na pasta api e armazenar o result da promise na variável response e depois iremos tranformar em json e armazenamos na variável data e iremos retornar ela
+async function getPlanets(){
+  let response = await fetch('http://localhost:3000/api/planets.json')
+  let data = await response.json()
+  return data
+}
+
+
+// Aqui transformamos o component de classe em um component funcional
+const Planets = () => {
+  
+  
+  // Aqui declaramos um state o primeiro valor é o nome do state o segundo o método que irá alterar o state e o último é o valor inicial dentro dos parênteses do useState()
+  const [planets, setPlanets ] = useState([])
+  
+
+  // Aqui utilizamos o hook useEffect ele é um método que será executado sempre que um component for montado para ser exibido na tela e sempre que o state é atualizado, ele irá re-renderizar o component.
+  //  Quando quisermos que o método seja executado uma única vez basta passar um array vazio no fim do método, ou se quiser que seja executado somente quando determinado state seja atualizado basta passar o state dentro do array no fim do método, assim ele será executado sempre que este state for alterado, ou podemos simplesmente deixar vazio assim ele será executado toda vez que um state for atualizado.
+  useEffect(() => {
+    getPlanets().then(data => {
+      setPlanets(data['planets'])
+    })
+  }, [])
+
+
+  // Aqui criamos um método para adicionar planetas via Form
+  // chamamos o método setPlanets que altera o state planets e insere na variável new_planet
+  const addPlanet = (new_planet) => {
+    setPlanets([...planets, new_planet])
+  }
+  
+  
+    // Aqui dentro do return fica todos os elementos e components,
+    //  adicionamos o component Form que recebe a chamada do método addPlanet criado acima.
+    //  E utilizamos um método map no state para acessar os dados de cada elemento do objeto e exibí-los na tela.
+      return (
+        <Fragment>
+          <h3>Planet List</h3>
+          <hr />
+          <Form addPlanet={addPlanet}/>
+          <hr />
+          {planets.map((planet) => (
+            <Planet
+              name={planet.name}
+              description={planet.description}
+              img_url={planet.img_url}
+              link={planet.link}
+              id={planet.id}
+              key={planet.key}
+            />
+          ))}
+        </Fragment>
+      );
+}
+
+export default Planets;
+```
+<hr>
+<br>
+
+### Exercício Criando um Form Controlado
+<br>
+
+```
+- planet/form/index.js
+
+
+// Aqui importamos os recursos e hooks utilizados
+import { Fragment , useState} from 'react'
+
+
+// Aqui criamos um state inicial com um objeto com os itens que serão adicionados no form
+const initialState = {
+        name: ' ',
+}
+
+// Aqui criamos o component Form
+const Form = (props) => {
+
+    // Aqui criamos um state fields com o método setFields que recebe o objeto initialState com os itens que serão adicionados ao form
+    const [fields, setFields] = useState( initialState )
+
+    // Aqui criamos uma função que recebe o event como parâmetro e altera o state 
+    // pegamos todos os fields/campos do input  utilizando o spread, e passamos o value digitado nos fields para o name
+    const handleFieldsChange = e => setFields({
+        ...fields,
+        [e.currentTarget.name]: e.currentTarget.value
+    })
+
+
+    // Aqui criamos outra função nela acessamos as props e o método addSatellite criado no Component Planet que irá adicionar os satélites digitados no input ao clicar no botão, e utilizamos o e.preventDefault() para evitar o reload da página ao clicar no botão submit, e abaixo chamamos o método setFields para alterar o state e passamos para ele a variável initialState e alteramos o state para vazio ou seja após enviar o form ele será limpo
+    const handleSubmit = e => {
+        props.addSatellite(fields)
+        e.preventDefault()
+        setFields(initialState)
+    }
+
+
+    // Aqui os elementos do input, no input chamamos o método onChange que chama a função criada acima e no form chamamos o evento onSubmit que chama a função handleSubmit
+    // Agora podemos adicionar vários inputs e no campo value acessamos o state fields que contém o objeto com os itens e a propriedade desejada, e ai basta alterar o id, o name e seu value
+    return(
+        <Fragment>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="name">Satellite Name: </label>
+                    <input id="name" type="text" name="name" value={fields.name} onChange={handleFieldsChange}/>
+                </div>
+                <br />
+                <input type="submit" />
+            </form>
+        </Fragment>
+    )
+}
+
+// Aqui exportamos o component
+export default Form;
+```
+
+```
+- planet/index.js
+
+
+// Aqui criamos um component Planet com as informações dos planetas
+
+// Aqui importamos os components e os hooks
+import GrayImg from "../../shared/gray_img";
+import DescriptionWithLink from "../../shared/description_with_link";
+import React, { useEffect, useState } from "react";
+import Form from "./form";
+
+// Aqui criamos uma async function que será executada de forma assíncrona ou seja será executada antes de tudo, ela retorna uma promise, e passamos para ela como parâmetro id que cada item da api irá conter um id.
+// Nela iremos consumir a API fictícia na pasta api e armazenar o result da promise na variável response e depois iremos tranformar em json e armazenamos na variável data e iremos retornar ela
+async function getSatellites(id) {
+  let response = await fetch(`http://localhost:3000/api/${id}.json`);
+  let data = await response.json();
+  return data;
+}
+
+// Aqui convertemos o component de classe para component funcional
+const Planet = (props) => {
+  // Aqui criamos um state satellites com o método setSatellites que altera ele
+  const [satellites, setSatellites] = useState([]);
+
+  // Aqui utilizamos o useEffect que é chamado uma única vez no ínicio
+  useEffect(() => {
+    getSatellites().then((data) => {
+      setSatellites(data["satellites"]);
+    });
+  }, []);
+
+  //  Aqui criamos um método para adicionar novos satélites pelo form
+  const addSatellite = (new_satellite) => {
+    setSatellites([...satellites, new_satellite]);
+  };
+
+  // Aqui uma renderização condicional
+  let title;
+  if (props.title_with_underline)
+    title = (
+      <h4>
+        <u>{props.name}</u>
+      </h4>
+    );
+  else title = <h4>{props.name}</h4>;
+
+  //  Aqui retorna os components e elementos, e utilizamos o método map em satellites e para cada item iremos criar um li e criar uma chave para cada satellite baseado no seu índice
+  return (
+    <div>
+      {title}
+      <DescriptionWithLink description={props.description} link={props.link} />
+      <GrayImg img_url={props.img_url} gray={props.gray} />
+      <h4>Satélites</h4>
+      <Form addSatellite={addSatellite} />
+      <ul>
+        {satellites.map((satellite, index) => (
+          <li key={index}>{satellite.name}</li>
+        ))}
+      </ul>
+      <hr />
+    </div>
+  );
+};
+
+export default Planet;
+```
