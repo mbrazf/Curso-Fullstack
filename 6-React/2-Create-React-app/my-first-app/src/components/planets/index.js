@@ -48,14 +48,14 @@ const Planets = () => {
           <hr />
           <Form addPlanet={addPlanet}/>
           <hr />
-          {planets.map((planet) => (
+          {planets.map((planet, index) => (
             <Planet
               name={planet.name}
               description={planet.description}
               img_url={planet.img_url}
               link={planet.link}
               id={planet.id}
-              key={planet.key}
+              key={index}
             />
           ))}
         </Fragment>

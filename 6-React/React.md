@@ -2157,3 +2157,322 @@ const Planet = (props) => {
 
 export default Planet;
 ```
+<hr>
+<br>
+
+## O que é um SPA e o que são rotas
+<br>
+
+### O  que são os SPAs ?
+<br>
+
+- As SPAs (Single Page Application) são aplicações web que tem como objetivo trazer uma experiência similar a de um APP desktop para o usuário ( sem os reloads comuns nos sites).
+- O React é uma excelente ferramenta para criarmos SPAs
+<hr>
+<br>
+
+### O que é uma Rota ?
+<br>
+
+- São caminhos que usamos no browser para acessar páginas específicas de um site.
+<hr>
+<br>
+
+### Como separar seu APP react em páginas (sem reload) ?
+<br>
+
+- A principal biblioteca que nos permite fazer isso se chama React Router.
+<hr>
+<br>
+
+### Incluindo as rotas no nosso projeto
+<br>
+
+- Primeiro instalamos no nosso projeto a biblioteca React Router utilizando o comando:
+```
+  npm install react-router-dom --save
+```
+
+- Interessante também criar uma pasta dentro de src chamada screens, nela iremos adicionar/criar as telas do projeto.
+- dentro da pasta screens criamos um component PlanetsScreen onde irá conter o component Planets.
+```
+- src/screens/planets.js
+
+// Aqui criamos um component de tela PlanetsScreen e dentro dele irá conter todo o component Planets
+
+// Aqui importamos o component Planets
+
+import Planets from '../components/planets/index'
+
+
+// Aqui criamos o component com a tela PlanetsScreen
+const PlanetsScreen = () =>{
+    return (
+        <Planets/>
+    )
+}
+
+export default PlanetsScreen
+```
+- Agora criamos dentro da pasta  src um arquivo chamado routes.js onde iremos configurar as rotas.
+```
+- src/routes.js
+
+
+import React from 'react'
+
+// Aqui importamos os recursos que serão utilizados do react-router
+import { BrowserRouter, Route, Routes} from 'react-router-dom'
+
+// Aqui importamos os components
+import PlanetsScreen from './screens/planets'
+
+
+//  Aqui criamos o component ScreenRoutes para configurar/ adicionar as rotas.
+//  O BrowserRouter é o principal elemento, ele é como se fosse uma estrutura externa para armazenar as rotas, todas as telas de um projeto tem que ser exibidas dentro dele.
+
+//  Também temos o Routes basicamente é o component que tem que ficar em volta das rotas, as rotas tem que estar dentro do Routes.
+
+//  E o Route é a rota em si, recebe três parâmetros, element que recebe o componente que será exibido ao acessar a rota. O parâmetro path é o caminho na URL que precisa ser acessado para mostrar o componente, definido pelo parâmetro component. O parâmetro exact determina qual o componente vai ser exibido apenas se a rota for igual ao definido entre aspas, no nosso caso se for exatamente "/".
+
+const ScreenRoutes = () => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route exact path="/"  element={ <PlanetsScreen/> }/>
+            </Routes>
+        </BrowserRouter>
+    )
+}
+
+export default ScreenRoutes;
+```
+- E importamos e adicionamos em App.js
+
+```
+// Aqui no App.js onde são inseridos todos os elementos e componentes
+
+import React from 'react';
+
+// Aqui importamos o component onde está configurado as rotas
+import ScreenRoutes from './routes';
+
+
+// E aqui no component App dentro do return  é onde todos os elementos e componentes são inseridos
+function App() {
+  return (
+    <div>
+      <ScreenRoutes/>
+    </div>
+  );
+}
+
+export default App;
+```
+<hr>
+<br>
+
+### Criando uma nova tela e navegando entre elas, redirect e página 404 de erro
+<br>
+
+```
+- components/planet
+
+// Aqui criamos um component Planet com as informações dos planetas
+
+// Aqui importamos os components e os hooks
+import React, { useEffect, useState } from "react";
+import GrayImg from "../shared/gray_img";
+import DescriptionWithLink from "../shared/description_with_link";
+import Form from "./form";
+
+// Aqui importamos o hook useParams para poder utilizar parâmetro na URL, e o useNavigate e Navigate para redirecionar
+import { useParams, useNavigate, Navigate } from "react-router-dom";
+
+// Aqui criamos uma async function que será executada de forma assíncrona ou seja será executada antes de tudo, ela retorna uma promise, e passamos para ela como parâmetro id que cada item da api irá conter um id.
+// Nela iremos consumir a API fictícia na pasta api e armazenar o result da promise na variável response e depois iremos tranformar em json e armazenamos na variável data e iremos retornar ela
+async function getPlanet(id) {
+  let response = await fetch(`http://localhost:3000/api/${id}.json`);
+  let data = await response.json();
+  return data;
+}
+
+// Aqui convertemos o component de classe para component funcional
+const Planet = () => {
+
+  // Aqui criamos um state satellites com o método setSatellites que altera ele
+  const [satellites, setSatellites] = useState([]);
+
+  // Aqui declaramos um state para planet
+  const [planet, setPlanet] = useState({ })
+
+  // Aqui um state usado para redirecionar caso houver algum erro na chamada da API
+  const [redirect, setRedirect] = useState(false)
+
+
+  // Aqui criamos uma variável id e chamamos o useParams(), o useParams irá trazer um objeto com todos os parâmetros, mas como declaramos nas chaves o parâmetro id o useParams irá pegar somente o que foi passado
+  let { id } = useParams()
+
+  //  Aqui utilizamos o hook useNavigate, para redirecionar as páginas
+  let navigate = useNavigate()
+
+  // Aqui utilizamos o useEffect que é chamado uma única vez no ínicio
+  useEffect(() => {
+    getPlanet(id).then(data => {
+      setSatellites(data['satellites']);
+      setPlanet(data['data'])
+    }, error => {
+      setRedirect(true)
+    })
+  },  [ ]);
+
+
+    //  Aqui criamos o método e chamamos o useNavigate com o navigate('/'), quando esse metodo for chamado a navegação será redirecionada para o caminho desejado
+  const goToPlanets = () => {
+      navigate('/')
+  }
+
+  //  Aqui criamos um método para adicionar novos satélites pelo form
+  const addSatellite = (new_satellite) => {
+    setSatellites([...satellites, new_satellite]);
+  };
+
+  // Aqui uma renderização condicional
+  let title;
+  if (planet.title_with_underline)
+    title = (
+      <h4>
+        <u>{planet.name}</u>
+      </h4>
+    );
+  else title = <h4>{planet.name}</h4>;
+
+
+  // e aqui verificamos o state redirect e for true redirecionamos para a página inicial
+  if(redirect){
+      return <Navigate to="/"></Navigate>
+  }
+
+  //  Aqui retorna os components e elementos, e utilizamos o método map em satellites e para cada item iremos criar um li e criar uma chave para cada satellite baseado no seu índice
+  return (
+    <div>
+      {title}
+      <DescriptionWithLink description={planet.description} link={planet.link} />
+      <GrayImg img_url={planet.img_url} gray={planet.gray} />
+      <h4>Satélites</h4>
+      <Form addSatellite={addSatellite} />
+      <ul>
+        {satellites.map((satellite, index) => (
+          <li key={index}>{satellite.name}</li>
+        ))}
+      </ul>
+      <hr />
+          <button type="button" onClick={goToPlanets}>Voltar para Home</button>
+    </div>
+  );
+};
+
+export default Planet;
+```
+
+```
+- components/planets/planet/index.js
+
+// Aqui criamos um component Planet com as informações dos planetas
+
+// Aqui importamos os components e os hooks
+import GrayImg from "../../shared/gray_img";
+import DescriptionWithLink from "../../shared/description_with_link";
+
+
+// Aqui importamos o Link utilizado para navegar entre as páginas sem reload
+import { Link } from "react-router-dom";
+
+// Aqui convertemos o component de classe para component funcional
+const Planet = (props) => {
+
+  // Aqui uma renderização condicional
+  let title;
+  if (props.title_with_underline)
+    title = (
+      <h4>
+        <u>{props.name}</u>
+      </h4>
+    );
+  else title = <h4>{props.name}</h4>;
+
+  //  Aqui retorna os components e elementos, e utilizamos o método map em satellites e para cada item iremos criar um li e criar uma chave para cada satellite baseado no seu índice
+
+  // e utilizamos o Link que foi importado ele redireciona para outra página sem recarregar
+  return (
+    <div>
+      <Link to={`/planet/${props.id}`}>{title}</Link>
+      <DescriptionWithLink description={props.description} link={props.link} />
+      <GrayImg img_url={props.img_url} gray={props.gray} />
+    </div>
+  );
+};
+
+export default Planet;
+```
+
+```
+- components/screens/notFound.js
+
+// Aqui criamos outro component para a tela de NotFound
+
+import { Link } from 'react-router-dom'
+
+const NotFoundScreen = () => {
+    return (
+        <div>
+            <h3>Página não encontrada</h3>
+            <Link to='/ '> Voltar para Home</Link>
+        </div>
+    )
+}
+
+export default NotFoundScreen
+```
+
+```
+- src/routes.js
+
+import React from 'react'
+
+// Aqui importamos os recursos que serão utilizados do react-router
+import { BrowserRouter, Routes, Route} from 'react-router-dom'
+
+// Aqui importamos os components
+import PlanetsScreen from './screens/planets'
+import PlanetScreen from './screens/planet'
+
+import NotFoundScreen from './screens/notFound'
+
+
+//  Aqui criamos o component ScreenRoutes para configurar/ adicionar as rotas.
+//  O BrowserRouter é o principal elemento, ele é como se fosse uma estrutura externa para armazenar as rotas, todas as telas de um projeto tem que ser exibidas dentro dele.
+
+//  Também temos o Routes basicamente é o component que tem que ficar em volta das rotas, as rotas tem que estar dentro do Routes.
+
+//  E o Route é a rota em si, recebe três parâmetros, element que recebe o componente que será exibido ao acessar a rota. O parâmetro path é o caminho na URL que precisa ser acessado para mostrar o componente, definido pelo parâmetro component. O parâmetro exact determina qual o componente vai ser exibido apenas se a rota for igual ao definido entre aspas, no nosso caso se for exatamente "/".
+
+// Na segunda rota iremos pegar o parâmetro da URL
+
+const ScreenRoutes = () => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route exact path="/"  element={ <PlanetsScreen/> }/>
+                <Route exact path="/planet/:id"  element={<PlanetScreen/> }/>
+                <Route path ='*' element={<NotFoundScreen/> }/>
+            </Routes>
+        </BrowserRouter>
+    )
+}
+
+export default ScreenRoutes;
+```
+
+
+
