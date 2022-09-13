@@ -344,7 +344,7 @@ app.listen(3000, () => {
 
 -   Aqui vemos a tela inicial do Postman
 
-![Postman Tela Inicial]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/postman1.jpg')
+![Postman Tela Inicial]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/76c8799d991e2f31527eedd32974e2e9a886cf2a/7-Nodejs-mongoDB/prints/postman1.jpg')
 <br>
 
 -   Aqui o primeiro teste do backend
