@@ -187,7 +187,7 @@ console.log(__dirname)
 // Aqui utilizamos uma biblioteca do próprio Node
 const http = require('http')
 
-// Aqui criamos uma variável server e nela utilizamos o método createSercer() recebe 2 parâmetros, req que é as informações da requisição passadas pelo browser e res é o que estamos respondendo que será devolvido para o usuário
+// Aqui criamos uma variável server e nela utilizamos o método createServer() recebe 2 parâmetros, req que é as informações da requisição passadas pelo browser e res é o que estamos respondendo que será devolvido para o usuário
 
 // nele utilizamos 2 consoles.log um no req.method para exibir o método que está sendo executado, e req.url para ver a url
 
@@ -227,8 +227,131 @@ server.listen(3000, () => {
 
 -   Exemplos:
 
-![Arquitetura MVC]('https://github.com/mbrazf/Curso-Fullstack/blob/master/7-Nodejs-mongoDB/prints/arquiteturaMVC.png')
+![Arquitetura MVC]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/arquiteturaMVC.png')
 
-![Zoom Backend]('https://github.com/mbrazf/Curso-Fullstack/blob/master/7-Nodejs-mongoDB/prints/zoombackend.png')
+![Zoom Backend]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/zoombackend.png')
 
+<hr>
+<br>
 
+## O que é o Express
+<br>
+
+-   É um framework minimalista
+    -   Não se preocupa em definir padrões de desenvolvimento
+-   Opera através de middlewares
+-   Segue um padrão chamado Chain of Responsability
+-   Se preocupa em entregar apenas a requisição e a resposta, deixando todo o fluxo de dados à escolha do desenvolvedor
+<hr>
+<br>
+
+### Lista de tarefas com Express
+<br>
+
+-   Primeiro criamos um diretório/pasta e utilizamos o npm init para iniciar o npm
+-   Criamos um arquivo chamado app.js
+-   Instalamos o express 
+```
+    npm install express --save
+```
+<hr>
+
+### Primeira Rota com Express
+<br>
+
+```
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+// Aqui criamos uma rota com o método get(),
+// ele recebe 2 parâmetros req e res e enviamos uma resposta para o uusuário com o método send() com uma mensagem
+app.get('/', (req, res) => {
+    res.send('<h1>Minha Lista de tarefas</h1>')
+})
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
+
+-   instalamos um pacote chamado nodemon 'npm install nodemon --save-dev' que irá reiniciar o servidor sempre que um arquivo for alterado, para utilizar ele basta digitar o comando npx nodemon
+
+-   ai basta acessar a url localhost:3000 que o servidor estará aberto no browser
+
+-   e no package.json adicionamos um novo comando para executar o nodemon "dev": "nodemon" ai para iniciar o servidor basta utilizar "npm run dev"
+
+```
+{
+  "name": "5-todo-list-express",
+  "version": "1.0.0",
+  "description": "Lista de tarefas",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon"
+  },
+  "author": "Marcelo Braz",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
+```
+<hr>
+
+### Respostas JSON
+<br>
+
+```
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+// Aqui criamos uma rota com o método get()
+// ele recebe 2 parâmetros req e res e enviamos uma resposta para o uusuário com o método send() com uma mensagem
+app.get('/', (req, res) => {
+    res.send('<h1>Minha Lista de tarefas : )</h1>')
+})
+
+// Aqui criamos uma nova rota, que irá retornar um arquivo json como resposta para o usuário, quando for acessado /json na URL
+app.get('/json', (req, res) =>{
+    res.json({title: 'Tarefa X', done: true})
+})
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
+<hr>
+
+### Instalando Postman
+<br>
+
+-   Postman é uma ferramenta utilizada para testar o backend, as rotas, as requisições
+-   Link para download [Postman](https://www.postman.com/downloads/)
+-   Após instalar iniciamos o servidor com o 'npm run dev'      
+<br>
+
+-   Aqui vemos a tela inicial do Postman
+
+![Postman Tela Inicial]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/postman1.jpg')
+<br>
+
+-   Aqui o primeiro teste do backend
+
+![Postman Primeiro teste]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/postman2.jpg')
+<br>
+
+-   E aqui testamos o JSON que retornamos no nosso projeto
+
+![Postman Request JSON]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/postman3.jpg')
