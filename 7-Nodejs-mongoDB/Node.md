@@ -227,9 +227,10 @@ server.listen(3000, () => {
 
 -   Exemplos:
 
-![Arquitetura MVC]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/arquiteturaMVC.png')
+![arquiteturaMVC](https://user-images.githubusercontent.com/72533693/189931324-d710c5c6-df61-419e-8ba2-2f0833f6619e.png)
 
-![Zoom Backend]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/zoombackend.png')
+
+![zoombackend](https://user-images.githubusercontent.com/72533693/189931840-da1bbe95-b941-4598-8543-ddd51d3ef666.png)
 
 <hr>
 <br>
@@ -344,16 +345,17 @@ app.listen(3000, () => {
 
 -   Aqui vemos a tela inicial do Postman
 
-![Postman Tela Inicial]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/76c8799d991e2f31527eedd32974e2e9a886cf2a/7-Nodejs-mongoDB/prints/postman1.jpg')
+![postman1](https://user-images.githubusercontent.com/72533693/189932070-3a668414-7d8c-4336-961b-db430b5989f5.jpg)
 <br>
 
 -   Aqui o primeiro teste do backend
 
-![Postman Primeiro teste]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/postman2.jpg')
+![postman2](https://user-images.githubusercontent.com/72533693/189932214-b8111781-6674-4501-a689-89a40872264d.jpg)
 <br>
 
 -   E aqui testamos o JSON que retornamos no nosso projeto
 
+<<<<<<< HEAD
 ![Postman Request JSON]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/postman3.jpg')
 <hr>
 <br>
@@ -719,3 +721,8 @@ module.exports = router
 -   E utilizaremos recursos que permitam mapear os objetos do JS no MongoDB
 <hr>
 <br>
+=======
+![postman3](https://user-images.githubusercontent.com/72533693/189932336-703ae8fa-0205-4d8f-a650-4eb4695656cf.jpg)
+<hr>
+<br>
+>>>>>>> fab074b4fe964ad18427d6cc00dc0e7697805264
