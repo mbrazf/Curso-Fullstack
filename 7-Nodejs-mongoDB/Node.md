@@ -355,3 +355,367 @@ app.listen(3000, () => {
 -   E aqui testamos o JSON que retornamos no nosso projeto
 
 ![Postman Request JSON]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/postman3.jpg')
+<hr>
+<br>
+
+## Chain of Responsability
+<br>
+
+-   Significa "Cadeia de Responsabilidades"
+-   Permite que os objetos sejam encadeados
+-   Com o encadeamento, cada objeto verifica se pode enviar uma resposta
+    -   Caso não possa, passa para o próximo da cadeia  
+<br>
+
+-   É um padrão que o Express se baseou
+    -   Permite a busca por uma resposta para uma determinada requisição
+
+--------   Aqui vai uma imagem chainresponsability  ---------
+<hr>
+<br>
+
+## Middlewares
+<br>
+
+-   No Postman criamos um objeto e enviamos uma requisição em localhost:3000/json
+
+
+-------- Aqui vai uma imagem middleware -----------
+
+
+-   E aqui criamos os middlewares
+```
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json())
+
+
+// Aqui criamos uma função ela contém 3 parâmetros req que é a requisição, res a resposta para o usuário e next que permite que o middleware passe a execução para o próximo middleware, na função exibimos um console.log() com req.body que é o objeto JSON que criamos no Postman e abaixo chamamos o next para passar para o próximo
+
+const log = (req, res, next) => {
+    console.log(req.body)
+    next();
+}
+
+// e aqui chamamos a função criada acima
+app.use(log)
+
+// Aqui criamos uma rota com o método get()
+// ele recebe 2 parâmetros req e res e enviamos uma resposta para o uusuário com o método send() com uma mensagem
+app.get('/', (req, res) => {
+    res.send('<h1>Minha Lista de tarefas : )</h1>')
+})
+
+
+// Aqui criamos uma nova rota, que irá retornar um arquivo json como resposta para o usuário, quando for acessado /json na URL
+app.get('/json', (req, res) =>{
+    res.json({title: 'Tarefa X', done: true})
+})
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
+<hr>
+<br>
+
+## Concentrando Rotas
+<br>
+
+-   Dentro do diretório/pasta do projeto todo list, criamos uma pasta src e dentro dela uma outra pasta chamada routes e nela criamos o arquivo checklist.js
+
+```
+-   src/routes/checklist.js
+
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// aqui criamos uma rota com o router.get() recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, nessa rota exibimos um console.log() e chamamos o res.send() e deixamos a resposta vazia
+router.get('/', (req, res) => {
+    console.log('Olá')
+    res.send()
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+
+------- Aqui vai a imagem rotas----------
+
+```
+-   app.js
+
+
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui importamos o módulo com as rotas criado em checklist.js
+const checkListRouter = require('./src/routes/checklist')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json())
+
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/checklists', checkListRouter)
+
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
+<hr>
+<br>
+
+## Rota POST
+<br>
+
+-   Com o POST enviamos informações
+
+-   Aqui criamos uma rota POST
+```
+-   src/routes/checklist.js
+
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// aqui criamos uma rota com o router.get() recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, nessa rota exibimos um console.log() e chamamos o res.send() e deixamos a resposta vazia
+router.get('/', (req, res) => {
+    console.log('Olá')
+    res.send()
+})
+
+// aqui criamos uma outra rota só que agora post, para enviar dados, recebe os mesmo parâmetros da rota get, nela exibimos um console.log() com os dados passados no body do postman, e abaixo passamos o código do status da resposta da chamada e exibimos para o usuário os mesmos dados que passamos no body  
+router.post('/', (req, res) => {
+    console.log(req.body)
+    res.status(200).json(req.body)
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+
+```
+-   app.js
+
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui importamos o módulo com as rotas criado em checklist.js
+const checkListRouter = require('./src/routes/checklist')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json())
+
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/checklists', checkListRouter)
+
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
+---- Aqui vai uma imagem -----
+
+-   E aqui o objeto que criamos no body do postman será exibido no terminal do vscode
+
+---- Aqui vai outra imagem -----
+
+<hr>
+<br>
+
+## Parâmetros nas rotas
+<br>
+
+-   Criamos uma nova rota get
+```
+-   src/routes/checklists.js
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// aqui criamos uma rota com o router.get() recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, nessa rota exibimos um console.log() e chamamos o res.send() e deixamos a resposta vazia
+router.get('/', (req, res) => {
+    console.log('Olá')
+    res.send()
+})
+
+// aqui criamos uma outra rota só que agora post, para enviar dados, recebe os mesmo parâmetros da rota get, nela exibimos um console.log() com os dados passados no body do postman, e abaixo passamos o código do status da resposta da chamada e exibimos para o usuário os mesmos dados que passamos no body  
+router.post('/', (req, res) => {
+    console.log(req.body)
+    res.status(200).json(req.body)
+})
+
+
+// Aqui criamos outra rota do tipo get o caminho será checklists/:id ou seja espera um id e recebe os 2 parâmetros req e res, exibimos um console.log, nele utilizamos o req.params.id ou seja irá pegar o id da url e adicionar no objeto, e abaixo passamos como resposta para o usuário o id
+router.get('/:id', (req, res) => {
+    console.log(req.params)
+    res.send(`ID: ${req.params.id}`)
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+
+---- Aqui vai a imagem paramsid -----------------
+
+-   e aqui no terminal o id passado no postman
+
+----- Aqui vai a imagem paramsidterminal -------------
+<hr>
+<br>
+
+## Rotas PUT e DELETE
+<br>
+
+-   O PUT atualiza os dados e o DELETE remove
+```
+-   src/routes/checklist.js
+
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// aqui criamos uma rota com o router.get() recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, nessa rota exibimos um console.log() e chamamos o res.send() e deixamos a resposta vazia
+router.get('/', (req, res) => {
+    console.log('Olá')
+    res.send()
+})
+
+// aqui criamos uma outra rota só que agora post, para enviar dados, recebe os mesmo parâmetros da rota get, nela exibimos um console.log() com os dados passados no body do postman, e abaixo passamos o código do status da resposta da chamada e exibimos para o usuário os mesmos dados que passamos no body  
+router.post('/', (req, res) => {
+    console.log(req.body)
+    res.status(200).json(req.body)
+})
+
+
+// Aqui criamos outra rota do tipo get o caminho será/:id ou seja espera um id e recebe os 2 parâmetros req e res, exibimos um console.log nele utilizamos o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, e abaixo passamos como resposta para o usuário o id
+router.get('/:id', (req, res) => {
+    console.log(req.body)
+    res.send(`ID: ${req.params.id}`)
+})
+
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id e recebe os 2 parâmetros req e res, exibimos um console.log nele utilizamos o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, e abaixo passamos como resposta para o usuário o id
+router.put('/:id', (req, res) => {
+    console.log(req.body)
+    res.send(`PUT ID: ${req.params.id}`)
+})
+
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id e recebe os 2 parâmetros req e res, exibimos um console.log nele utilizamos o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, e abaixo passamos como resposta para o usuário o id
+router.delete('/:id', (req, res) => {
+    console.log(req.body)
+    res.send(`DELETE ID: ${req.params.id}`)
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+
+----- Aqui vai a imagem rotasput -------
+
+------ Aqui vai a imagem rotasdelete-------
+
+<hr>
+<br>
+
+## Bancos de Dados Relacionais e Não-Relacionais
+<br>
+
+### O que é um Banco de Dados
+<br>
+
+-   Se formos até a Wikipedia, veremos que Banco de Dados são:
+    -   " Coleções organizadas de dados que se relacionam de forma a criar algum sentido(informação) e dar mais eficiência durante uma pesquisa ou estudo."  
+<br>
+
+-   São oeprados pelos SGBDs
+    -   Sistemas Gerenciadores de Banco de Dados  
+<br>
+
+-   Resumidamente os Bancos de Dados hoje são sistemas onde conseguimos organizar e armazenar os nossos dados
+<hr>
+<br>
+
+### Bancos Relacionais
+<br>
+
+-   Os bancos relacionais possuem os dados organizados em forma de tabela
+-   Toda a estrutura deve ser criada antes do armazenamento dos dados
+    -   Tabelas, colunas, chaves de associação, etc.
+    -   Os dados são armazenados como linhas destas tabelas     
+<br>
+
+-   Os dados se relacionam entre as tabelas
+-   Tem maior confiabilidade e consistência dos dados
+    -   Como tem uma estrutura fixa, sabemos exatamente como os dados vão ser inseridos e se relacionar  
+<br>
+
+-   A criação da estrutura e armazenamento dos dados é feito por meio de uma linguagem chamada SQL
+    -   Structured Query Language       
+<br>
+
+-   Exemplos de bancos de dados relacionais
+    -   Postgree
+    -   MySQL
+    -   MariaDB
+    -   Oracle  
+<hr>
+<br>
+
+### Bancos Não-Relacionais
+<br>
+
+-   Conhecidos como bancos de dados NoSQL(Not Only SQL)
+    -   Como o intuito era uma nova forma de armazenamento de dados que não fosse a estrutura dos relacionais, o correto deveria ser NoRel  
+<br>
+
+-   Dentre os bancos NoSQL, temos várias formas de organização
+    -   Documento: que armazenam os dados em formato de documents (JSON, XML, etc)
+    -   Chave-Valor: armazenam os dados em formato chave-valor      
+<br>
+
+-   São mais escaláveis e com melhor performance, mas possuem menor consistência de dados, já que não existe uma estrutura pré-definida     
+<br>
+
+-   Exemplos:
+    -   MongoDB(Documento)
+    -   Redis(chave-valor)
+    -   DynamoDB(chave-valor)
+    -   Cassandra  
+<br>
+
+-   No curso utilizaremos o MongoDB
+-   Organizaremos nossos dados em formato de documentos JSON
+-   E utilizaremos recursos que permitam mapear os objetos do JS no MongoDB
+<hr>
+<br>
