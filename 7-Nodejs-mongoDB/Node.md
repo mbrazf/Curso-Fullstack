@@ -355,8 +355,7 @@ app.listen(3000, () => {
 
 -   E aqui testamos o JSON que retornamos no nosso projeto
 
-<<<<<<< HEAD
-![Postman Request JSON]('https://raw.githubusercontent.com/mbrazf/Curso-Fullstack/master/7-Nodejs-mongoDB/prints/postman3.jpg')
+![postman3](https://user-images.githubusercontent.com/72533693/189932336-703ae8fa-0205-4d8f-a650-4eb4695656cf.jpg)
 <hr>
 <br>
 
@@ -372,7 +371,8 @@ app.listen(3000, () => {
 -   É um padrão que o Express se baseou
     -   Permite a busca por uma resposta para uma determinada requisição
 
---------   Aqui vai uma imagem chainresponsability  ---------
+![chainresponsability](https://user-images.githubusercontent.com/72533693/190190552-bd2baace-6e49-4d60-a08b-cbdf9deca648.png)
+
 <hr>
 <br>
 
@@ -382,7 +382,8 @@ app.listen(3000, () => {
 -   No Postman criamos um objeto e enviamos uma requisição em localhost:3000/json
 
 
--------- Aqui vai uma imagem middleware -----------
+![middleware](https://user-images.githubusercontent.com/72533693/190190666-a4a1aa12-d87f-48f1-9bb4-23e445bc338a.png)
+
 
 
 -   E aqui criamos os middlewares
@@ -453,7 +454,7 @@ router.get('/', (req, res) => {
 module.exports = router
 ```
 
-------- Aqui vai a imagem rotas----------
+![rotas](https://user-images.githubusercontent.com/72533693/190190805-bab5c672-babe-4611-9c97-1a614d98aa84.png)
 
 ```
 -   app.js
@@ -541,11 +542,12 @@ app.listen(3000, () => {
     console.log('Servidor Iniciado')
 })
 ```
----- Aqui vai uma imagem -----
+![rotaspost](https://user-images.githubusercontent.com/72533693/190191404-72ab51a1-9557-4e65-a7a7-6bc32c4c2954.png)
 
 -   E aqui o objeto que criamos no body do postman será exibido no terminal do vscode
 
----- Aqui vai outra imagem -----
+![terminalpost](https://user-images.githubusercontent.com/72533693/190197699-99c5c91c-da18-455a-a5ad-ea39c24b5ca7.png)
+
 
 <hr>
 <br>
@@ -586,11 +588,13 @@ router.get('/:id', (req, res) => {
 module.exports = router
 ```
 
----- Aqui vai a imagem paramsid -----------------
+![paramsid](https://user-images.githubusercontent.com/72533693/190197426-89e1036e-b7f9-40d1-a02c-e16273f90812.png)
+
 
 -   e aqui no terminal o id passado no postman
 
------ Aqui vai a imagem paramsidterminal -------------
+![paramsidterminal](https://user-images.githubusercontent.com/72533693/190197345-3eab49dd-c58c-4367-9a3a-650dfb2f6255.png)
+
 <hr>
 <br>
 
@@ -643,9 +647,11 @@ router.delete('/:id', (req, res) => {
 module.exports = router
 ```
 
------ Aqui vai a imagem rotasput -------
+![rotasput](https://user-images.githubusercontent.com/72533693/190197112-43b9fd4c-1d1b-4233-9b56-a00b17099103.png)
 
------- Aqui vai a imagem rotasdelete-------
+
+![rotasdelete](https://user-images.githubusercontent.com/72533693/190197185-9ceb1a7c-bb12-4c69-8c69-f501e498353b.png)
+
 
 <hr>
 <br>
@@ -721,8 +727,3 @@ module.exports = router
 -   E utilizaremos recursos que permitam mapear os objetos do JS no MongoDB
 <hr>
 <br>
-=======
-![postman3](https://user-images.githubusercontent.com/72533693/189932336-703ae8fa-0205-4d8f-a650-4eb4695656cf.jpg)
-<hr>
-<br>
->>>>>>> fab074b4fe964ad18427d6cc00dc0e7697805264
