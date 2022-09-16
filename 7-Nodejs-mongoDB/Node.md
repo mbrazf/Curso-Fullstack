@@ -727,3 +727,284 @@ module.exports = router
 -   E utilizaremos recursos que permitam mapear os objetos do JS no MongoDB
 <hr>
 <br>
+
+##  O que é o MongoDB
+<br>
+
+-   O MongoDB é um Banco de Dados Orientado a Documentos
+-   Ele armazena documentos em formato similar a JSON's que não precisam ter uma estrutura previamente definida.  
+<br>
+
+-   Exemplo de documento no mongoDB
+```
+{
+    "nave": "apollo",
+    "agencia": "nasa",
+    "data": "1969",
+    "tripulantes": [
+        {
+            "nome": "William X",
+            "idade": "49"
+        },
+        {
+            "nome": "Mark Y",
+            "idade": "39"
+        }
+    ]
+}
+```
+<hr>
+
+### BSON  
+<br>
+
+-   O mongoDB internamente representa os documentos JSON em um formato chamado BSON que é uma versão binaria-encodada do JSON para incluir alguns tipos extra de formatos de dados e para codificação e decodificação em linguagens diferentes.
+
+-------- Aqui vai a imagem arquiteturamongodb --------------
+
+---------- Aqui vai a imagem comparandomongo ----------------
+
+<hr>
+
+### Porque usar o MongoDB ?
+<br>
+
+-   Sem esquema fixo
+-   Alta performance
+-   Alta disponibilidade
+-   Fácil escalabilidade
+
+<hr>
+<br>
+
+### Instalação e uso do MongoDB
+<br>
+
+-   Link do video tutorial [Instalando o MongoDB](https://www.youtube.com/watch?v=jrPHWgW78wU)
+
+-   Link para download [MongoDB](https://www.mongodb.com/try/download/community)
+-   Desmarcar a opção de instalar como serviço windows  
+<br>
+
+-   Após instalar iremos no Disco Local(C:) e vamos criar uma pasta chamada data onde ficaram os bancos de dados e dentro da pasta data criamos uma pasta chamada db, se não ocorrerá um erro na execução do mongo
+
+-   E agora basta acessar o caminho do diretório/pasta aonde o mongo foi instalado no computador pelo terminal
+```
+   cd C:\Program Files\MongoDB\Server\6.0\bin
+```
+-   e executar no terminal o comando
+```
+mongod.exe
+```
+-   ele irá iniciar o banco de dados
+-   então abriremos outra aba no terminal/prompt e nele utilizamos o comando abaixo que é o Mongo Shell que irá conectar ao banco de dados criado
+```
+mongosh 
+```
+
+-   Link para download [MongoShell](https://www.mongodb.com/try/download/shell)
+
+-   e pronto agora só utilizar o mongo
+<hr>
+<br>
+
+### Alguns comandos do mongoDB
+<br>
+
+-   Mostra os bancos de dados disponíveis
+```
+show dbs   
+```
+
+-   Muda para o banco desejado, se não houver o banco ele cria
+```
+use nomedobanco
+```
+
+-   Cria uma nova collection/tabela no banco
+```
+db.createCollection('nome')
+```
+
+-   Exibe as collections/tabelas dentro do banco
+```
+show collections
+```
+<hr>
+<br>
+
+### Manipulando dados no MongoDB
+<br>
+
+-   Insere um novo documento no banco
+```
+db.nomedacollection.insert({ }) 
+```
+
+-   Adiciona um documento na collection
+```
+db.nomedacollection.insertOne({ documento }) 
+```
+
+-   Adiciona múltiplos documentos na collection
+```
+db.nomedacollection.insertMany({ documentos })  
+```
+
+-   Acessa e exibe todos os documentos da collection
+```
+db.nomedacollection.find()
+```
+
+-  também podemos utilizar o find para encontrar algum documento passando ele no parênteses
+```
+db.nomedacollection.find({ documento })
+```
+
+-    Com o updateOne() atualizamos um documento, recebe 3 parâmetros o primeiro é o documento que será alterado, o segundo para poder atualizar utilizamos o $set antes do documento que irá alterar, e depois o novo documento atualizado. 
+```
+db.nomedacollection.updateOne({ documento que será alterado}, {$set: {documento alterado}})
+```
+-   Atualiza todos os documentos especificados pelo filter
+```
+db.nomedacollection.updateMany(filter, update, options)
+```
+
+-   Substitui um documento
+```
+db.nomedacollection.replaceOne({documento que será substituido, {documento substituto})
+```
+
+- Remove um documento da collection
+```
+db.nomedacollection.deleteOne({ documento que será removido}) 
+```
+
+- Remove todos os documentos que correspondem a collection
+```
+db.nomedacollection.deleteMany({ documentos que serão removido}) 
+```
+
+-   Remove o banco de dados desejado
+```
+db.dropDatabase({}) 
+```
+
+- Remove uma collection/tabela desejada
+```
+db.nomedacollection.drop({}) 
+```
+<br>
+
+-   Para ver a documentação completa [Documentação MongoDB](https://www.mongodb.com/docs/manual/reference/command/)
+<hr>
+<br>
+
+### Relacionando dados no mongoDB
+<br>
+
+### O que são relacionamentos entre os dados
+<br>
+
+-   Alguns dados precisam estar linkados a outros para que possamos manipulá-los corretamente, por exemplo, se você possuir no seu banco de dados informações que representem missões espaciais e informações que representem os tripulantes de missões espaciais, é interessante que você possua uma forma de relacionar quais tripulantes participaram de quais missões.
+<hr>
+
+### Tipos de associações
+<br>
+
+-   one-to-one
+-   one-to-many
+-   many-many
+<hr>
+
+### Vamos ver um exemplo
+<br>
+
+-   Imagine que você possua um conjuto de naves espaciais e que cada uma delas possua tripulantes, como você representaria isso no banco de dados?
+<hr>
+
+### Documentos embutidos
+<br>
+
+-   Todos os dados são englobados dentro do mesmo documento incluindo sub documentos 
+```
+{   
+    "_id": "53535335353535",
+    "nave": "apollo",
+    "agencia": "nasa",
+    "tripulantes": [
+        { "nome": "William X"},
+        { "nome": "Mark Y"}
+    ]
+},
+{   
+    "_id": "53535434343335353535",
+    "nave": "Sputnik 1",
+    "agencia": "Roskosmos",
+    "tripulantes": [
+        { "nome": "Mary J"},
+        { "nome": "Josep K"}
+    ]
+}
+```
+-   Quando usar:
+    -   Quando queremos devolver o documento inteiro com uma query simples
+    -   Quando sabemos que o documento não vai atingir um tamanho muito grande(como uma nave com milhares de tripulantes)
+    -   Quando os dados a serem associados só são úteis junto com o documento que queremos associar
+<hr>
+<br>
+
+### Referência
+<br>
+
+-   Um documento pode referenciar outros documentos em outras collections através do seu ID
+-   Aqui referenciamos os tripulantes pelo ID vindo de outra collection
+```
+{   
+    "_id": "53535335353535",
+    "nave": "apollo",
+    "agencia": "nasa",
+    "tripulantes": [
+        "2121212121211",
+        "32329893289"
+    ]
+},
+{   
+    "_id": "53535434343335353535",
+    "nave": "Sputnik 1",
+    "agencia": "Roskosmos",
+    "tripulantes": [
+        "29178217821821821",
+        "2132421341342324"
+    ]
+}
+```
+-   e aqui uma outra collection para os pilotos, cada um tem um documento com um id, nome e nave que podemos referenciar na outra collection
+```
+{   
+    "_id": "53535434343335353535",
+    "nome": "Mary J",
+    "nave": "32323232323232",
+},
+{   
+    "_id": "53535434343335353535",
+    "nome": "Mark Y",
+    "nave": "32323232323232",
+},
+{   
+    "_id": "53535434343335353535",
+    "nome": "William X",
+    "nave": "32323232323232",
+},
+{   
+    "_id": "53535434343335353535",
+    "nome": "Josep K",
+    "nave": "32323232323232",
+}
+```
+-   Quando usar:
+    -   Quando os dados precisarem ser referenciados em muitos locais
+    -   Quando queremos selecionar isoladamente os documentos
+    -   Quando quisermos ter mais controle sobre as queries
+<hr>
+<br>
