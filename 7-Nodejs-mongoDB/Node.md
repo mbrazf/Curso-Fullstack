@@ -1304,7 +1304,7 @@ router.delete('/:id', (req, res) => {
 module.exports = router
 ```
 
--------- aqui vai a imagem modelpostmanchecklist ------------
+![modelpostmanchecklist](https://user-images.githubusercontent.com/72533693/191072649-af0a23f1-c327-47df-a952-253b8e03f50e.png)
 <hr>
 <br>
 
@@ -1384,10 +1384,11 @@ router.delete('/:id', (req, res) => {
 module.exports = router
 ```
 -   Aqui pegamos todos os dados existentes na checklist
------- Aqui vai a imagem modelpostmanchecklistget -------
+![modelpostmanchecklistget](https://user-images.githubusercontent.com/72533693/191072795-ba935cb3-77e9-406c-85d6-89b2c2d34e8b.png)
+
 
 -   Aqui pegamos os dados pelo Id desejado
------- Aqui vai a imagem modelpostmanchecklistgetid ------
+![modelpostmanchecklistgetid](https://user-images.githubusercontent.com/72533693/191072855-ba20459f-369e-4d2c-9f31-03ec60062a1a.png)
 
 <hr>
 <br>
@@ -1476,9 +1477,7 @@ router.delete('/:id', async (req, res) => {
 // e aqui exportamos o modulo router com as rotas
 module.exports = router
 ```
+![modelpostmanchecklistput](https://user-images.githubusercontent.com/72533693/191072921-a708ba62-07ac-4fc2-9324-76f1c2f3bb9e.png)
 
-------- Aqui vai a imagem modelpostmanchecklistput -----------
 
--------- Aqui vai a imagem modelpostmanchecklistdelete -------
-=======
->>>>>>> a2e43d28e4fc12304e449e9c1c224f55f8ea70fc
+![modelpostmanchecklistdelete](https://user-images.githubusercontent.com/72533693/191072984-a7cc3461-aea1-409c-9c86-664b965edea5.png)
