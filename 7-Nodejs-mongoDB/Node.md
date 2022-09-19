@@ -1008,3 +1008,473 @@ db.nomedacollection.drop({})
     -   Quando quisermos ter mais controle sobre as queries
 <hr>
 <br>
+
+### Associação entre Collections
+<br>
+
+-   Primeiro acessamos nosso banco todo-list2 e criamos uma nova collection chamada task
+```
+use todo-list2
+
+db.createCollection('task')
+```
+
+-   Inserimos em checklist uma nova tarefa
+```
+db.checklist.insertOne({name: 'Atividades da manhã'})
+```
+
+-   Inserimos em task uma nova tarefa
+```
+db.task.insertOne({name: 'Preparar o café', done: false})
+```
+
+-   E aqui inserimos múltiplas tarefas em task e relacionamos elas com a tarefa em checklist, para relacionar ela utilizamos o nome da collection em que queremos relacionar com o ID e ObjectId(" ") e nele passamos o Id da tarefa que queremos relacionar com outra
+```
+db.task.insertMany([{name: "Preparar o café", done: false, checklistId: ObjectId("63286c2a1511092322af87fb")}, {name: "Ligar o af87fb")}, {name: "Ligar o notebook", done: true, checklistId: ObjectId("63286c2a1511092322af87fb")}])
+```
+
+-   e ao utilizar o db.task.find() veremos as tarefas relacionadas
+```
+[
+    {
+        _id: ObjectId("63286c741511092322af87fc"),
+        name: 'Preparar o café',
+        done: false
+    },
+    {
+        _id: ObjectId("63286ef71511092322af87fd"),
+        name: 'Preparar o café',
+        done: false,
+        checklistId: ObjectId("63286c2a1511092322af87fb")
+    },
+    {
+        _id: ObjectId("63286ef71511092322af87fe"),
+        name: 'Ligar o notebook',
+        done: true,
+        checklistId: ObjectId("63286c2a1511092322af87fb")
+    }
+]
+```
+
+-   Aqui utilizamos o método aggregate que agrega os valores relacionados, e utilizamos o operador $lookup que irá buscar os documentos associados, from: "task" que será o local onde iremos buscar os documentos, contendo em checklistId o _id de outro documento
+```
+db.checklist.aggregate({ $lookup: {from: "task", localField: "_id", foreignField: "checklistId", as: "tasks"}})
+
+
+-   Aqui o retorno da consulta
+{
+    _id: ObjectId("63247c05e58b69559a6a4eef"),
+    name: 'Checklist 2',
+    tasks: []
+  },
+  {
+    _id: ObjectId("63286c2a1511092322af87fb"),
+    name: 'Atividades da manhã',
+    tasks: [
+      {
+        _id: ObjectId("63286ef71511092322af87fd"),       
+        name: 'Preparar o café',
+        done: false,
+        checklistId: ObjectId("63286c2a1511092322af87fb")
+      },
+      {
+        _id: ObjectId("63286ef71511092322af87fe"),       
+        name: 'Ligar o notebook',
+        done: true,
+        checklistId: ObjectId("63286c2a1511092322af87fb")
+      }
+```
+<hr>
+<br>
+
+### Operadores do MongoDB
+<br>
+
+-   $lookup -   ele irá buscar os documentos em outra collection
+```
+db.checklist.aggregate({ $lookup: {from: "task", localField: "_id", foreignField: "checklistId", as: "tasks"}})
+```
+
+-   $and    -   utilizamos ele para filtrar melhor as queries utilizando um array, ele irá retornar os documentos atendidos se todas as condições forem verdadeiras
+```
+db.task.find({ $and: [{name: 'Preparar o café'}, {done: false}]})
+```
+
+-   $or -   utilizamos ele também para filtrar utilizando um array, se qualquer uma das condições for atendida ele irá retornar os documentos
+```
+db.task.find({ $or: [{name: 'Preparar o café'}, {done: true}]})
+```
+
+-   $exists -   utilizamos ele para filtrar os documentos se algo existir dentro dele, no exemplo filtramos os documentos que tem o campo checkListId
+```
+db.task.find({checklistId: {$exists: true}})
+```
+-   Link para documentação completa [Operadores  MongoDB](https://www.mongodb.com/docs/manual/reference/operator/)
+<hr>
+<br>
+
+### Instalação Mongoose
+<br>
+
+-   Ele é uma ferramenta que conecta o mongoDB com o Node e Express
+-   Link documentação completa [Mongoose](https://mongoosejs.com/docs/index.html)
+
+-   Para instalar digite o comando no terminal no diretório do seu projeto
+```
+npm install mongoose --save
+```
+-   Criamos uma pasta chamada config e dentro dela criamos um arquivo database.js onde irá conter as configurações do mongoose
+
+```
+-   config/database.js
+
+
+// Aqui importamos o mongoose em uma variável
+const mongoose = require('mongoose')
+
+// e aqui iniciamos o mongoose utilizando a Promise global do próprio Node
+mongoose.Promise = global.Promise
+
+// aqui utilizamos o método connect, passamos a url onde o banco estará e o banco em que utilizaremos, como é uma promise se a conexão for bem sucedida irá exibir um console.log e se der erro irá exibir um erro
+mongoose.connect('mongodb://localhost/todo-list', { useNewUrlParser: true, useUnifiedTopology: true})
+    .then(() => console.log('Conectado ao MongoDB'))
+    .catch((err) => console.log(err))
+```
+
+-   Importamos esse arquivo de configuração no app.js
+```
+-   app.js
+
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui importamos o módulo com as rotas criado em checklist.js
+const checkListRouter = require('./src/routes/checklist')
+
+// Aqui importamos o arquivo com as configurações do mongoose
+require('./config/database')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json())
+
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/checklists', checkListRouter)
+
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
+
+-   e pronto agora basta iniciar o banco de dados mongoDB e no terminal do diretório do projeto iniciar o servidor com o npm run dev
+<hr>
+<br>
+
+### Mapeamento Objeto-Documento
+<br>
+
+-   Criamos em src uma pasta chamada models e dentro dela dois arquivos checklist.js e task.js
+
+```
+-   src/models/checklist.js
+
+// Para poder utilizar o mongo importamos o mongoose
+const mongoose = require('mongoose')
+
+// Aqui criamos um Schema, ele é o modelo que será utilizado no documento do banco de dados, e criamos um campo name do tipo String e obrigatório, sempre que formos criar uma collection ela terá que ter esse campo name
+
+// e também criamos um campo tasks, nele referenciamos o checklist com as tasks pelo Id
+const checklistSchema = mongoose.Schema({ 
+    name: {type: String, required: true},
+    tasks: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Task'
+    }]
+})
+
+// Aqui exportamos o módulo, utilizamos o mongoose.model nele passamos o nome que desejamos e o Schema criado
+module.exports = mongoose.model('Checklist', checklistSchema)
+```
+
+```
+-   src/models/task.js
+
+// Para poder utilizar o mongo importamos o mongoose
+const mongoose = require('mongoose')
+
+// Aqui criamos um Schema, ele é o modelo que será utilizado no documento do banco de dados, e criamos um campo name do tipo String e obrigatório, sempre que formos criar uma collection ela terá que ter esse campo name, também criamos um campo done para verificar se a tarefa foi concluída por padrão ele será criado como false
+
+// e também criamos um campo checklist para referenciar as tasks com o checklist, nele utilizamos como type o mongoose.Schema.Types.ObjectId para referenciar pelo id de Checklist e ele é obrigatório ou seja só haverá uma task se houver um checklist
+const taskSchema = mongoose.Schema({ 
+    name: {type: String, required: true},
+    done: {type: Boolean, default: false},
+    checklist: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Checklist',
+        required: true
+    }
+})
+
+// Aqui exportamos o módulo, utilizamos o mongoose.model nele passamos o nome que desejamos e o Schema criado
+module.exports = mongoose.model('Task', taskSchema);
+```
+
+-   e aqui testamos no console do node
+```
+// Aqui importamos o Schema Checklist
+const Checklist = require('./src/models/checklist')
+
+// Aqui importamos o Schema Task
+const Task = require('./src/models/task')
+
+// Criamos uma instância vazia de Checklist
+let checklist = new Checklist({})
+
+// Aqui adicionamos um documento em checklist mas ocorrerá um erro porque não tem name
+checklist.save().then(res => console.log(res)).catch(err => console.log(e))
+
+// e aqui criamos  um documento
+ Checklist.create({name: "Criar um novo código"}, (err, checklist) => console.log(checklist))
+```
+<hr>
+<br>
+
+### Models e as Rotas
+<br>
+
+```
+-   app.js
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+// aqui criamos uma rota com o router.get() recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, nessa rota exibimos um console.log() e chamamos o res.send() e deixamos a resposta vazia
+router.get('/', (req, res) => {
+    console.log('Olá')
+    res.send()
+})
+
+// aqui criamos uma rota post com uma async function, para enviar dados, recebe os mesmo parâmetros da rota get, criamos um objeto name que recebe a req.body, abaixo utilizamos um try catch para tratar erros no try realizaremos a criação de um documento com o await no banco com o name e devolvemos o código de status 200 da requisição indicando que foi um sucesso e caso haja algum erro retornamos o código de status 422 indicando um erro 
+ 
+router.post('/', async (req, res) => {
+    let { name } = req.body
+    
+    try{
+        let checklist = await Checklist.create({ name })
+        res.status(200).json(checklist)
+    } catch(error){
+        res.status(422).json(error)
+    }
+})
+
+
+// Aqui criamos outra rota do tipo get o caminho será/:id ou seja espera um id e recebe os 2 parâmetros req e res, exibimos um console.log nele utilizamos o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, e abaixo passamos como resposta para o usuário o id
+router.get('/:id', (req, res) => {
+    console.log(req.body)
+    res.send(`ID: ${req.params.id}`)
+})
+
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id e recebe os 2 parâmetros req e res, exibimos um console.log nele utilizamos o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, e abaixo passamos como resposta para o usuário o id
+router.put('/:id', (req, res) => {
+    console.log(req.body)
+    res.send(`PUT ID: ${req.params.id}`)
+})
+
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id e recebe os 2 parâmetros req e res, exibimos um console.log nele utilizamos o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, e abaixo passamos como resposta para o usuário o id
+router.delete('/:id', (req, res) => {
+    console.log(req.body)
+    res.send(`DELETE ID: ${req.params.id}`)
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+
+-------- aqui vai a imagem modelpostmanchecklist ------------
+<hr>
+<br>
+
+### Listando dados do Model
+<br>
+
+```
+-   app.js
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+
+// Aqui criamos os documentos para o banco
+
+// aqui criamos uma rota com o router.get() com uma função async recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, utilizamos um try catch para tratar erros e utilizamos o await e utilizamos o método find em Checklist para pegar os dados em vez de enviar como na rota post abaixo, devolvemos o código de status 200 da requisição indicando que foi um sucesso e caso haja algum erro retornamos o código de status 500 indicando um erro 
+
+router.get('/', async (req, res) => {
+    try {
+        let checklists = await Checklist.find({})
+        res.status(200).json(checklists)
+    }   catch(error){
+        res.status(500).json(error)
+    }
+})
+
+/// Aqui pegamos todos os documentos do banco de dados
+
+// aqui criamos uma rota post, para enviar dados, recebe os mesmo parâmetros da rota get, criamos um objeto name que recebe a req.body, abaixo utilizamos um try catch para tratar erros no try realizaremos a criação de um documento no banco com o name e devolvemos o código de status 200 da requisição indicando que foi um sucesso e caso haja algum erro retornamos o código de status 422 indicando um erro  
+
+router.post('/', async (req, res) => {
+    let { name } = req.body
+    
+    try{
+        let checklist = await Checklist.create({ name })
+        res.status(200).json(checklist)
+    } catch(error){
+        res.status(422).json(error)
+    }
+})
+
+// Aqui pegamos os dados pelo ID desejado
+
+// Aqui criamos outra rota do tipo get o caminho será/:id ou seja espera um id e utiliza uma async function recebe os 2 parâmetros req e res, utilizamos o try catch, no try realizamos a busca utilizando o método findById() que irá buscar os dados pelo ID com o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, retornamos um código de status 200 caso seja sucesso, e no catch retornamos o código de status 422 caso houver um erro
+
+router.get('/:id', async (req, res) => {
+
+    try{
+        let checklist = await Checklist.findById(req.params.id)
+        res.status(200).json(checklist)
+    } catch (error){
+        res.status(422).json(error)
+    }
+})
+
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id e recebe os 2 parâmetros req e res, exibimos um console.log nele utilizamos o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, e abaixo passamos como resposta para o usuário o id
+
+router.put('/:id', (req, res) => {
+    console.log(req.body)
+    res.send(`PUT ID: ${req.params.id}`)
+})
+
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id e recebe os 2 parâmetros req e res, exibimos um console.log nele utilizamos o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, e abaixo passamos como resposta para o usuário o id
+
+router.delete('/:id', (req, res) => {
+    console.log(req.body)
+    res.send(`DELETE ID: ${req.params.id}`)
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+-   Aqui pegamos todos os dados existentes na checklist
+------ Aqui vai a imagem modelpostmanchecklistget -------
+
+-   Aqui pegamos os dados pelo Id desejado
+------ Aqui vai a imagem modelpostmanchecklistgetid ------
+
+<hr>
+<br>
+
+### Atualização e Remoção de Dados
+<br>
+
+```
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+// Aqui criamos os documentos para o banco
+
+// aqui criamos uma rota com o router.get() com uma função async recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, utilizamos um try catch para tratar erros e utilizamos o await e utilizamos o método find em Checklist para pegar os dados em vez de enviar como na rota post abaixo, devolvemos o código de status 200 da requisição indicando que foi um sucesso e caso haja algum erro retornamos o código de status 500 indicando um erro 
+router.get('/', async (req, res) => {
+    try {
+        let checklists = await Checklist.find({})
+        res.status(200).json(checklists)
+    }   catch(error){
+        res.status(500).json(error)
+    }
+})
+
+/// Aqui pegamos todos os documentos do banco de dados
+
+// aqui criamos uma rota post, para enviar dados, recebe os mesmo parâmetros da rota get, criamos um objeto name que recebe a req.body, abaixo utilizamos um try catch para tratar erros no try realizaremos a criação de um documento no banco com o name e devolvemos o código de status 200 da requisição indicando que foi um sucesso e caso haja algum erro retornamos o código de status 422 indicando um erro  
+router.post('/', async (req, res) => {
+    let { name } = req.body
+    
+    try{
+        let checklist = await Checklist.create({ name })
+        res.status(200).json(checklist)
+    } catch(error){
+        res.status(422).json(error)
+    }
+})
+
+// Aqui pegamos pelo ID desejado
+
+// Aqui criamos outra rota do tipo get o caminho será/:id ou seja espera um id e utiliza uma async function recebe os 2 parâmetros req e res, utilizamos o try catch, no try realizamos a busca utilizando o método findById() que irá buscar os dados pelo ID com o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, retornamos um código de status 200 caso seja sucesso, e no catch retornamos o código de status 422 caso houver um erro
+router.get('/:id', async (req, res) => {
+
+    try{
+        let checklist = await Checklist.findById(req.params.id)
+        res.status(200).json(checklist)
+    } catch (error){
+        res.status(422).json(error)
+    }
+})
+
+// Aqui o método de atualizar os dados
+
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function, recebe os 2 parâmetros req e res criamos um objeto name que recebe req.body a resposta da requisição, utilizamos um try catch no try utilizamos o método findByIdAndUpdate que irá buscar os dados pelo Id e irá atualizar, recebe 3 parâmetros o req.params.id e o que será atualizado, e também o objeto que foi atualizado retornamos o código de status 200 caso seja sucesso e caso haja um erro no catch exibimos o código 422
+router.put('/:id', async (req, res) => {
+
+    let { name } = req.body
+
+    try {
+        let checklist = await Checklist.findByIdAndUpdate(req.params.id, {name}, {new: true})
+        res.status(200).json(checklist)
+    } catch (error){
+        res.status(422).json(error)
+    }
+})
+
+// Aqui o método para remover elementos
+
+// Aqui criamos uma nova rota do tipo DELETE utilizada para remover os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function e recebe os 2 parâmetros req e res, utilizamos um try catch no try utilizamos o método findByIdAndRemove que recebe o req.params.id e procura os dados pelo Id e remove, passamos o código de sucesso 200 e no catch se houver algum erro passamos o código de erro 422
+
+router.delete('/:id', async (req, res) => {
+
+    try {
+        let checklist = await Checklist.findByIdAndRemove(req.params.id)
+        res.status(200).json(checklist)
+    } catch (error){
+        res.status(422).json(error)
+    }
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+
+------- Aqui vai a imagem modelpostmanchecklistput -----------
+
+-------- Aqui vai a imagem modelpostmanchecklistdelete -------

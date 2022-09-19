@@ -4,6 +4,9 @@ const express = require('express')
 // Aqui importamos o módulo com as rotas criado em checklist.js
 const checkListRouter = require('./src/routes/checklist')
 
+// Aqui importamos o arquivo com as configurações do mongoose
+require('./config/database')
+
 // Aqui chamamos o express para poder utilizar os métodos
 const app = express()
 
