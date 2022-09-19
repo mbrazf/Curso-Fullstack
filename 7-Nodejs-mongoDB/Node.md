@@ -760,9 +760,10 @@ module.exports = router
 
 -   O mongoDB internamente representa os documentos JSON em um formato chamado BSON que é uma versão binaria-encodada do JSON para incluir alguns tipos extra de formatos de dados e para codificação e decodificação em linguagens diferentes.
 
--------- Aqui vai a imagem arquiteturamongodb --------------
+![arquiteturamongodb](https://user-images.githubusercontent.com/72533693/190669984-b3b00c40-985e-4f43-a9a3-5f49e1ff9d53.png)
 
----------- Aqui vai a imagem comparandomongo ----------------
+
+![comparandomongo](https://user-images.githubusercontent.com/72533693/190670065-d2398bbd-b247-4e56-a792-f33f720f0f0e.png)
 
 <hr>
 
@@ -1008,6 +1009,7 @@ db.nomedacollection.drop({})
     -   Quando quisermos ter mais controle sobre as queries
 <hr>
 <br>
+<<<<<<< HEAD
 
 ### Associação entre Collections
 <br>
@@ -1478,3 +1480,5 @@ module.exports = router
 ------- Aqui vai a imagem modelpostmanchecklistput -----------
 
 -------- Aqui vai a imagem modelpostmanchecklistdelete -------
+=======
+>>>>>>> a2e43d28e4fc12304e449e9c1c224f55f8ea70fc
