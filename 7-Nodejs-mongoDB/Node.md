@@ -1482,3 +1482,207 @@ module.exports = router
 -------- Aqui vai a imagem modelpostmanchecklistdelete -------
 =======
 >>>>>>> a2e43d28e4fc12304e449e9c1c224f55f8ea70fc
+
+<hr>
+<br>
+
+### EJS e configuração com o Express
+<br>
+
+### O que é o EJS
+<br>
+
+-   É uma ferramenta para renderização de páginas
+-   Conseguimos embutir códigos Javascript para renderizar as páginas
+    -   Não são códigos que serão lidos no frontend
+    -   São códigos que o EJS utilizará para montar o HTML que será enviado para o frontend      
+<br>
+
+-   Possibilita a componentização das views com os dados gerados
+    -   Conseguimos fazer reuso de códigos e deixar nosso app mais organizado       
+<hr>
+<br>
+
+### Instalação
+<br>
+
+-   Para instalar basta digitar o comando no terminal
+```
+    npm install ejs --save
+```
+
+-   Criamos a pasta views em src, e dentro da pasta views criamos outra pasta chamada pages e nela criamos um arquivo index.ejs
+```
+-   src/views/pages/index.ejs
+
+
+<h1>Primeira página com EJS</h1>
+```
+
+-   Para testar, na pasta routes vamos criar uma nova rota para exibir o que foi criado na index.ejs
+```
+-   routes/index
+
+// Aqui importamos o express
+const express = require('express')
+
+// Aqui importamos o Router do express em uma variável para poder criar as rotas
+const router = express.Router()
+
+// aqui criamos uma rota como resposta utilizamos o res.render() que irá renderizar o arquivo que foi passado nele
+router.get('/', async(req, res) => {
+    res.render('pages/index')
+})
+
+// Aqui exportamos a rota criada acima
+module.exports = router
+```
+
+
+-   E aqui no app.js importamos as rotas e arquivos e terminamos a configuração, basta iniciar o servidor com npm run dev que arquivo index.ejs será exibido no navegador
+```
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui importamos uma biblioteca chamada path, ela encontra o caminho que estamos em nosso app, diretório do computador em que estão
+const path = require('path')
+
+// Aqui importamos o módulo com as rotas criado em checklist.js
+const checkListRouter = require('./src/routes/checklist')
+
+// Aqui importamos o módulo com a rota criado em index.js
+const rootRouter = require('./src/routes/index')
+
+// Aqui importamos o arquivo com as configurações do mongoose
+require('./config/database')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json())
+
+
+// Aqui configuramos as views com o set, views é o nome do diretório onde iram ficar, path.join une as views recebe 2 parâmetros __dirname que é o nome do arquivo e o segundo é o diretório/pasta em que as views vão ficar
+app.set('views', path.join(__dirname, 'src/views'))
+
+// Aqui setamos/definimos que a view engine será o ejs que instalamos
+app.set('view engine', 'ejs')
+
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/', rootRouter)
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/checklists', checkListRouter)
+
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
+<hr>
+<br>
+
+### Navegando no App
+<br>
+
+-   Aqui no app.js vamos ativar o uso de arquivos estáticos no projeto
+```
+-   app.js
+
+
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui importamos uma biblioteca chamada path, ela encontra o caminho que estamos em nosso app, diretório do computador em que estão
+const path = require('path')
+
+// Aqui importamos o módulo com as rotas criado em checklist.js
+const checkListRouter = require('./src/routes/checklist')
+
+// Aqui importamos o módulo com a rota criado em index.js
+const rootRouter = require('./src/routes/index')
+
+// Aqui importamos o arquivo com as configurações do mongoose
+require('./config/database')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json())
+
+
+// Aqui habilitamos em nosso projeto para poder utilizar arquivos estáticos com o express.static, e com o path.join passamos o nome do diretório e o diretório onde irá ficar esses arquivos estáticos
+app.use(express.static(path.join(__dirname ,'public')))
+
+
+// Aqui configuramos as views com o set, views é o nome do diretório onde iram ficar, path.join une as views recebe 2 parâmetros __dirname que é o nome do arquivo e o segundo é o diretório/pasta em que as views vão ficar
+app.set('views', path.join(__dirname, 'src/views'))
+
+// Aqui setamos/definimos que a view engine será o ejs que instalamos
+app.set('view engine', 'ejs')
+
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/', rootRouter)
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/checklists', checkListRouter)
+
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
+
+-   Após ativar no app.js o uso de arquivos estáticos criamos a pasta public onde eles irão ficar, e dentro da pasta public criamos outra pasta chamada stylesheets onde os estilos ficaram
+
+-   Vamos instalar agora o bulma.min.css e vamos colocar na pasta stylesheets
+
+-   Após instalar vamos criar a página index.html no index.ejs
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/bulma.min.css" />
+  <title>Lista de Tarefas</title>
+</head>
+<body>
+  <nav class="navbar is-black">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="#">
+        TODO-List
+      </a>
+      <div class="navbar-burger burger" data-target="navMenuColorblack-example">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="section hero is-link is-fullheight-with-navbar">
+    <div class="hero-body has-text-centered">
+      <div class="container">
+        <h1 class="title">
+          TODO-List
+        </h1>
+        <h2 class="subtitle">
+          Geranciando nossas atividades diárias =D
+        </h2>
+	<a href="list-checklists.html" class="button is-light is-medium">Ir para Listas de Atividades!</a>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
+```
+<hr>
+<br>
