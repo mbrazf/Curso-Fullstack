@@ -20,6 +20,10 @@ const app = express()
 app.use(express.json())
 
 
+// Aqui utilizamos um middleware, irá pegar valores da url e dos form e irá deixar disponível para uso
+app.use(express.urlencoded({extended: true}))
+
+
 // Aqui habilitamos em nosso projeto para poder utilizar arquivos estáticos com o express.static, e com o path.join passamos o nome do diretório e o diretório onde irá ficar esses arquivos estáticos
 app.use(express.static(path.join(__dirname ,'public')))
 
@@ -44,10 +48,4 @@ app.listen(3000, () => {
 })
 
 
-// Aqui no app.js vamos ativar o uso de arquivos estáticos no projeto
 
-// Após ativar no app.js o uso de arquivos estáticos criamos a pasta public onde eles irão ficar, edentro da pasta public criamos outra pasta chamada stylesheets onde os estilos ficaram
-
-// vamos instalar agora o bulma.min.css e vamos colocar na pasta stylesheets
-
-// Após instalar vamos criar a página index.html no index.ejs

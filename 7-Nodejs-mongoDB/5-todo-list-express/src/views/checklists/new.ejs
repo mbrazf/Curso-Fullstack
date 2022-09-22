@@ -1,0 +1,18 @@
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'Lista de Tarefas'}) %>
+
+<%- include('../layouts/menu') %>
+
+<section class="section">
+    <div class="container">
+      <h1 class="title size-4">Nova Lista</h1>
+        <!-- Aqui inserimos o form e passamos alguns parâmetros, o method post para enviar dados ao banco a url em que será feito isso e a checklist-->
+      <%- include('form', {method: 'post', url: '/checklists', checklist: checklist}) %>
+    </div>
+  </section>
+
+<%- include('../layouts/footer') %>

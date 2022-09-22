@@ -1677,7 +1677,7 @@ app.listen(3000, () => {
           TODO-List
         </h1>
         <h2 class="subtitle">
-          Geranciando nossas atividades diárias =D
+          Gerenciando nossas atividades diárias =D
         </h2>
 	<a href="list-checklists.html" class="button is-light is-medium">Ir para Listas de Atividades!</a>
       </div>
@@ -1688,6 +1688,683 @@ app.listen(3000, () => {
 ```
 <hr>
 <br>
-=======
-![modelpostmanchecklistdelete](https://user-images.githubusercontent.com/72533693/191072984-a7cc3461-aea1-409c-9c86-664b965edea5.png)
->>>>>>> 22e60380b82cfd782d96a5568446a8398a9c84eb
+
+### Incluindo uma Partial
+<br>
+
+-   Na pasta views iremos criar uma pasta chamada layouts e nela criamos 3 arquivos header.ejs, footer.ejs e menu.ejs que irão funcionar como components/ partes da página inicial
+
+-   Vamos pegar a index.ejs e dividir em pedaços menores
+```
+-   views/layouts/header.ejs
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bulma.min.css" />
+    <title>Lista de Tarefas</title>
+</head>
+<body>
+```
+
+```
+-   views/layouts/menu.ejs
+
+<nav class="navbar is-black">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="#">
+            TODO-List
+        </a>
+        <div class="navbar-burger burger" data-target="navMenuColorblack-example">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</nav>
+```
+
+```
+-   views/layouts/footer.ejs
+
+</body>
+</html>
+```
+
+-   e na index.ejs inserimos as partes que foram divididas utilizando o <%-  %>
+```
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<%- include('../layouts/header'}) %>
+
+<%- include('../layouts/menu') %>
+
+
+<section class="section hero is-link is-fullheight-with-navbar">
+  <div class="hero-body has-text-centered">
+    <div class="container">
+      <h1 class="title">
+        TODO-List
+      </h1>
+      <h2 class="subtitle">
+        Gerenciando nossas atividades diárias =D
+      </h2>
+      <a href="list-checklists.html" class="button is-light is-medium">Ir para Listas de Atividades!</a>
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/footer') %>
+```
+<hr>
+<br>
+
+### Enviando dados para um template EJS
+<br>
+
+-   Aqui na index.ejs vamos passar um parâmetro para a partial que será um título
+```
+-   pages/index.ejs
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'TODO-List'}) %>
+
+<%- include('../layouts/menu') %>
+
+
+<section class="section hero is-link is-fullheight-with-navbar">
+  <div class="hero-body has-text-centered">
+    <div class="container">
+      <h1 class="title">
+        TODO-List
+      </h1>
+      <h2 class="subtitle">
+        Gerenciando nossas atividades diárias =D
+      </h2>
+      <a href="list-checklists.html" class="button is-light is-medium">Ir para Listas de Atividades!</a>
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/footer') %>
+```
+-   E aqui no header.ejs no title utilizamos o parâmetro que foi passado na index.ejs
+```
+-   views/layouts/header
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bulma.min.css" />
+    <title><%=title%></title>
+</head>
+
+<body>
+
+<!--- E aqui no header no title utilizamos o parãmetro que foi passado na index.ejs   <%= title %>  -->
+```
+<hr>
+<br>
+
+### Dados através das rotas
+<br>
+
+-   Na pasta views vamos criar uma pasta chamada checklists e dentro dela criamos 2 arquivos index.ejs e show.ejs
+```
+-   views/checklists/index.ejs
+
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'Lista de Tarefas'}) %>
+
+<%- include('../layouts/menu') %>
+
+<section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <h1 class="title size-4">Listas de Tarefas</h1>
+        </div>
+        <div class="column is-one-fifth">
+          <a href="checklist-form.html" class="button is-success is-small">Nova Lista</a>
+        </div>
+      </div>
+
+      <div class="columns is-multiline">
+          <!--- Aqui utilizamos um looping para cada tarefa criar um card e exibir as tarefas que estão no banco de dados-->
+
+        <% checklists.forEach(checklist => { %>
+            <div class="column is-one-quarter">
+            <div class="card has-background-white-ter">
+                <div class="card-content">
+                <p class="subtitle is-size-5">
+                    <!-- Aqui exibimos o nome da checklist-->
+                    <%= checklist.name %>
+                </p>
+                <p class="subtitle is-size-6">
+                    <!---Aqui exibimos os nomes das tasks-->
+                    <%= checklist.tasks.count %> tarefas
+                </p>
+                </div>
+                <footer class="card-footer">
+                <p class="card-footer-item">
+                    <span>
+                        <!--- Aqui colocamos ao clicar exibir o id de cada tarefa-->
+                    <a href="../checklists/<%= checklist._id %>">Ver</a>
+                    </span>
+                </p>
+                <p class="card-footer-item">
+                    <span>
+                    <a href="checklist-form.html">Editar</a>
+                    </span>
+                </p>
+                <p class="card-footer-item">
+                    <span>
+                    <a href="#" class="has-text-danger">Remover</a>
+                    </span>
+                </p>
+                </footer>
+            </div>
+            </div>
+        <% }) %>
+
+      </div>
+    </div>
+  </section>
+
+  <%- include('../layouts/footer') %>
+```
+
+
+```
+-   views/checklists/show.ejs
+
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: checklist.name}) %>
+
+<%- include('../layouts/menu') %>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <h1 class="title size-4"><%= checklist.name %></h1>
+        </div>
+        <div class="column is-one-fifth">
+          <a href="add-task.html" class="button is-success is-small">Nova Tarefa</a>
+          <a href="index.html" class="button is-small">Voltar</a>
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- Aqui utilizamos um loop nas tarefas para exibir na tela cada tarefa que está no banco de dados-->
+      <% checklist.tasks.forEach(task => { %>
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <input type="checkbox" /> <%= task.name %> 
+        </div>
+
+        <div class="column is-one-fifth">
+          <button class="button is-danger is-small">Remover</button>
+        </div>
+      </div>
+      <% }) %>
+
+    </div>
+  </section>
+
+  <%- include('../layouts/footer') %>
+```
+
+-   Aqui fizemos alguns ajustes nas rotas GET para exibir alguma página se a requisição for um sucesso e uma página se houver erros
+```
+-   routes/checklist
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+// Aqui criamos os documentos para o banco
+
+// aqui criamos uma rota com o router.get() com uma função async recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, utilizamos um try catch para tratar erros e utilizamos o await e utilizamos o método find em Checklist para pegar os dados em vez de enviar como na rota post abaixo, devolvemos o código de status 200 da requisição indicando que foi um sucesso, renderizamos o arquivo index que está na pasta checklists, também passamos uma variável com a checklist  e caso haja algum erro retornamos o código de status 500 indicando um erro e exibimos uma página de erro e passamos uma mensagem de erro para ela 
+router.get('/', async (req, res) => {
+    try {
+        let checklists = await Checklist.find({})
+        res.status(200).render('checklists/index', { checklists: checklists})
+    }   catch(error){
+        res.status(200).render('pages/error', { error: 'Erro ao exibir as Listas'})
+    }
+})
+
+/// Aqui pegamos todos os documentos do banco de dados
+
+// aqui criamos uma rota post, para enviar dados, recebe os mesmo parâmetros da rota get, criamos um objeto name que recebe a req.body, abaixo utilizamos um try catch para tratar erros no try realizaremos a criação de um documento no banco com o name e devolvemos o código de status 200 da requisição indicando que foi um sucesso e caso haja algum erro retornamos o código de status 422 indicando um erro  
+router.post('/', async (req, res) => {
+    let { name } = req.body
+    
+    try{
+        let checklist = await Checklist.create({ name })
+        res.status(200).json(checklist)
+    } catch(error){
+        res.status(422).json(error)
+    }
+})
+
+// Aqui pegamos pelo ID desejado
+
+// Aqui criamos outra rota do tipo get o caminho será/:id ou seja espera um id e utiliza uma async function recebe os 2 parâmetros req e res, utilizamos o try catch, no try realizamos a busca utilizando o método findById() que irá buscar os dados pelo ID com o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, retornamos um código de status 200 caso seja sucesso e exibimos a página show que está em checklists, e no catch retornamos o código de status 422 caso houver um erro e exibimos a página de erro e enviamos uma mensagem de erro
+router.get('/:id', async (req, res) => {
+
+    try{
+        let checklist = await Checklist.findById(req.params.id)
+        res.status(200).render('checklists/show', { checklist: checklist})
+    } catch (error){
+        res.status(200).render('pages/error', { error: 'Erro ao exibir as Listas de Tarefas'})
+    }
+})
+
+// Aqui o método de atualizar os dados
+
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function, recebe os 2 parâmetros req e res criamos um objeto name que recebe req.body a resposta da requisição, utilizamos um try catch no try utilizamos o método findByIdAndUpdate que irá buscar os dados pelo Id e irá atualizar, recebe 3 parâmetros o req.params.id e o que será atualizado, e também o objeto que foi atualizado retornamos o código de status 200 caso seja sucesso e caso haja um erro no catch exibimos o código 422
+router.put('/:id', async (req, res) => {
+
+    let { name } = req.body
+
+    try {
+        let checklist = await Checklist.findByIdAndUpdate(req.params.id, {name}, {new: true})
+        res.status(200).json(checklist)
+    } catch (error){
+        res.status(422).json(error)
+    }
+})
+
+// Aqui o método para remover elementos
+
+// Aqui criamos uma nova rota do tipo DELETE utilizada para remover os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function e recebe os 2 parâmetros req e res, utilizamos um try catch no try utilizamos o método findByIdAndRemove que recebe o req.params.id e procura os dados pelo Id e remove, passamos o código de sucesso 200 e no catch se houver algum erro passamos o código de erro 422
+router.delete('/:id', async (req, res) => {
+
+    try {
+        let checklist = await Checklist.findByIdAndRemove(req.params.id)
+        res.status(200).json(checklist)
+    } catch (error){
+        res.status(422).json(error)
+    }
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+
+-   e aqui na index.ejs de pages atualizamos o caminho ao clicar no botão na página inicial
+```
+-   pages/index.ejs
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'TODO-List'}) %>
+
+<%- include('../layouts/menu') %>
+
+
+<section class="section hero is-link is-fullheight-with-navbar">
+  <div class="hero-body has-text-centered">
+    <div class="container">
+      <h1 class="title">
+        TODO-List
+      </h1>
+      <h2 class="subtitle">
+        Gerenciando nossas atividades diárias =D
+      </h2>
+      <a href="../checklists" class="button is-light is-medium">Ir para Listas de Atividades!</a>
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/footer') %>
+```
+<hr>
+<br>
+
+### Enviando dados através do input
+<br>
+
+-    Na pasta view/checklists vamos criar um novo arquivo chamado form.ejs
+
+```
+-   views/checklists/form.ejs
+
+<form method="<% method %>" action="<% url %>">
+    <div class="field">
+        <label class="label">Nome</label>
+        <div class="control">
+            <input class="input" type="text" name="checklist[name]" placeholder="Lista de Tarefas" value="<% checklist.name %> ">
+            <p class="is-danger help">Name should be present</p>
+        </div>
+    </div>
+
+    <button type="submit" class="button is-success">Salvar</button>
+    <a href="../checklists" class="button">Cancelar</a>
+</form>
+```
+
+-   em seguida criamos um novo arquivo chamado new em checklists
+
+```
+-   views/checklists/new.ejs
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'Lista de Tarefas'}) %>
+
+<%- include('../layouts/menu') %>
+
+<section class="section">
+    <div class="container">
+      <h1 class="title size-4">Nova Lista</h1>
+        <!-- Aqui inserimos o form e passamos alguns parâmetros, o method post para enviar dados ao banco a url em que será feito isso e a checklist-->
+      <%- include('form', {method: 'post', url: '/checklists', checklist: checklist}) %>
+    </div>
+  </section>
+
+<%- include('../layouts/footer') %>
+```
+
+```
+-   checklists/show
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: checklist.name}) %>
+
+<%- include('../layouts/menu') %>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <h1 class="title size-4"><%= checklist.name %></h1>
+        </div>
+        <div class="column is-one-fifth">
+          <a href="add-task.html" class="button is-success is-small">Nova Tarefa</a>
+          <a href="../checklists" class="button is-small">Voltar</a>
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- Aqui utilizamos um loop nas tarefas para exibir na tela cada tarefa que está no banco de dados-->
+      <% checklist.tasks.forEach(task => { %>
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <input type="checkbox" /> <%= task.name %> 
+        </div>
+
+        <div class="column is-one-fifth">
+          <button class="button is-danger is-small">Remover</button>
+        </div>
+      </div>
+      <% }) %>
+
+    </div>
+  </section>
+
+  <%- include('../layouts/footer') %>
+```
+
+```
+-   checklists/index.ejs
+
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'Lista de Tarefas'}) %>
+
+<%- include('../layouts/menu') %>
+
+<section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <h1 class="title size-4">Listas de Tarefas</h1>
+        </div>
+        <div class="column is-one-fifth">
+          <a href="/checklists/new" class="button is-success is-small">Nova Lista</a>
+        </div>
+      </div>
+
+      <div class="columns is-multiline">
+          <!--- Aqui utilizamos um looping para cada tarefa criar um card e exibir as tarefas que estão no banco de dados-->
+
+        <% checklists.forEach(checklist => { %>
+            <div class="column is-one-quarter">
+            <div class="card has-background-white-ter">
+                <div class="card-content">
+                <p class="subtitle is-size-5">
+                    <!-- Aqui exibimos o nome da checklist-->
+                    <%= checklist.name %>
+                </p>
+                <p class="subtitle is-size-6">
+                    <!---Aqui exibimos os nomes das tasks-->
+                    <%= checklist.tasks.count %> tarefas
+                </p>
+                </div>
+                <footer class="card-footer">
+                <p class="card-footer-item">
+                    <span>
+                        <!--- Aqui colocamos ao clicar exibir o id de cada tarefa-->
+                    <a href="../checklists/<%= checklist._id %>">Ver</a>
+                    </span>
+                </p>
+                <p class="card-footer-item">
+                    <span>
+                    <a href="checklist-form.html">Editar</a>
+                    </span>
+                </p>
+                <p class="card-footer-item">
+                    <span>
+                    <a href="#" class="has-text-danger">Remover</a>
+                    </span>
+                </p>
+                </footer>
+            </div>
+            </div>
+        <% }) %>
+
+      </div>
+    </div>
+  </section>
+
+  <%- include('../layouts/footer') %>
+```
+
+-   precisamos criar uma rota para o new.ejs para criar novas tarefas
+
+```
+-   routes/checklist
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+// Aqui criamos os documentos para o banco
+
+// aqui criamos uma rota com o router.get() com uma função async recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, utilizamos um try catch para tratar erros e utilizamos o await e utilizamos o método find em Checklist para pegar os dados em vez de enviar como na rota post abaixo, devolvemos o código de status 200 da requisição indicando que foi um sucesso, renderizamos o arquivo index que está na pasta checklists, também passamos uma variável com a checklist  e caso haja algum erro retornamos o código de status 500 indicando um erro e exibimos uma página de erro e passamos uma mensagem de erro para ela 
+router.get('/', async (req, res) => {
+    try {
+        let checklists = await Checklist.find({})
+        res.status(200).render('checklists/index', { checklists: checklists})
+    }   catch(error){
+        res.status(200).render('pages/error', { error: 'Erro ao exibir as Listas'})
+    }
+})
+
+// Aqui vamos criar uma rota get para criar novas tarefas
+// vamo utilizar o try catch se q requisição for um sucesso exibimos a pagina new e se houver um erro iremos exibir a pagina de erro
+router.get('/new', async (req, res) => {
+    try {
+        let checklist = new Checklist()
+        res.status(200).render('checklists/new', { checklist: checklist })
+    } catch(error){
+        res.status(500).render('pages/error', {error: 'Erro ao carregar o formulário'})
+    }
+})
+
+/// Aqui pegamos todos os documentos do banco de dados
+
+// aqui criamos uma rota post, para enviar dados, recebe os mesmo parâmetros da rota get, criamos um objeto name que recebe a req.body.checklist, abaixo utilizamos um try catch para tratar erros no try realizaremos a criação de um documento no banco  e redirecionamos para a pagina checklists e caso haja algum erro retornamos o código de erro 422 e exibimos novamente a página de criar tarefas, passamos pra ela um objeto com as tarefas e a mensagem de erro
+router.post('/', async (req, res) => {
+    let { name } = req.body.checklist
+    let checklist = new Checklist({name})
+    
+    try{
+        await checklist.save()
+        res.redirect('/checklists')
+    } catch (error){
+        res.status(422).render('checklists/new', { checklists: { ...checklist, error}})
+    }
+})
+
+// Aqui pegamos pelo ID desejado
+
+// Aqui criamos outra rota do tipo get o caminho será/:id ou seja espera um id e utiliza uma async function recebe os 2 parâmetros req e res, utilizamos o try catch, no try realizamos a busca utilizando o método findById() que irá buscar os dados pelo ID com o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, retornamos um código de status 200 caso seja sucesso e exibimos a página show que está em checklists, e no catch retornamos o código de status 422 caso houver um erro e exibimos a página de erro e enviamos uma mensagem de erro
+router.get('/:id', async (req, res) => {
+
+    try{
+        let checklist = await Checklist.findById(req.params.id)
+        res.status(200).render('checklists/show', { checklist: checklist})
+    } catch (error){
+        res.status(500).render('pages/error', { error: 'Erro ao exibir as Listas de Tarefas'})
+    }
+})
+
+// Aqui o método de atualizar os dados
+
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function, recebe os 2 parâmetros req e res criamos um objeto name que recebe req.body a resposta da requisição, utilizamos um try catch no try utilizamos o método findByIdAndUpdate que irá buscar os dados pelo Id e irá atualizar, recebe 3 parâmetros o req.params.id e o que será atualizado, e também o objeto que foi atualizado retornamos o código de status 200 caso seja sucesso e caso haja um erro no catch exibimos o código 422
+router.put('/:id', async (req, res) => {
+
+    let { name } = req.body
+
+    try {
+        let checklist = await Checklist.findByIdAndUpdate(req.params.id, {name}, {new: true})
+        res.status(200).json(checklist)
+    } catch (error){
+        res.status(422).json(error)
+    }
+})
+
+// Aqui o método para remover elementos
+
+// Aqui criamos uma nova rota do tipo DELETE utilizada para remover os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function e recebe os 2 parâmetros req e res, utilizamos um try catch no try utilizamos o método findByIdAndRemove que recebe o req.params.id e procura os dados pelo Id e remove, passamos o código de sucesso 200 e no catch se houver algum erro passamos o código de erro 422
+router.delete('/:id', async (req, res) => {
+
+    try {
+        let checklist = await Checklist.findByIdAndRemove(req.params.id)
+        res.status(200).json(checklist)
+    } catch (error){
+        res.status(422).json(error)
+    }
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+
+-   e no app utilizamos um middleware chamado urlencoded que irá pegar valores da url e dos form e irá deixar disponível para uso
+```
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui importamos uma biblioteca chamada path, ela encontra o caminho que estamos em nosso app, diretório do computador em que estão
+const path = require('path')
+
+// Aqui importamos o módulo com as rotas criado em checklist.js
+const checkListRouter = require('./src/routes/checklist')
+
+// Aqui importamos o módulo com a rota criado em index.js
+const rootRouter = require('./src/routes/index')
+
+// Aqui importamos o arquivo com as configurações do mongoose
+require('./config/database')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json())
+
+
+// Aqui utilizamos um middleware, irá pegar valores da url e dos form e irá deixar disponível para uso
+app.use(express.urlencoded({extended: true}))
+
+
+// Aqui habilitamos em nosso projeto para poder utilizar arquivos estáticos com o express.static, e com o path.join passamos o nome do diretório e o diretório onde irá ficar esses arquivos estáticos
+app.use(express.static(path.join(__dirname ,'public')))
+
+
+// Aqui configuramos as views com o set, views é o nome do diretório onde iram ficar, path.join une as views recebe 2 parâmetros __dirname que é o nome do arquivo e o segundo é o diretório/pasta em que as views vão ficar
+app.set('views', path.join(__dirname, 'src/views'))
+
+// Aqui setamos/definimos que a view engine será o ejs que instalamos
+app.set('view engine', 'ejs')
+
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/', rootRouter)
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/checklists', checkListRouter)
+
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
