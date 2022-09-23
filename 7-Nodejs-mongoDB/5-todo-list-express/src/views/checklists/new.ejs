@@ -10,8 +10,8 @@
 <section class="section">
     <div class="container">
       <h1 class="title size-4">Nova Lista</h1>
-        <!-- Aqui inserimos o form e passamos alguns parâmetros, o method post para enviar dados ao banco a url em que será feito isso e a checklist-->
-      <%- include('form', {method: 'post', url: '/checklists', checklist: checklist}) %>
+        <!-- Aqui inserimos o form e passamos alguns parâmetros, a url com o método que será feito isso, e a checklist-->
+      <%- include('form', { url: '/checklists?_method=post', checklist: checklist}) %>
     </div>
   </section>
 

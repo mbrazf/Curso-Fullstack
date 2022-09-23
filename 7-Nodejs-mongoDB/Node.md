@@ -2368,3 +2368,1250 @@ app.listen(3000, () => {
     console.log('Servidor Iniciado')
 })
 ```
+<hr>
+<br>
+
+### Pacote MethodOverride
+<br>
+
+-   Pacote para poder utilizar métodos put/alterar e delete/remover dados
+
+-   Para instalar use o comando
+```
+    npm install method-override --save
+```
+
+-   e importamos ele no app.js
+```
+-   app.js
+
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui importamos uma biblioteca chamada path, ela encontra o caminho que estamos em nosso app, diretório do computador em que estão
+const path = require('path')
+
+// Aqui importamos o módulo com as rotas criado em checklist.js
+const checkListRouter = require('./src/routes/checklist')
+
+// Aqui importamos o módulo com a rota criado em index.js
+const rootRouter = require('./src/routes/index')
+
+
+// Aqui importamos o pacote methodOverride utilizado para poder usar os métodos put e delete nos forms
+const methodOverride = require('method-override')
+
+// Aqui importamos o arquivo com as configurações do mongoose
+require('./config/database')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json())
+
+
+// Aqui utilizamos um middleware, irá pegar valores da url e dos form e irá deixar disponível para uso
+app.use(express.urlencoded({extended: true}))
+
+
+//  aqui iniciamos o método methodOverride e passamos um atributo para ele chamado _method
+app.use(methodOverride('_method'))
+
+
+// Aqui habilitamos em nosso projeto para poder utilizar arquivos estáticos com o express.static, e com o path.join passamos o nome do diretório e o diretório onde irá ficar esses arquivos estáticos
+app.use(express.static(path.join(__dirname ,'public')))
+
+
+// Aqui configuramos as views com o set, views é o nome do diretório onde iram ficar, path.join une as views recebe 2 parâmetros __dirname que é o nome do arquivo e o segundo é o diretório/pasta em que as views vão ficar
+app.set('views', path.join(__dirname, 'src/views'))
+
+// Aqui setamos/definimos que a view engine será o ejs que instalamos
+app.set('view engine', 'ejs')
+
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/', rootRouter)
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/checklists', checkListRouter)
+
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
+-   e no form alteramos o método para post
+```
+-   checklists/form.ejs
+
+
+<form method="post" action="<%= url %>">
+    <div class="field">
+        <label class="label">Nome</label>
+        <div class="control">
+            <input class="input" type="text" name="checklist[name]" placeholder="Lista de Tarefas" value="<%= checklist.name %> ">
+            <!-- Aqui verificamos se o error passado nas rotas foi recebedio e se foi se tem a propriedade name, e no parágrafo abaixo inserimos a mensagem de erro -->
+            <% if(checklist.error && checklist.error.hasOwnProperty('name')) { %>
+                <p class="is-danger help"><%= checklist.error.name.message %></p>
+            <% } %>
+        </div>
+    </div>
+
+    <button type="submit" class="button is-success">Salvar</button>
+    <a href="../checklists" class="button">Cancelar</a>
+</form>
+```
+
+-   no new atualizamos os parâmetros do form
+```
+-   checklists/new.ejs
+
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'Lista de Tarefas'}) %>
+
+<%- include('../layouts/menu') %>
+
+<section class="section">
+    <div class="container">
+      <h1 class="title size-4">Nova Lista</h1>
+        <!-- Aqui inserimos o form e passamos alguns parâmetros, a url com o método que será feito isso, e a checklist-->
+      <%- include('form', { url: '/checklists?_method=post', checklist: checklist}) %>
+    </div>
+  </section>
+
+<%- include('../layouts/footer') %>
+```
+-   e com isso conseguimos criar novas tarefas
+<hr>
+<br>
+
+### Atualização de dados com PUT
+<br>
+
+-   Na pasta checklists criamos um arquivo chamado edit.ejs
+```
+-   checklists/edit.ejs
+
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'Editar Lista de Tarefas'}) %>
+
+<%- include('../layouts/menu') %>
+
+<section class="section">
+    <div class="container">
+      <h1 class="title size-4">Editar Lista de Tarefas</h1>
+        <!-- Aqui inserimos o form e passamos alguns parâmetros, a url com o id e o método put para editar as tarefas, e a checklist-->
+      <%- include('form', { url: `/checklists/${checklist.id}/?_method=put`, checklist: checklist}) %>
+    </div>
+  </section>
+
+<%- include('../layouts/footer') %>
+```
+
+-   em routes/checklist.js vamos criar uma rota get para exibir as tarefas e modificamos a rota put para podermos editar as tarefas
+```
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+// Aqui criamos os documentos para o banco
+
+// aqui criamos uma rota com o router.get() com uma função async recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, utilizamos um try catch para tratar erros e utilizamos o await e utilizamos o método find em Checklist para pegar os dados em vez de enviar como na rota post abaixo, devolvemos o código de status 200 da requisição indicando que foi um sucesso, renderizamos o arquivo index que está na pasta checklists, também passamos uma variável com a checklist  e caso haja algum erro retornamos o código de status 500 indicando um erro e exibimos uma página de erro e passamos uma mensagem de erro para ela 
+router.get('/', async (req, res) => {
+    try {
+        let checklists = await Checklist.find({})
+        res.status(200).render('checklists/index', { checklists: checklists})
+    }   catch(error){
+        res.status(200).render('pages/error', { error: 'Erro ao exibir as Listas'})
+    }
+})
+
+// Aqui vamos criar uma rota get para criar novas tarefas
+// vamo utilizar o try catch se q requisição for um sucesso exibimos a pagina new e se houver um erro iremos exibir a pagina de erro
+router.get('/new', async (req, res) => {
+    try {
+        let checklist = new Checklist()
+        res.status(200).render('checklists/new', { checklist: checklist })
+    } catch(error){
+        res.status(500).render('pages/error', {error: 'Erro ao carregar o formulário'})
+    }
+})
+
+
+// Aqui criamos uma rota com o método get para exibir as tarefas na tela de edição
+//  no try pegamos as tarefas do banco e exibimos na página de edição, e no catch se houver algum erro irá exibir a página de erro
+router.get('/:id/edit', async(req, res) => {
+    try {
+        let checklist = await Checklist.findById(req.params.id)
+        res.status(200).render('checklists/edit', { checklist: checklist})
+    } catch(error){
+        res.status(500).render('pages/error', {error: 'Erro ao exibir a edição da Lista de Tarefas'})
+    }
+})
+
+
+/// Aqui pegamos todos os documentos do banco de dados
+
+// aqui criamos uma rota post, para enviar dados, recebe os mesmo parâmetros da rota get, criamos um objeto name que recebe a req.body.checklist, abaixo utilizamos um try catch para tratar erros no try realizaremos a criação de um documento no banco  e redirecionamos para a pagina checklists e caso haja algum erro retornamos o código de erro 422 e exibimos novamente a página de criar tarefas, passamos pra ela um objeto com as tarefas e a mensagem de erro
+router.post('/', async (req, res) => {
+    let { name } = req.body.checklist
+    let checklist = new Checklist({name})
+    
+    try{
+        await checklist.save()
+        res.redirect('/checklists')
+    } catch (error){
+        res.status(422).render('checklists/new', { checklists: { ...checklist, error}})
+    }
+})
+
+
+// Aqui pegamos pelo ID desejado
+
+// Aqui criamos outra rota do tipo get o caminho será/:id ou seja espera um id e utiliza uma async function recebe os 2 parâmetros req e res, utilizamos o try catch, no try realizamos a busca utilizando o método findById() que irá buscar os dados pelo ID com o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, retornamos um código de status 200 caso seja sucesso e exibimos a página show que está em checklists, e no catch retornamos o código de status 422 caso houver um erro e exibimos a página de erro e enviamos uma mensagem de erro
+router.get('/:id', async (req, res) => {
+
+    try{
+        let checklist = await Checklist.findById(req.params.id)
+        res.status(200).render('checklists/show', { checklist: checklist})
+    } catch (error){
+        res.status(500).render('pages/error', { error: 'Erro ao exibir as Listas de Tarefas'})
+    }
+})
+
+// Aqui o método de atualizar os dados
+
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function, recebe os 2 parâmetros req e res criamos um objeto name que recebe req.body.checklist a resposta da requisição, buscamos os dados da checklist pelo ID, utilizamos um try catch no try utilizamos o método findByIdAndUpdate que irá buscar os dados pelo Id e irá atualizar seu name,e redirecionamos para a pagina onde exibe as tarefas  retornamos o código de status 200 caso seja sucesso e caso haja um erro no catch exibimos o código 422 e renderizamos a pagina checklist novamente
+router.put('/:id', async (req, res) => {
+
+    let { name } = req.body.checklist
+    let checklist = await Checklist.findById(req.params.id)
+
+    try {
+        await checklist.update({name})
+        res.redirect('/checklists')
+    } catch (error){
+        let errors = error.errors
+        res.status(422).render('checklists/edit', {checklist: {...checklist, errors}})
+
+        
+    }
+})
+
+// Aqui o método para remover elementos
+
+// Aqui criamos uma nova rota do tipo DELETE utilizada para remover os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function e recebe os 2 parâmetros req e res, utilizamos um try catch no try utilizamos o método findByIdAndRemove que recebe o req.params.id e procura os dados pelo Id e remove, passamos o código de sucesso 200 e no catch se houver algum erro passamos o código de erro 422
+router.delete('/:id', async (req, res) => {
+
+    try {
+        let checklist = await Checklist.findByIdAndRemove(req.params.id)
+        res.status(200).json(checklist)
+    } catch (error){
+        res.status(422).json(error)
+    }
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+
+-   e em checklists/index.ejs atualizamos o caminho do botão Voltar
+```
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'Lista de Tarefas'}) %>
+
+<%- include('../layouts/menu') %>
+
+<section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <h1 class="title size-4">Listas de Tarefas</h1>
+        </div>
+        <div class="column is-one-fifth">
+          <a href="/checklists/new" class="button is-success is-small">Nova Lista</a>
+        </div>
+      </div>
+
+      <div class="columns is-multiline">
+          <!--- Aqui utilizamos um looping para cada tarefa criar um card e exibir as tarefas que estão no banco de dados-->
+
+        <% checklists.forEach(checklist => { %>
+            <div class="column is-one-quarter">
+            <div class="card has-background-white-ter">
+                <div class="card-content">
+                <p class="subtitle is-size-5">
+                    <!-- Aqui exibimos o nome da checklist-->
+                    <%= checklist.name %>
+                </p>
+                <p class="subtitle is-size-6">
+                    <!---Aqui exibimos os nomes das tasks-->
+                    <%= checklist.tasks.count %> tarefas
+                </p>
+                </div>
+                <footer class="card-footer">
+                <p class="card-footer-item">
+                    <span>
+                        <!--- Aqui colocamos ao clicar exibir o id de cada tarefa-->
+                    <a href="/checklists/<%= checklist._id %>">Ver</a>
+                    </span>
+                </p>
+                <p class="card-footer-item">
+                    <span>
+                    <a href="/checklists/<%= checklist.id %>/edit">Editar</a>
+                    </span>
+                </p>
+                <p class="card-footer-item">
+                    <span>
+                    <a href="#" class="has-text-danger">Remover</a>
+                    </span>
+                </p>
+                </footer>
+            </div>
+            </div>
+        <% }) %>
+
+      </div>
+    </div>
+  </section>
+
+  <%- include('../layouts/footer') %>
+```
+-   e pronto a edição das tarefas está concluída
+<hr>
+<br>
+
+### Removendo dados com o Delete
+<br>
+
+-   Em routes/checklist alteramos o método delete
+```
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+
+// aqui criamos uma rota com o router.get() com uma função async recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, utilizamos um try catch para tratar erros e utilizamos o await e utilizamos o método find em Checklist para pegar os dados em vez de enviar como na rota post abaixo, devolvemos o código de status 200 da requisição indicando que foi um sucesso, renderizamos o arquivo index que está na pasta checklists, também passamos uma variável com a checklist  e caso haja algum erro retornamos o código de status 500 indicando um erro e exibimos uma página de erro e passamos uma mensagem de erro para ela 
+router.get('/', async (req, res) => {
+    try {
+        let checklists = await Checklist.find({})
+        res.status(200).render('checklists/index', { checklists: checklists})
+    }   catch(error){
+        res.status(200).render('pages/error', { error: 'Erro ao exibir as Listas'})
+    }
+})
+
+// Aqui vamos criar uma rota get para criar novas tarefas
+// vamo utilizar o try catch se q requisição for um sucesso exibimos a pagina new e se houver um erro iremos exibir a pagina de erro
+router.get('/new', async (req, res) => {
+    try {
+        let checklist = new Checklist()
+        res.status(200).render('checklists/new', { checklist: checklist })
+    } catch(error){
+        res.status(500).render('pages/error', {error: 'Erro ao carregar o formulário'})
+    }
+})
+
+
+// Aqui criamos uma rota com o método get para exibir as tarefas na tela de edição
+//  no try pegamos as tarefas do banco e exibimos na página de edição, e no catch se houver algum erro irá exibir a página de erro
+router.get('/:id/edit', async(req, res) => {
+    try {
+        let checklist = await Checklist.findById(req.params.id)
+        res.status(200).render('checklists/edit', { checklist: checklist})
+    } catch(error){
+        res.status(500).render('pages/error', {error: 'Erro ao exibir a edição da Lista de Tarefas'})
+    }
+})
+
+
+/// Aqui pegamos todos os documentos do banco de dados
+// aqui criamos uma rota post, para enviar dados, recebe os mesmo parâmetros da rota get, criamos um objeto name que recebe a req.body.checklist, abaixo utilizamos um try catch para tratar erros no try realizaremos a criação de um documento no banco  e redirecionamos para a pagina checklists e caso haja algum erro retornamos o código de erro 422 e exibimos novamente a página de criar tarefas, passamos pra ela um objeto com as tarefas e a mensagem de erro
+router.post('/', async (req, res) => {
+    let { name } = req.body.checklist
+    let checklist = new Checklist({name})
+    
+    try{
+        await checklist.save()
+        res.redirect('/checklists')
+    } catch (error){
+        res.status(422).render('checklists/new', { checklists: { ...checklist, error}})
+    }
+})
+
+
+// Aqui pegamos pelo ID desejado
+// Aqui criamos outra rota do tipo get o caminho será/:id ou seja espera um id e utiliza uma async function recebe os 2 parâmetros req e res, utilizamos o try catch, no try realizamos a busca utilizando o método findById() que irá buscar os dados pelo ID com o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, retornamos um código de status 200 caso seja sucesso e exibimos a página show que está em checklists, e no catch retornamos o código de status 422 caso houver um erro e exibimos a página de erro e enviamos uma mensagem de erro
+router.get('/:id', async (req, res) => {
+
+    try{
+        let checklist = await Checklist.findById(req.params.id)
+        res.status(200).render('checklists/show', { checklist: checklist})
+    } catch (error){
+        res.status(500).render('pages/error', { error: 'Erro ao exibir as Listas de Tarefas'})
+    }
+})
+
+// Aqui o método de atualizar os dados
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function, recebe os 2 parâmetros req e res criamos um objeto name que recebe req.body.checklist a resposta da requisição, buscamos os dados da checklist pelo ID, utilizamos um try catch no try utilizamos o método findByIdAndUpdate que irá buscar os dados pelo Id e irá atualizar seu name,e redirecionamos para a pagina onde exibe as tarefas  retornamos o código de status 200 caso seja sucesso e caso haja um erro no catch exibimos o código 422 e renderizamos a pagina checklist novamente
+router.put('/:id', async (req, res) => {
+    let { name } = req.body.checklist
+    let checklist = await Checklist.findById(req.params.id)
+
+    try {
+        await checklist.update({name})
+        res.redirect('/checklists')
+    } catch (error){
+        let errors = error.errors
+        res.status(422).render('checklists/edit', {checklist: {...checklist, errors}})
+    }
+})
+
+// Aqui o método para remover elementos
+// Aqui criamos uma nova rota do tipo DELETE utilizada para remover os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function e recebe os 2 parâmetros req e res, utilizamos um try catch no try utilizamos o método findByIdAndRemove que recebe o req.params.id e procura os dados pelo Id e remove, redirecionamos para a pagina checklists e no catch se houver algum erro passamos o código de erro 500 e exibimos a página de erro
+router.delete('/:id', async (req, res) => {
+    try {
+        await Checklist.findByIdAndRemove(req.params.id)
+        res.redirect('/checklists')
+    } catch (error){
+        res.status(500).render('pages/error', { error: 'Erro remover a Listas de Tarefas'})
+    }
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+
+-   em checklists/index.ejs adicionamos a ação para remover no botão com o method=delete
+```
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'Lista de Tarefas'}) %>
+
+<%- include('../layouts/menu') %>
+
+<section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <h1 class="title size-4">Listas de Tarefas</h1>
+        </div>
+        <div class="column is-one-fifth">
+          <a href="/checklists/new" class="button is-success is-small">Nova Lista</a>
+        </div>
+      </div>
+
+      <div class="columns is-multiline">
+          <!--- Aqui utilizamos um looping para cada tarefa criar um card e exibir as tarefas que estão no banco de dados-->
+
+        <% checklists.forEach(checklist => { %>
+            <div class="column is-one-quarter">
+            <div class="card has-background-white-ter">
+                <div class="card-content">
+                <p class="subtitle is-size-5">
+                    <!-- Aqui exibimos o nome da checklist-->
+                    <%= checklist.name %>
+                </p>
+                <p class="subtitle is-size-6">
+                    <!---Aqui exibimos os nomes das tasks-->
+                    <%= checklist.tasks.count %> tarefas
+                </p>
+                </div>
+                <footer class="card-footer">
+                <p class="card-footer-item">
+                    <span>
+                        <!--- Aqui colocamos ao clicar exibir o id de cada tarefa-->
+                    <a href="/checklists/<%= checklist._id %>">Ver</a>
+                    </span>
+                </p>
+                <p class="card-footer-item">
+                    <span>
+                    <a href="/checklists/<%= checklist.id %>/edit">Editar</a>
+                    </span>
+                </p>
+                <p class="card-footer-item">
+                    <span>
+                    <a href="/checklists/<%= checklist.id %>?_method=delete" class="has-text-danger">Remover</a>
+                    </span>
+                </p>
+                </footer>
+            </div>
+            </div>
+        <% }) %>
+
+      </div>
+    </div>
+  </section>
+
+  <%- include('../layouts/footer') %>
+```
+
+-   no app.js realizamos uma alteração ao chamar o methodOverride
+```
+// Aqui importamos o express após instalar
+const express = require('express')
+
+// Aqui importamos uma biblioteca chamada path, ela encontra o caminho que estamos em nosso app, diretório do computador em que estão
+const path = require('path')
+
+// Aqui importamos o módulo com as rotas criado em checklist.js
+const checkListRouter = require('./src/routes/checklist')
+
+// Aqui importamos o módulo com a rota criado em index.js
+const rootRouter = require('./src/routes/index')
+
+
+// Aqui importamos o pacote methodOverride utilizado para poder usar os métodos put e delete nos forms
+const methodOverride = require('method-override')
+
+// Aqui importamos o arquivo com as configurações do mongoose
+require('./config/database')
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express()
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json())
+
+
+// Aqui utilizamos um middleware, irá pegar valores da url e dos form e irá deixar disponível para uso
+app.use(express.urlencoded({extended: true}))
+
+
+//  aqui iniciamos o método methodOverride e passamos 2 parâmetros para ele chamado _method e passamos um objeto com os metódos que ele irá sobrescrever
+app.use(methodOverride('_method', {methods: ['POST', 'GET']}))
+
+
+// Aqui habilitamos em nosso projeto para poder utilizar arquivos estáticos com o express.static, e com o path.join passamos o nome do diretório e o diretório onde irá ficar esses arquivos estáticos
+app.use(express.static(path.join(__dirname ,'public')))
+
+
+// Aqui configuramos as views com o set, views é o nome do diretório onde iram ficar, path.join une as views recebe 2 parâmetros __dirname que é o nome do arquivo e o segundo é o diretório/pasta em que as views vão ficar
+app.set('views', path.join(__dirname, 'src/views'))
+
+// Aqui setamos/definimos que a view engine será o ejs que instalamos
+app.set('view engine', 'ejs')
+
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/', rootRouter)
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota 
+app.use('/checklists', checkListRouter)
+
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+    console.log('Servidor Iniciado')
+})
+```
+
+-   e na pasta pages vamos criar a pagina de error
+```
+-   pages/error.ejs
+
+<%- include('../layouts/header', { title: "Erro!" }) %>
+
+<%- include('../layouts/menu') %>
+
+<section class="section hero is-danger is-fullheight-with-navbar">
+  <div class="hero-body has-text-centered">
+    <div class="container">
+      <h1 class="title">
+        Ops! Algo deu errado =(
+      </h1>
+      <h2 class="subtitle">
+        <%= error %>
+      </h2>
+      <a href="/checklists" class="button is-light is-medium">Ir para Lista de Tarefas</a>
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/footer') %>
+```
+-   remoção de tarefas concluida
+<hr>
+<br>
+
+
+### Cadastro de uma nova tarefa
+<br>
+
+-   Em routes criamos um arquivo task.js nele criamos as rotas para as tarefas
+```
+-   routes/task.js
+
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const checklistDependentRoute = express.Router();
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+// Aqui importamos o model task onde está conectado com o banco de dados
+const Task = require('../models/task');
+const { route } = require('./checklist');
+
+
+// Aqui criamos uma rota get para exibir a pagina para criar novas tarefas
+// no try se houver sucesso passaremos o código 200 de sucesso e exibimos a página para adicionar tarefas na checklist
+// se houver erro no catch irá exibir a página de erro
+checklistDependentRoute.get('/:id/tasks/new', async(req, res) => {
+    try {
+        let task = Task()
+        res.status(200).render('tasks/new' , { checklistId: req.params.id, task: task})
+    } catch (error){
+        res.status(422).render('pages/error', { errors: 'Erro ao carregar o fomulário'})
+    }
+})
+
+// Aqui criamos uma rota post para criar a tarefa e enviar para o banco de dados
+// criamos uam variável name que recebe req.body.task
+// no try pegamos a tarefa pelo ID e adicionamos ela em tasks e salvamos, e redirecionamos para a pagina checklist no id da tarefa
+// no catch se houver erro iremos exibir novamente a página para criar novas tarefas
+checklistDependentRoute.post('/:id/tasks', async(req, res) => {
+    let { name } = req.body.task
+    let task = new Task({ name, checklist: req.params.id })
+
+    try {
+        await task.save()
+        let checklist = await Checklist.findById(req.params.id)
+        checklist.tasks.push(task)
+        await checklist.save()
+        res.redirect(`/checklists/${req.params.id}`)
+    } catch(error){
+        let errors = error.errors
+        res.status(422).render('tasks/new', { task: { ...task, errors }, checklistId: req.params.id})
+    }
+})
+
+module.exports = { checklistDependent: checklistDependentRoute }
+```
+
+-   no app.js importamos a nova rota de Task e iniciamos ela
+```
+-   app.js
+
+
+// Aqui importamos o express após instalar
+const express = require("express");
+
+// Aqui importamos uma biblioteca chamada path, ela encontra o caminho que estamos em nosso app, diretório do computador em que estão
+const path = require("path");
+
+// Aqui importamos o módulo com as rotas criado em checklist.js
+const checkListRouter = require("./src/routes/checklist");
+
+// Aqui importamos o módulo com as rotas criado em task.js
+const taskRouter = require("./src/routes/task");
+
+// Aqui importamos o módulo com a rota criado em index.js
+const rootRouter = require("./src/routes/index");
+
+// Aqui importamos o pacote methodOverride utilizado para poder usar os métodos put e delete nos forms
+const methodOverride = require("method-override");
+
+// Aqui importamos o arquivo com as configurações do mongoose
+require("./config/database");
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express();
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json());
+
+// Aqui utilizamos um middleware, irá pegar valores da url e dos form e irá deixar disponível para uso
+app.use(express.urlencoded({ extended: true }));
+
+//  aqui iniciamos o método methodOverride e passamos 2 parâmetros para ele chamado _method e passamos um objeto com os metódos que ele irá sobrescrever
+app.use(methodOverride("_method", { methods: ["POST", "GET"] }));
+
+// Aqui habilitamos em nosso projeto para poder utilizar arquivos estáticos com o express.static, e com o path.join passamos o nome do diretório e o diretório onde irá ficar esses arquivos estáticos
+app.use(express.static(path.join(__dirname, "public")));
+
+// Aqui configuramos as views com o set, views é o nome do diretório onde iram ficar, path.join une as views recebe 2 parâmetros __dirname que é o nome do arquivo e o segundo é o diretório/pasta em que as views vão ficar
+app.set("views", path.join(__dirname, "src/views"));
+
+// Aqui setamos/definimos que a view engine será o ejs que instalamos
+app.set("view engine", "ejs");
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota
+app.use("/", rootRouter);
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota
+app.use("/checklists", checkListRouter);
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota
+app.use("/checklists", taskRouter.checklistDependent);
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+  console.log("Servidor Iniciado");
+});
+
+```
+
+-   Na pasta views vamo criar uma pasta chamada tasks e nela criamos um arquivo chamado new.ejs
+```
+-   views/tasks/new.ejs
+
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: 'Nova Tarefa'}) %>
+
+<%- include('../layouts/menu') %>
+
+<section class="section">
+    <div class="container">
+      <h1 class="title size-4">Nova Tarefa</h1>
+        
+      <form method="post" action="/checklists/<%= checklistId %>/tasks">
+        <div class="field">
+            <label class="label">Nome</label>
+            <div class="control">
+                <input class="input" type="text" name="task[name]" placeholder="Lista de Tarefas" value="<%= task.name %> ">
+                <!-- Aqui verificamos se o error passado nas rotas foi recebedio e se foi se tem a propriedade name, e no parágrafo abaixo inserimos a mensagem de erro -->
+                <% if(task.error && task.error.hasOwnProperty('name')) { %>
+                    <p class="is-danger help"><%= task.error.name.message %></p>
+                <% } %>
+            </div>
+        </div>
+        <button type="submit" class="button is-success">Salvar</button>
+        <a href="/checklists/<%= checklistId %>" class="button">Cancelar</a>
+    </form>
+    </div>
+  </section>
+
+<%- include('../layouts/footer') %>
+```
+
+-   em routes/checklist.js fizemos um ajuste com o populate('tasks') na rota get /:id
+```
+-   routes/checklist.js
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const router = express.Router();
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+
+// aqui criamos uma rota com o router.get() com uma função async recebe 2 parâmetros req que é a requisição e res a resposta para o usuário, utilizamos um try catch para tratar erros e utilizamos o await e utilizamos o método find em Checklist para pegar os dados em vez de enviar como na rota post abaixo, devolvemos o código de status 200 da requisição indicando que foi um sucesso, renderizamos o arquivo index que está na pasta checklists, também passamos uma variável com a checklist  e caso haja algum erro retornamos o código de status 500 indicando um erro e exibimos uma página de erro e passamos uma mensagem de erro para ela 
+router.get('/', async (req, res) => {
+    try {
+        let checklists = await Checklist.find({})
+        res.status(200).render('checklists/index', { checklists: checklists})
+    }   catch(error){
+        res.status(200).render('pages/error', { error: 'Erro ao exibir as Listas'})
+    }
+})
+
+// Aqui vamos criar uma rota get para criar novas tarefas
+// vamo utilizar o try catch se q requisição for um sucesso exibimos a pagina new e se houver um erro iremos exibir a pagina de erro
+router.get('/new', async (req, res) => {
+    try {
+        let checklist = new Checklist()
+        res.status(200).render('checklists/new', { checklist: checklist })
+    } catch(error){
+        res.status(500).render('pages/error', {error: 'Erro ao carregar o formulário'})
+    }
+})
+
+
+// Aqui criamos uma rota com o método get para exibir as tarefas na tela de edição
+//  no try pegamos as tarefas do banco e exibimos na página de edição, e no catch se houver algum erro irá exibir a página de erro
+router.get('/:id/edit', async(req, res) => {
+    try {
+        let checklist = await Checklist.findById(req.params.id)
+        res.status(200).render('checklists/edit', { checklist: checklist})
+    } catch(error){
+        res.status(500).render('pages/error', {error: 'Erro ao exibir a edição da Lista de Tarefas'})
+    }
+})
+
+
+/// Aqui pegamos todos os documentos do banco de dados
+// aqui criamos uma rota post, para enviar dados, recebe os mesmo parâmetros da rota get, criamos um objeto name que recebe a req.body.checklist, abaixo utilizamos um try catch para tratar erros no try realizaremos a criação de um documento no banco  e redirecionamos para a pagina checklists e caso haja algum erro retornamos o código de erro 422 e exibimos novamente a página de criar tarefas, passamos pra ela um objeto com as tarefas e a mensagem de erro
+router.post('/', async (req, res) => {
+    let { name } = req.body.checklist
+    let checklist = new Checklist({name})
+    
+    try{
+        await checklist.save()
+        res.redirect('/checklists')
+    } catch (error){
+        res.status(422).render('checklists/new', { checklists: { ...checklist, error}})
+    }
+})
+
+
+// Aqui pegamos pelo ID desejado
+// Aqui criamos outra rota do tipo get o caminho será/:id ou seja espera um id e utiliza uma async function recebe os 2 parâmetros req e res, e também utilizamos o populate('tasks') utilizado para injetar as tarefas relacionadas, utilizamos o try catch, no try realizamos a busca utilizando o método findById() que irá buscar os dados pelo ID com o req.params.id ou seja irá pegar o id da url e adicionar no id do objeto, retornamos um código de status 200 caso seja sucesso e exibimos a página show que está em checklists, e no catch retornamos o código de status 422 caso houver um erro e exibimos a página de erro e enviamos uma mensagem de erro
+router.get('/:id', async (req, res) => {
+
+    try{
+        let checklist = await Checklist.findById(req.params.id).populate('tasks')
+        res.status(200).render('checklists/show', { checklist: checklist})
+    } catch (error){
+        res.status(500).render('pages/error', { error: 'Erro ao exibir as Listas de Tarefas'})
+    }
+})
+
+// Aqui o método de atualizar os dados
+// Aqui criamos uma nova rota do tipo PUT utilizada para atualizar os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function, recebe os 2 parâmetros req e res criamos um objeto name que recebe req.body.checklist a resposta da requisição, buscamos os dados da checklist pelo ID, utilizamos um try catch no try utilizamos o método findByIdAndUpdate que irá buscar os dados pelo Id e irá atualizar seu name,e redirecionamos para a pagina onde exibe as tarefas  retornamos o código de status 200 caso seja sucesso e caso haja um erro no catch exibimos o código 422 e renderizamos a pagina checklist novamente
+router.put('/:id', async (req, res) => {
+    let { name } = req.body.checklist
+    let checklist = await Checklist.findById(req.params.id)
+
+    try {
+        await checklist.update({name})
+        res.redirect('/checklists')
+    } catch (error){
+        let errors = error.errors
+        res.status(422).render('checklists/edit', {checklist: {...checklist, errors}})
+    }
+})
+
+// Aqui o método para remover elementos
+// Aqui criamos uma nova rota do tipo DELETE utilizada para remover os dados, o caminho será/:id ou seja espera um id, utilizamos uma async function e recebe os 2 parâmetros req e res, utilizamos um try catch no try utilizamos o método findByIdAndRemove que recebe o req.params.id e procura os dados pelo Id e remove, redirecionamos para a pagina checklists e no catch se houver algum erro passamos o código de erro 500 e exibimos a página de erro
+router.delete('/:id', async (req, res) => {
+    try {
+        await Checklist.findByIdAndRemove(req.params.id)
+        res.redirect('/checklists')
+    } catch (error){
+        res.status(500).render('pages/error', { error: 'Erro remover a Listas de Tarefas'})
+    }
+})
+
+// e aqui exportamos o modulo router com as rotas
+module.exports = router
+```
+<hr>
+
+### Excluir uma tarefa
+<br>
+
+-   Em routes/task.js adicionamos a rota para remover a tarefas
+```
+-   routes/task.js
+
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const checklistDependentRoute = express.Router();
+
+// aqui utilizamos o router para criar uma rota
+const simpleRouter = express.Router()
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+// Aqui importamos o model task onde está conectado com o banco de dados
+const Task = require('../models/task');
+
+
+// Aqui criamos uma rota get para exibir a pagina para criar novas tarefas
+// no try se houver sucesso passaremos o código 200 de sucesso e exibimos a página para adicionar tarefas na checklist
+// se houver erro no catch irá exibir a página de erro
+checklistDependentRoute.get('/:id/tasks/new', async(req, res) => {
+    try {
+        let task = Task()
+        res.status(200).render('tasks/new' , { checklistId: req.params.id, task: task})
+    } catch (error){
+        res.status(422).render('pages/error', { errors: 'Erro ao carregar o fomulário'})
+    }
+})
+
+// Aqui criamos uma rota para deletar as tarefas da checklist
+// no try procuramos a tarefa pelo id , depois pegamos a posição do item nas tasks e removemos o item, salvamos a checklist e redirecionamos para as tarefas
+// e no catch se houver algum erro iremos exibir a página de erro
+simpleRouter.delete('/:id', async(req, res) => {
+    try {
+        let task = await Task.findByIdAndDelete(req.params.id)
+        let checklist = await Checklist.findById(task.checklist)
+        let taskToRemove = checklist.tasks.indexOf(task._id)
+        checklist.tasks.splice(taskToRemove, 1)
+        checklist.save()
+        res.redirect(`/checklists/${checklist._id}`)
+    } catch(error){
+        res.status(422).render('pages/error', { errors: 'Erro ao remover uma tarefa'})
+    }
+})
+
+// Aqui criamos uma rota post para criar a tarefa e enviar para o banco de dados
+// criamos uam variável name que recebe req.body.task
+// no try pegamos a tarefa pelo ID e adicionamos ela em tasks e salvamos, e redirecionamos para a pagina checklist no id da tarefa
+// no catch se houver erro iremos exibir novamente a página para criar novas tarefas
+checklistDependentRoute.post('/:id/tasks', async(req, res) => {
+    let { name } = req.body.task
+    let task = new Task({ name, checklist: req.params.id })
+
+    try {
+        await task.save()
+        let checklist = await Checklist.findById(req.params.id)
+        checklist.tasks.push(task)
+        await checklist.save()
+        res.redirect(`/checklists/${req.params.id}`)
+    } catch(error){
+        let errors = error.errors
+        res.status(422).render('tasks/new', { task: { ...task, errors }, checklistId: req.params.id})
+    }
+})
+
+module.exports = { checklistDependent: checklistDependentRoute, simple: simpleRouter }
+```
+
+-   no app.js importamos a rota criada acima
+```
+// Aqui importamos o express após instalar
+const express = require("express");
+
+// Aqui importamos uma biblioteca chamada path, ela encontra o caminho que estamos em nosso app, diretório do computador em que estão
+const path = require("path");
+
+// Aqui importamos o módulo com as rotas criado em checklist.js
+const checkListRouter = require("./src/routes/checklist");
+
+// Aqui importamos o módulo com as rotas criado em task.js
+const taskRouter = require("./src/routes/task");
+
+// Aqui importamos o módulo com a rota criado em index.js
+const rootRouter = require("./src/routes/index");
+
+// Aqui importamos o pacote methodOverride utilizado para poder usar os métodos put e delete nos forms
+const methodOverride = require("method-override");
+
+// Aqui importamos o arquivo com as configurações do mongoose
+require("./config/database");
+
+// Aqui chamamos o express para poder utilizar os métodos
+const app = express();
+
+// Aqui utilizamos um middleware com use() nele chamamos o express.json, ele verifica ao fazer uma chamada web se tem algum arquivo json e se ele deve processar ele
+app.use(express.json());
+
+// Aqui utilizamos um middleware, irá pegar valores da url e dos form e irá deixar disponível para uso
+app.use(express.urlencoded({ extended: true }));
+
+//  aqui iniciamos o método methodOverride e passamos 2 parâmetros para ele chamado _method e passamos um objeto com os metódos que ele irá sobrescrever
+app.use(methodOverride("_method", { methods: ["POST", "GET"] }));
+
+// Aqui habilitamos em nosso projeto para poder utilizar arquivos estáticos com o express.static, e com o path.join passamos o nome do diretório e o diretório onde irá ficar esses arquivos estáticos
+app.use(express.static(path.join(__dirname, "public")));
+
+// Aqui configuramos as views com o set, views é o nome do diretório onde iram ficar, path.join une as views recebe 2 parâmetros __dirname que é o nome do arquivo e o segundo é o diretório/pasta em que as views vão ficar
+app.set("views", path.join(__dirname, "src/views"));
+
+// Aqui setamos/definimos que a view engine será o ejs que instalamos
+app.set("view engine", "ejs");
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota
+app.use("/", rootRouter);
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota
+app.use("/checklists", checkListRouter);
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota
+app.use("/checklists", taskRouter.checklistDependent);
+
+// e aqui utilizamos a rota importada do outro arquivo e utilizamos como se fosse um middleware o primeiro parâmetro é o nome/caminho da url e o segundo a variável em que importamos a rota
+app.use("/tasks", taskRouter.simple);
+
+//  o método  listen irá monitorar tudo o que ocorrer ou for chamado no browser na porta 3000 e irá cair nesse servidor, o listen também recebe uma função, aqui exibimos uma mensagem no console assim que o servidor for iniciado
+app.listen(3000, () => {
+  console.log("Servidor Iniciado");
+});
+```
+-   e em checklists/show.js adicionamos a ação no botão de remover
+```
+-   checklists/show
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: checklist.name}) %>
+
+<%- include('../layouts/menu') %>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <h1 class="title size-4"><%= checklist.name %></h1>
+        </div>
+        <div class="column is-one-fifth">
+          <a href="/checklists/<%= checklist._id %>/tasks/new" class="button is-success is-small">Nova Tarefa</a>
+          <a href="/checklists" class="button is-small">Voltar</a>
+        </div>
+      </div>
+      <hr />
+
+      <!-- Aqui utilizamos um loop nas tarefas para exibir na tela cada tarefa que está no banco de dados-->
+      <% checklist.tasks.forEach(task => { %>
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <input type="checkbox" /> <%= task.name %> 
+        </div>
+
+        <div class="column is-one-fifth">
+          <a href="/tasks/<%= task._id %>?_method=delete "class="button is-danger is-small">Remover</a>
+        </div>
+      </div>
+      <% }) %>
+
+    </div>
+  </section>
+
+  <%- include('../layouts/footer') %>
+```
+<hr>
+<br>
+
+
+### Fazendo Request JSON
+<br>
+
+-   Em routes/task.js vamo criar uma nova rota para atualizar a tarefa se ela está ou não concluída
+```
+-   routes/task.js
+
+
+// Aqui importamos o express
+const express = require('express')
+
+// e aqui chamamos um recurso do express chamado Router() que permite criar rotas nos arquivos e depois utilizar eles no arquivo principal App.js
+const checklistDependentRoute = express.Router();
+
+// aqui utilizamos o router para criar uma rota
+const simpleRouter = express.Router()
+
+// Aqui importamos o model checklist onde está conectado com o banco de dados
+const Checklist = require('../models/checklist')
+
+// Aqui importamos o model task onde está conectado com o banco de dados
+const Task = require('../models/task');
+
+
+
+// Aqui criamos uma rota get para exibir a pagina para criar novas tarefas
+// no try se houver sucesso passaremos o código 200 de sucesso e exibimos a página para adicionar tarefas na checklist
+// se houver erro no catch irá exibir a página de erro
+checklistDependentRoute.get('/:id/tasks/new', async(req, res) => {
+    try {
+        let task = Task()
+        res.status(200).render('tasks/new' , { checklistId: req.params.id, task: task})
+    } catch (error){
+        res.status(422).render('pages/error', { errors: 'Erro ao carregar o fomulário'})
+    }
+})
+
+// Aqui criamos uma rota para deletar as tarefas da checklist
+// no try procuramos a tarefa pelo id , depois pegamos a posição do item nas tasks e removemos o item, salvamos a checklist e redirecionamos para as tarefas
+// e no catch se houver algum erro iremos exibir a página de erro
+simpleRouter.delete('/:id', async(req, res) => {
+    try {
+        let task = await Task.findByIdAndDelete(req.params.id)
+        let checklist = await Checklist.findById(task.checklist)
+        let taskToRemove = checklist.tasks.indexOf(task._id)
+        checklist.tasks.splice(taskToRemove, 1)
+        checklist.save()
+        res.redirect(`/checklists/${checklist._id}`)
+    } catch(error){
+        res.status(422).render('pages/error', { errors: 'Erro ao remover uma tarefa'})
+    }
+})
+
+// Aqui criamos uma rota post para criar a tarefa e enviar para o banco de dados
+// criamos uam variável name que recebe req.body.task
+// no try pegamos a tarefa pelo ID e adicionamos ela em tasks e salvamos, e redirecionamos para a pagina checklist no id da tarefa
+// no catch se houver erro iremos exibir novamente a página para criar novas tarefas
+checklistDependentRoute.post('/:id/tasks', async(req, res) => {
+    let { name } = req.body.task
+    let task = new Task({ name, checklist: req.params.id })
+
+    try {
+        await task.save()
+        let checklist = await Checklist.findById(req.params.id)
+        checklist.tasks.push(task)
+        await checklist.save()
+        res.redirect(`/checklists/${req.params.id}`)
+    } catch(error){
+        let errors = error.errors
+        res.status(422).render('tasks/new', { task: { ...task, errors }, checklistId: req.params.id})
+    }
+})
+
+// Aqui vamos criar uma rota para atualizar se tarefa está ou não concluída
+// vamos pegar o id da tarefa, 
+// no try vamos setar ela com a resposta da requisição, vamos salvar e exibir o código de status 200 e um json com a tarefa
+// e no catch se houver algum erro passamos o código 422 e retornamos o json com as tarefa
+simpleRouter.put('/:id', async(req, res) => {
+    let task = await Task.findById(req.params.id)
+    try{
+        task.set(req.body.task)
+        await task.save()
+        res.status(200).json({ task })
+    } catch(error){
+        let errors = error. errors
+        res.status(422).json({ task: {...errors }})
+    }
+})
+
+module.exports = { checklistDependent: checklistDependentRoute, simple: simpleRouter }
+```
+
+-   em checklist/show.ejs verificamos a tarefa foi clicada e concluida se foi alteramos a cor dela, e no checkbox da tarefa chamamos uma função com o evento onchange
+```
+-   checklist/show.ejs
+
+<!-- Aqui inserimos as partials -->
+
+<!--- Para inserir dados no Ejs utilizamos o <%-  %>  -->
+
+<!---E aqui passamos um parâmetro para a partial que será um objeto com o título da página-->
+<%- include('../layouts/header', {title: checklist.name}) %>
+
+<%- include('../layouts/menu') %>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <h1 class="title size-4"><%= checklist.name %></h1>
+        </div>
+        <div class="column is-one-fifth">
+          <a href="/checklists/<%= checklist._id %>/tasks/new" class="button is-success is-small">Nova Tarefa</a>
+          <a href="/checklists" class="button is-small">Voltar</a>
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- Aqui utilizamos um loop nas tarefas para exibir na tela cada tarefa que está no banco de dados-->
+      <% checklist.tasks.forEach(task => { %>
+      <div class="columns">
+        <div class="column is-four-fifths <%= task.done ? 'has-text-success is-italic' : ' ' %> ">
+          <input type="checkbox"  onchange="setTagAsDone(this, '<%= task._id %>')"
+            <%= task.done ? 'checked' : '' %>
+          /> <%= task.name %> 
+        </div>
+
+        <div class="column is-one-fifth">
+          <a href="/tasks/<%= task._id %>?_method=delete "class="button is-danger is-small">Remover</a>
+        </div>
+      </div>
+      <% }) %>
+
+    </div>
+  </section>
+
+  <%- include('../layouts/footer') %>
+```
+
+-   em public vamos criar uma pasta chamada javascripts e nela vamos criar um arquivo chamado tasks.js
+```
+
+//Aqui criamos a função chamada em show.ejs
+
+
+// no try declaramos o header da requisição e o tipo de conteúdo sendo json
+// declaramos o corpo e transformamos o json em string
+// declaramos a response com a url que iremos chamar
+// transformamos a resposta em json
+// pegamos a task 
+
+// e pegamos o parente da task para alterarmos os estilos
+
+// Abaixo verificamos se a tarefa foi done/concluida se foi adicionamos o atributo checked como true e adicionamos as classe que alteram a cor se ela foi concluida
+// e se não foi removemos as classes
+const setTagAsDone = async(element, id) => {
+    event.preventDefault()
+    try {
+        let headers = new Headers({ 'Content-Type': 'application/json'})
+        let body = JSON.stringify({ task: { done: element.checked }})
+        let response = await fetch(`/tasks/${id}?_method=put`, { headers: headers, body: body, method: 'PUT'})
+        let data = await response.json()
+        let task = data.task
+        let parent = element.parentNode
+
+        if(task.done){
+            element.checked = true
+            parent.classList.add('has-text-success')
+            parent.classList.add('is-italic')
+
+        } else {
+            element.checked = false
+            parent.classList.remove('has-text-success')
+            parent.classList.remove('is-italic')
+        }
+    } catch(error){
+        alert('Erro ao atualizar a tarefa')
+    }
+}
+```
+-    e no em layouts/header.js importamos o arquivo de public/javascripts/tasks.js
+```
+-   layouts/heaader.js
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bulma.min.css" />
+    <script src="/javascripts/tasks.js"></script>
+    <title><%=title%></title>
+</head>
+
+<body>
+
+<!--- E aqui no header no title utilizamos o parãmetro que foi passado na index.ejs   <%= title %>  -->
+```
+<hr>
+<br>
